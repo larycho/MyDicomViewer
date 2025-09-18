@@ -4,5 +4,6 @@ module org.example.mydicomviewer {
 
 
     opens org.example.mydicomviewer to javafx.fxml;
+    opens org.example.mydicomviewer.controllers to javafx.fxml;
     exports org.example.mydicomviewer;
 }
