@@ -9,6 +9,7 @@
 
     <MenuBar >
         <Menu mnemonicParsing="false" text="File">
+            <MenuItem fx:id="openFileItem" mnemonicParsing="false" onAction="#onOpenFileClick" text="Open file..." />
         </Menu>
     </MenuBar>
 
