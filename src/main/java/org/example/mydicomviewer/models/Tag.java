@@ -2,22 +2,22 @@ package org.example.mydicomviewer.models;
 
 public class Tag {
 
-    private String number;
+    private String address;
     private String description;
     private String value;
 
-    public Tag(String number, String description, String value) {
-        this.number = number;
+    public Tag(String address, String description, String value) {
+        this.address = address;
         this.description = description;
         this.value = value;
     }
 
-    public String getNumber() {
-        return number;
+    public String getAddress() {
+        return address;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getDescription() {
