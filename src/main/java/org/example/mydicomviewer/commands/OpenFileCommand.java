@@ -1,8 +1,9 @@
 package org.example.mydicomviewer.commands;
 
-import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.example.mydicomviewer.FileProcessor;
+import org.example.mydicomviewer.FileProcessorImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,5 +49,7 @@ public class OpenFileCommand {
 
     private void openFile(File file) {
         // TODO
+        FileProcessor fileProcessor = new FileProcessorImpl();
+        fileProcessor.readFile(file);
     }
 }
