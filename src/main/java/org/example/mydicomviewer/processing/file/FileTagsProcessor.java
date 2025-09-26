@@ -1,4 +1,4 @@
-package org.example.mydicomviewer;
+package org.example.mydicomviewer.processing.file;
 
 import org.example.mydicomviewer.models.TagGroup;
 

@@ -1,4 +1,4 @@
-package org.example.mydicomviewer;
+package org.example.mydicomviewer.processing.file;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.ElementDictionary;
@@ -24,17 +24,19 @@ public class FileTagsProcessorImpl implements FileTagsProcessor {
     }
 
     private TagGroup getTagsFromDicomInputStream(DicomInputStream dicomInputStream) throws IOException {
+
         Attributes attributes = dicomInputStream.readDataset();
-        return createTagGroupFromAttributes(attributes);
+        return createTagGroup(attributes);
     }
 
-    private TagGroup createTagGroupFromAttributes(Attributes attributes) {
+    private TagGroup createTagGroup(Attributes attributes) {
+
         int[] tags = attributes.tags();
         TagGroup tagGroup = new TagGroup();
 
         for (int tag : tags) {
 
-            Tag newTag = createTagFromTagNumber(tag, attributes);
+            Tag newTag = createTag(tag, attributes);
             tagGroup.addTag(newTag);
 
         }
@@ -42,7 +44,7 @@ public class FileTagsProcessorImpl implements FileTagsProcessor {
         return tagGroup;
     }
 
-    private Tag createTagFromTagNumber(int tagNumber, Attributes attributes) {
+    private Tag createTag(int tagNumber, Attributes attributes) {
 
         String address = TagUtils.toString(tagNumber);
         String description = ElementDictionary.getStandardElementDictionary().keywordOf(tagNumber);

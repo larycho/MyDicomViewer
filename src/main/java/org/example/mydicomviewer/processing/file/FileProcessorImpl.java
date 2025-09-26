@@ -1,4 +1,4 @@
-package org.example.mydicomviewer;
+package org.example.mydicomviewer.processing.file;
 
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomSeries;
@@ -18,7 +18,9 @@ public class FileProcessorImpl implements FileProcessor {
 
     private DicomSeries getImageSeriesFromFile(File file) {
         // TODO
-        return null;
+        //FileImagesProcessor processor = new FileImagesProcessorImpl();
+        //return processor.getImageSeriesFromFile(file);
+        return new DicomSeries();
     }
 
     private TagGroup getTagsFromFile(File file) {
