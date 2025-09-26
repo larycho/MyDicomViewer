@@ -13,4 +13,8 @@ public class DicomFile {
         this.tags = tags;
         this.series = series;
     }
+
+    public String getFilePath() {
+        return file.getAbsolutePath();
+    }
 }
