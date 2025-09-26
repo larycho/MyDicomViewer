@@ -7,13 +7,13 @@
             fx:controller="org.example.mydicomviewer.controllers.MainWindowController">
 
     <top>
-        <fx:include fx:id="menuBar" source="menu-bar.fxml" />
+        <fx:include fx:id="menuBarInclude" source="menu-bar.fxml" />
     </top>
     <left>
         <fx:include fx:id="dicomdirPanel" source="dicomdir-panel.fxml" />
     </left>
     <center>
-        <fx:include fx:id="mainImagePanel" source="main-image-panel.fxml" />
+        <fx:include fx:id="mainImagePanelInclude" source="main-image-panel.fxml" />
     </center>
 
 </BorderPane>
