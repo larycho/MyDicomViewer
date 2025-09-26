@@ -20,6 +20,7 @@
             <artifactId>javafx-controls</artifactId>
             <version>20.0.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
@@ -44,6 +45,45 @@
             <groupId>org.dcm4che</groupId>
             <artifactId>dcm4che-core</artifactId>
             <version>5.34.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>20.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pixelmed</groupId>
+            <artifactId>pixelmed</artifactId>
+            <version>25.02.20</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pixelmed</groupId>
+            <artifactId>pixelmed-codec</artifactId>
+            <version>25.02.20</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pixelmed</groupId>
+            <artifactId>pixelmed-imageio</artifactId>
+            <version>25.02.20</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-core -->
+        <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-jpeg2000 -->
+        <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-jpeg2000</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 

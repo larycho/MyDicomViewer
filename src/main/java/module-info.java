@@ -1,8 +1,9 @@
 module org.example.mydicomviewer {
     requires javafx.controls;
     requires javafx.fxml;
-    requires java.desktop;
     requires dcm4che.core;
+    requires pixelmed;
+    requires javafx.swing;
 
 
     opens org.example.mydicomviewer to javafx.fxml;
