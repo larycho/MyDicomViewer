@@ -1,6 +1,5 @@
-package org.example.mydicomviewer;
+package org.example.mydicomviewer.display;
 
-import javafx.scene.Node;
 import org.example.mydicomviewer.models.DicomFile;
 
 public interface ImagePanelGenerator {

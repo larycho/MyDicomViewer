@@ -1,4 +1,4 @@
-package org.example.mydicomviewer;
+package org.example.mydicomviewer.display;
 
 import javafx.scene.Node;
 

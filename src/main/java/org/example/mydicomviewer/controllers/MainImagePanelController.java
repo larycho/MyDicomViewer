@@ -1,10 +1,11 @@
 package org.example.mydicomviewer.controllers;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import org.example.mydicomviewer.DicomDisplayPanel;
+import org.example.mydicomviewer.display.DicomDisplayPanel;
 
 public class MainImagePanelController {
 
@@ -22,6 +23,7 @@ public class MainImagePanelController {
 
     public void addNodeToPane(DicomDisplayPanel dicomDisplayPanel) {
         stackPane.getChildren().add(dicomDisplayPanel.toNode());
-        dicomDisplayPanel.refresh();
+        Platform.runLater(stackPane::requestLayout);
+        //dicomDisplayPanel.refresh();
     }
 }

@@ -13,4 +13,6 @@ module org.example.mydicomviewer {
     opens org.example.mydicomviewer.models to javafx.fxml;
     exports org.example.mydicomviewer.processing.file;
     opens org.example.mydicomviewer.processing.file to javafx.fxml;
+    exports org.example.mydicomviewer.display;
+    opens org.example.mydicomviewer.display to javafx.fxml;
 }

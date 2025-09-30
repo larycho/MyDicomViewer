@@ -1,11 +1,9 @@
 package org.example.mydicomviewer.listeners;
 
-import javafx.scene.Node;
-import org.example.mydicomviewer.DicomDisplayPanel;
-import org.example.mydicomviewer.ImagePanelGenerator;
-import org.example.mydicomviewer.ImagePanelGeneratorImpl;
+import org.example.mydicomviewer.display.DicomDisplayPanel;
+import org.example.mydicomviewer.display.ImagePanelGenerator;
+import org.example.mydicomviewer.display.ImagePanelGeneratorImpl;
 import org.example.mydicomviewer.controllers.MainImagePanelController;
-import org.example.mydicomviewer.controllers.MainWindowController;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.models.DicomFile;
 

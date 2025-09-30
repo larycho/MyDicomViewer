@@ -1,10 +1,8 @@
-package org.example.mydicomviewer;
+package org.example.mydicomviewer.display;
 
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
 import com.pixelmed.display.SourceImage;
-import javafx.embed.swing.SwingNode;
-import javafx.scene.Node;
 import org.example.mydicomviewer.models.DicomFile;
 
 import java.io.IOException;

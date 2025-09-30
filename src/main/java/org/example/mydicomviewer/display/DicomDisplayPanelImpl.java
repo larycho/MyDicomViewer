@@ -1,6 +1,7 @@
-package org.example.mydicomviewer;
+package org.example.mydicomviewer.display;
 
 import com.pixelmed.display.SingleImagePanel;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;
 import javax.swing.*;
@@ -20,8 +21,12 @@ public class DicomDisplayPanelImpl implements DicomDisplayPanel {
     }
 
     public void refresh() {
-        imagePanel.revalidate();
-        imagePanel.repaint();
+        Platform.runLater(() -> {
+            SwingUtilities.invokeLater(() -> {
+                imagePanel.revalidate();
+                imagePanel.repaint();
+            });
+        });
     }
 
     private SwingNode createSwingNode(SingleImagePanel panel) {
