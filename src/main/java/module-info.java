@@ -4,6 +4,7 @@ module org.example.mydicomviewer {
     requires dcm4che.core;
     requires pixelmed;
     requires javafx.swing;
+    requires com.formdev.flatlaf;
 
 
     opens org.example.mydicomviewer to javafx.fxml;
