@@ -3,16 +3,16 @@ package org.example.mydicomviewer.listeners;
 import org.example.mydicomviewer.display.DicomDisplayPanel;
 import org.example.mydicomviewer.display.ImagePanelGenerator;
 import org.example.mydicomviewer.display.ImagePanelGeneratorImpl;
-import org.example.mydicomviewer.controllers.MainImagePanelController;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.models.DicomFile;
+import org.example.mydicomviewer.views.MainImagePanel;
 
 public class ImageDisplayer implements FileLoadedListener {
 
-    private MainImagePanelController imagePanelController;
+    private MainImagePanel imagePanel;
 
-    public ImageDisplayer(MainImagePanelController imagePanelController) {
-        this.imagePanelController = imagePanelController;
+    public ImageDisplayer(MainImagePanel imagePanel) {
+        this.imagePanel = imagePanel;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class ImageDisplayer implements FileLoadedListener {
         ImagePanelGenerator generator = new ImagePanelGeneratorImpl();
         DicomDisplayPanel imageNode = generator.createImageNode(dicomFile);
 
-        this.imagePanelController.addNodeToPane(imageNode);
+        this.imagePanel.addImagePanel(imageNode);
     }
 }

@@ -1,15 +1,26 @@
 package org.example.mydicomviewer.views;
 
+import org.example.mydicomviewer.commands.OpenFileCommand;
+import org.example.mydicomviewer.listeners.FileLoadedListener;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainMenuBar extends JMenuBar {
 
     private JMenu fileMenu;
 
+    private List<FileLoadedListener> listeners = new ArrayList<>();
+
     public MainMenuBar() {
         setupFileMenu();
+    }
+
+    public void addFileLoadedListener(FileLoadedListener fileLoadedListener) {
+        listeners.add(fileLoadedListener);
     }
 
     private void setupFileMenu() {
@@ -25,8 +36,8 @@ public class MainMenuBar extends JMenuBar {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                final JFileChooser fc = new JFileChooser();
-                int returnVal = fc.showOpenDialog(fileMenu);
+                OpenFileCommand command = new OpenFileCommand(listeners);
+                command.execute();
             }
 
         });

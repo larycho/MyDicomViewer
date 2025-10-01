@@ -1,19 +1,16 @@
 package org.example.mydicomviewer.commands;
 
-import javafx.scene.Node;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import org.example.mydicomviewer.ImagePanelGenerator;
-import org.example.mydicomviewer.ImagePanelGeneratorImpl;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.listeners.FileLoadedListener;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.processing.file.FileProcessor;
 import org.example.mydicomviewer.processing.file.FileProcessorImpl;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
 
 public class OpenFileCommand {
@@ -29,39 +26,47 @@ public class OpenFileCommand {
     }
 
     public void execute() {
-        FileChooser fileChooser = createFileChooser();
+        JFileChooser fileChooser = createFileChooser();
 
-        Stage stage = new Stage();
+        int response = fileChooser.showOpenDialog(null);
 
-        File file = fileChooser.showOpenDialog(stage);
+        if (response == JFileChooser.APPROVE_OPTION) {
 
-        if (file != null) {
-            DicomFile dicomFile = openFile(file);
-            fileLoaded(dicomFile);
+            fileChosenResponse(fileChooser);
+
         }
         else {
             // TODO
         }
     }
 
-    private FileChooser createFileChooser() {
-        FileChooser fileChooser = new FileChooser();
+    private void fileChosenResponse(JFileChooser fileChooser) {
+        File file = fileChooser.getSelectedFile();
+        DicomFile dicomFile = openFile(file);
+        fileLoaded(dicomFile);
+    }
 
-        fileChooser.setTitle("Open File");
-        fileChooser = addExtensionFilters(fileChooser);
+    private JFileChooser createFileChooser() {
+        JFileChooser fileChooser = new JFileChooser();
+
+        fileChooser.setDialogTitle("Open File");
+        fileChooser = addFileFilters(fileChooser);
 
         return fileChooser;
     }
 
-    private FileChooser addExtensionFilters(FileChooser fileChooser) {
+    private JFileChooser addFileFilters(JFileChooser fileChooser) {
         var fileExtensions = getExtensionFilters();
-        fileChooser.getExtensionFilters().addAll(fileExtensions);
+
+        for (var extension : fileExtensions) {
+            fileChooser.addChoosableFileFilter(extension);
+        }
         return fileChooser;
     }
 
-    private List<FileChooser.ExtensionFilter> getExtensionFilters() {
-        List<FileChooser.ExtensionFilter> fileExtensions = new ArrayList<>();
-        fileExtensions.add(new FileChooser.ExtensionFilter("DICOM Files", "*.dcm"));
+    private List<FileNameExtensionFilter> getExtensionFilters() {
+        List<FileNameExtensionFilter> fileExtensions = new ArrayList<>();
+        fileExtensions.add(new FileNameExtensionFilter("DICOM Files", "*.dcm"));
         return fileExtensions;
     }
 

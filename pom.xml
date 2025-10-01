@@ -15,17 +15,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>20.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>20.0.1</version>
-        </dependency>
 
         <dependency>
             <groupId>com.formdev</groupId>
@@ -51,13 +40,6 @@
             <groupId>org.dcm4che</groupId>
             <artifactId>dcm4che-core</artifactId>
             <version>5.34.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
-            <version>20.0.1</version>
         </dependency>
 
         <dependency>
@@ -121,7 +103,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.mydicomviewer/org.example.mydicomviewer.MyDicomViewerApplication</mainClass>
+                            <mainClass>org.example.mydicomviewer/org.example.mydicomviewer.MyDicomViewer</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

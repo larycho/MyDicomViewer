@@ -1,9 +1,13 @@
 package org.example.mydicomviewer.display;
 
-import javafx.scene.Node;
+import javax.swing.*;
+import java.awt.*;
 
 public interface DicomDisplayPanel {
-    Node toNode();
 
     void refresh();
+
+    JComponent getPanel();
+
+    Dimension getPreferredSize();
 }
