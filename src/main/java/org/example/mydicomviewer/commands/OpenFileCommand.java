@@ -9,7 +9,6 @@ import org.example.mydicomviewer.processing.file.FileProcessorImpl;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class OpenFileCommand {
     }
 
     private JFileChooser addFileFilters(JFileChooser fileChooser) {
-        var fileExtensions = getExtensionFilters();
+        var fileExtensions = getFileFilters();
 
         for (var extension : fileExtensions) {
             fileChooser.addChoosableFileFilter(extension);
@@ -64,7 +63,7 @@ public class OpenFileCommand {
         return fileChooser;
     }
 
-    private List<FileNameExtensionFilter> getExtensionFilters() {
+    private List<FileNameExtensionFilter> getFileFilters() {
         List<FileNameExtensionFilter> fileExtensions = new ArrayList<>();
         fileExtensions.add(new FileNameExtensionFilter("DICOM Files", "*.dcm"));
         return fileExtensions;

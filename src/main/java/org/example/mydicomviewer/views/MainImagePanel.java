@@ -34,9 +34,6 @@ public class MainImagePanel extends JPanel {
     }
 
     private JComponent getImagePanel(DicomDisplayPanel panel) {
-        JComponent imagePanel = panel.getPanel();
-        // TODO
-        imagePanel.setPreferredSize(new Dimension(1024, 1024));
-        return imagePanel;
+        return panel.getPanel();
     }
 }

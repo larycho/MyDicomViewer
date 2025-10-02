@@ -3,7 +3,6 @@ package org.example.mydicomviewer.views;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class MainWindow extends JFrame {
 

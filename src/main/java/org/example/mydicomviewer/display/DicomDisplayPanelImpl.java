@@ -26,9 +26,6 @@ public class DicomDisplayPanelImpl extends JPanel implements DicomDisplayPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        imagePanel.getWidth();
-        imagePanel.getHeight();
-
         return imagePanel.getPreferredSize();
     }
 }
