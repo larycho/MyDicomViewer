@@ -7,15 +7,17 @@ import java.awt.*;
 
 public class MainImagePanel extends JPanel {
 
+    private DicomDisplayPanel displayPanel;
+
     public MainImagePanel() {
         this.setLayout(new BorderLayout());
     }
 
     public void addImagePanel(DicomDisplayPanel panel) {
+        setDisplayPanel(panel);
         clear();
 
-        JComponent imagePanel = getImagePanel(panel);
-
+        JComponent imagePanel = panel.getPanel();
         add(imagePanel, BorderLayout.CENTER);
 
         refresh();
@@ -33,7 +35,11 @@ public class MainImagePanel extends JPanel {
         }
     }
 
-    private JComponent getImagePanel(DicomDisplayPanel panel) {
-        return panel.getPanel();
+    private void setDisplayPanel(DicomDisplayPanel panel) {
+        this.displayPanel = panel;
     }
+
+    public DicomDisplayPanel getDisplayPanel() { return displayPanel; }
+
+    public boolean isDisplayPanelSet() { return displayPanel != null; }
 }

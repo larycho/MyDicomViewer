@@ -3,15 +3,18 @@ package org.example.mydicomviewer.views;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class MainWindow extends JFrame {
 
     private MainImagePanel imagePanel;
     private MainMenuBar menuBar;
+    private ToolBar toolBar;
 
     public MainWindow() {
         setupMenuBar();
         setupMainImagePanel();
+        setupToolbar();
         setupListeners();
 
         setTitle("My Dicom Viewer");
@@ -19,9 +22,15 @@ public class MainWindow extends JFrame {
         pack();
     }
 
+    private void setupToolbar() {
+        this.toolBar = new ToolBar();
+        add(toolBar, BorderLayout.NORTH);
+    }
+
     private void setupListeners() {
         ImageDisplayer imageDisplayer = new ImageDisplayer(this.imagePanel);
         this.menuBar.addFileLoadedListener(imageDisplayer);
+        this.toolBar.addFrameChangeListeners(imageDisplayer);
     }
 
     private void setupMainImagePanel() {

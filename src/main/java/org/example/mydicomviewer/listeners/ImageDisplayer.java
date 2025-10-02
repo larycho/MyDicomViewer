@@ -24,4 +24,22 @@ public class ImageDisplayer implements FileLoadedListener {
 
         this.imagePanel.addImagePanel(imageNode);
     }
+
+    public void nextFrame() {
+        boolean displayIsSet = this.imagePanel.isDisplayPanelSet();
+
+        if (displayIsSet) {
+            DicomDisplayPanel displayPanel = this.imagePanel.getDisplayPanel();
+            displayPanel.nextFrame();
+        }
+    }
+
+    public void previousFrame() {
+        boolean displayIsSet = this.imagePanel.isDisplayPanelSet();
+
+        if (displayIsSet) {
+            DicomDisplayPanel displayPanel = this.imagePanel.getDisplayPanel();
+            displayPanel.previousFrame();
+        }
+    }
 }

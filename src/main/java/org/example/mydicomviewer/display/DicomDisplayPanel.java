@@ -10,4 +10,8 @@ public interface DicomDisplayPanel {
     JComponent getPanel();
 
     Dimension getPreferredSize();
+
+    void nextFrame();
+
+    void previousFrame();
 }

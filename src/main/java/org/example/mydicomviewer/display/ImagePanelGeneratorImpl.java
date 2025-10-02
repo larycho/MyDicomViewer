@@ -13,7 +13,7 @@ public class ImagePanelGeneratorImpl implements ImagePanelGenerator {
     public DicomDisplayPanel createImageNode(DicomFile file) {
         SourceImage image = getSourceImage(file);
         SingleImagePanel panel = new SingleImagePanel(image);
-        return createDicomDisplayPanel(panel);
+        return createDicomDisplayPanel(panel, image);
     }
 
     private SourceImage getSourceImage(DicomFile file) {
@@ -30,8 +30,8 @@ public class ImagePanelGeneratorImpl implements ImagePanelGenerator {
         }
     }
 
-    private DicomDisplayPanel createDicomDisplayPanel(SingleImagePanel panel) {
-        return new DicomDisplayPanelImpl(panel);
+    private DicomDisplayPanel createDicomDisplayPanel(SingleImagePanel panel, SourceImage image) {
+        return new DicomDisplayPanelImpl(panel, image);
     }
 
 }
