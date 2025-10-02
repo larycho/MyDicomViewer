@@ -25,18 +25,7 @@ public class ToolBar extends JToolBar {
     }
 
     public void addFrameChangeListeners(ImageDisplayer imageDisplayer) {
-        previous.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                imageDisplayer.previousFrame();
-            }
-        });
-
-        next.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                imageDisplayer.nextFrame();
-            }
-        });
+        previous.addActionListener(e -> imageDisplayer.previousFrame());
+        next.addActionListener(e -> imageDisplayer.nextFrame());
     }
 }
