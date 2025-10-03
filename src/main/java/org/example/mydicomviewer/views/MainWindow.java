@@ -31,6 +31,7 @@ public class MainWindow extends JFrame {
         ImageDisplayer imageDisplayer = new ImageDisplayer(this.imagePanel);
         this.menuBar.addFileLoadedListener(imageDisplayer);
         this.toolBar.addFrameChangeListeners(imageDisplayer);
+        this.toolBar.addWindowingListeners(imageDisplayer);
     }
 
     private void setupMainImagePanel() {

@@ -3,6 +3,7 @@ package org.example.mydicomviewer.display;
 import com.pixelmed.display.SingleImagePanel;
 import com.pixelmed.display.SourceImage;
 import com.pixelmed.display.event.FrameSelectionChangeEvent;
+import com.pixelmed.display.event.WindowCenterAndWidthChangeEvent;
 import com.pixelmed.event.ApplicationEventDispatcher;
 import com.pixelmed.event.EventContext;
 
@@ -76,5 +77,11 @@ public class DicomDisplayPanelImpl extends JPanel implements DicomDisplayPanel {
             return maxFrameIndex - 1;
         }
         else return currentFrameIndex - 1;
+    }
+
+    public void setWindowing(double center, double width) {
+        EventContext context = new EventContext("Requested change of window to one of width: " + width + ", center: " + center);
+        WindowCenterAndWidthChangeEvent event = new WindowCenterAndWidthChangeEvent(context, center, width);
+        ApplicationEventDispatcher.getApplicationEventDispatcher().processEvent(event);
     }
 }

@@ -42,4 +42,13 @@ public class ImageDisplayer implements FileLoadedListener {
             displayPanel.previousFrame();
         }
     }
+
+    public void setWindowing(double center, double width) {
+        boolean displayIsSet = this.imagePanel.isDisplayPanelSet();
+
+        if (displayIsSet) {
+            DicomDisplayPanel displayPanel = this.imagePanel.getDisplayPanel();
+            displayPanel.setWindowing(center, width);
+        }
+    }
 }

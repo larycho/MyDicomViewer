@@ -14,4 +14,6 @@ public interface DicomDisplayPanel {
     void nextFrame();
 
     void previousFrame();
+
+    void setWindowing(double center, double width);
 }
