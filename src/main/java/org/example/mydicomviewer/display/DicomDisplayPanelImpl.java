@@ -73,7 +73,7 @@ public class DicomDisplayPanelImpl extends JPanel implements DicomDisplayPanel {
 
     private int calculatePreviousFrameIndex() {
         if ( currentFrameIndex == 0 ) {
-            return maxFrameIndex;
+            return maxFrameIndex - 1;
         }
         else return currentFrameIndex - 1;
     }
