@@ -13,12 +13,28 @@ public class MainImagePanel extends JPanel {
         this.setLayout(new BorderLayout());
     }
 
+    public void showSelectFilePrompt() {
+        clear();
+
+        JLabel prompt = createSelectFilePrompt();
+        add(prompt);
+
+        refresh();
+    }
+
+    private JLabel createSelectFilePrompt() {
+        JLabel prompt = new JLabel("Select a file to display: File > Open file...");
+        prompt.setHorizontalAlignment(SwingConstants.CENTER);
+        return prompt;
+    }
+
     public void addImagePanel(DicomDisplayPanel panel) {
         setDisplayPanel(panel);
         clear();
 
         JComponent imagePanel = panel.getPanel();
         add(imagePanel, BorderLayout.CENTER);
+        this.setBackground(Color.BLACK);
 
         refresh();
     }

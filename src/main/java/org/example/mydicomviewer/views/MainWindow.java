@@ -36,6 +36,7 @@ public class MainWindow extends JFrame {
 
     private void setupMainImagePanel() {
         this.imagePanel = new MainImagePanel();
+        imagePanel.showSelectFilePrompt();
         this.add(imagePanel);
     }
 
