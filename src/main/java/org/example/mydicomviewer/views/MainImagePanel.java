@@ -8,6 +8,7 @@ import java.awt.*;
 public class MainImagePanel extends JPanel {
 
     private DicomDisplayPanel displayPanel;
+    private DrawingOverlayPanel drawingPanel;
 
     public MainImagePanel() {
         this.setLayout(new BorderLayout());
@@ -31,9 +32,23 @@ public class MainImagePanel extends JPanel {
     public void addImagePanel(DicomDisplayPanel panel) {
         setDisplayPanel(panel);
         clear();
-
         JComponent imagePanel = panel.getPanel();
-        add(imagePanel, BorderLayout.CENTER);
+
+        JPanel container = new JPanel() {
+            @Override
+            public void doLayout() {
+                super.doLayout();
+                drawingPanel.setBounds(0, 0, getWidth(), getHeight());
+                imagePanel.setBounds(0, 0, getWidth(), getHeight());
+            }
+        };
+
+        container.setLayout(new OverlayLayout(container));
+
+        container.add(drawingPanel);
+        container.add(imagePanel);
+        add(container);
+
         this.setBackground(Color.BLACK);
 
         refresh();
@@ -58,4 +73,8 @@ public class MainImagePanel extends JPanel {
     public DicomDisplayPanel getDisplayPanel() { return displayPanel; }
 
     public boolean isDisplayPanelSet() { return displayPanel != null; }
+
+    public void setDrawingPanel(DrawingOverlayPanel drawingPanel) {
+        this.drawingPanel = drawingPanel;
+    }
 }

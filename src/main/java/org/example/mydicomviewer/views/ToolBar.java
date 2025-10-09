@@ -11,15 +11,35 @@ public class ToolBar extends JToolBar {
     private JButton previous;
     private JButton next;
     private JButton manualWindowing;
+    private JToggleButton drawButton;
+    private DrawingOverlayPanel drawingOverlay;
 
     public ToolBar() {
         super();
         addFrameChangeArrows();
         addWindowingButtons();
+        addDrawingButtons();
+    }
+
+    private void addDrawingButtons() {
+        drawButton = new JToggleButton("Drawing Mode OFF");
+        drawButton.setSelected(false);
+        drawButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean drawMode = ((JToggleButton) e.getSource()).isSelected();
+                drawingOverlay.setDrawMode(drawMode);
+                drawButton.setText(drawMode ? "Drawing Mode ON" : "Drawing Mode OFF");
+            }
+        });
+        add(drawButton);
+    }
+
+    public void setDrawingOverlay(DrawingOverlayPanel drawingOverlay) {
+        this.drawingOverlay = drawingOverlay;
     }
 
     private void addWindowingButtons() {
-        manualWindowing = new JButton("Manual Windowing");
+        manualWindowing = new JButton("Manual windowing");
         add(manualWindowing);
     }
 

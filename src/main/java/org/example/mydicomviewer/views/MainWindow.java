@@ -10,9 +10,11 @@ public class MainWindow extends JFrame {
     private MainImagePanel imagePanel;
     private MainMenuBar menuBar;
     private ToolBar toolBar;
+    private DrawingOverlayPanel drawingPanel;
 
     public MainWindow() {
         setupMenuBar();
+        setupDrawingPanel();
         setupMainImagePanel();
         setupToolbar();
         setupListeners();
@@ -20,6 +22,10 @@ public class MainWindow extends JFrame {
         setTitle("My Dicom Viewer");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
+    }
+
+    private void setupDrawingPanel() {
+        drawingPanel = new DrawingOverlayPanel();
     }
 
     private void setupToolbar() {
@@ -32,6 +38,8 @@ public class MainWindow extends JFrame {
         this.menuBar.addFileLoadedListener(imageDisplayer);
         this.toolBar.addFrameChangeListeners(imageDisplayer);
         this.toolBar.addWindowingListeners(imageDisplayer);
+        this.toolBar.setDrawingOverlay(drawingPanel);
+        this.imagePanel.setDrawingPanel(drawingPanel);
     }
 
     private void setupMainImagePanel() {
