@@ -1,5 +1,6 @@
 package org.example.mydicomviewer.models;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class TagGroup {
         tags.remove(tag);
     }
 
-    public List<Tag> allTags() {
+    public ArrayList<Tag> allTags() {
         return tags;
     }
 
