@@ -3,16 +3,18 @@ package org.example.mydicomviewer.listeners;
 import org.example.mydicomviewer.display.DicomDisplayPanel;
 import org.example.mydicomviewer.display.ImagePanelGenerator;
 import org.example.mydicomviewer.display.ImagePanelGeneratorImpl;
+import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.views.MainImagePanel;
+import org.example.mydicomviewer.views.MultipleImagePanel;
 
 public class ImageDisplayer implements FileLoadedListener {
 
-    private MainImagePanel imagePanel;
+    private MultipleImagePanel multipleImagePanel;
 
-    public ImageDisplayer(MainImagePanel imagePanel) {
-        this.imagePanel = imagePanel;
+    public ImageDisplayer(MultipleImagePanel multipleImagePanel) {
+        this.multipleImagePanel = multipleImagePanel;
     }
 
     @Override
@@ -21,34 +23,51 @@ public class ImageDisplayer implements FileLoadedListener {
 
         ImagePanelGenerator generator = new ImagePanelGeneratorImpl();
         DicomDisplayPanel imageNode = generator.createImageNode(dicomFile);
+        MainImagePanel imagePanel = new MainImagePanel();
+        imagePanel.addImagePanel(imageNode);
+        this.multipleImagePanel.addImage(imagePanel);
+    }
 
-        this.imagePanel.addImagePanel(imageNode);
+    public void changeScreenMode(SplitScreenMode mode) {
+        if (multipleImagePanel != null) {
+            multipleImagePanel.setAndApplyMode(mode);
+        }
     }
 
     public void nextFrame() {
-        boolean displayIsSet = this.imagePanel.isDisplayPanelSet();
+        if (multipleImagePanel.areAnyImagesAdded()) {
+            MainImagePanel imagePanel = multipleImagePanel.getSelectedImage();
 
-        if (displayIsSet) {
-            DicomDisplayPanel displayPanel = this.imagePanel.getDisplayPanel();
-            displayPanel.nextFrame();
+            boolean displayIsSet = imagePanel.isDisplayPanelSet();
+
+            if (displayIsSet) {
+                DicomDisplayPanel displayPanel = imagePanel.getDisplayPanel();
+                displayPanel.nextFrame();
+            }
         }
     }
 
     public void previousFrame() {
-        boolean displayIsSet = this.imagePanel.isDisplayPanelSet();
+        if (multipleImagePanel.areAnyImagesAdded()) {
+            MainImagePanel imagePanel = multipleImagePanel.getSelectedImage();
+            boolean displayIsSet = imagePanel.isDisplayPanelSet();
 
-        if (displayIsSet) {
-            DicomDisplayPanel displayPanel = this.imagePanel.getDisplayPanel();
-            displayPanel.previousFrame();
+            if (displayIsSet) {
+                DicomDisplayPanel displayPanel = imagePanel.getDisplayPanel();
+                displayPanel.previousFrame();
+            }
         }
     }
 
     public void setWindowing(double center, double width) {
-        boolean displayIsSet = this.imagePanel.isDisplayPanelSet();
+        if (multipleImagePanel.areAnyImagesAdded()) {
+            MainImagePanel imagePanel = multipleImagePanel.getSelectedImage();
+            boolean displayIsSet = imagePanel.isDisplayPanelSet();
 
-        if (displayIsSet) {
-            DicomDisplayPanel displayPanel = this.imagePanel.getDisplayPanel();
-            displayPanel.setWindowing(center, width);
+            if (displayIsSet) {
+                DicomDisplayPanel displayPanel = imagePanel.getDisplayPanel();
+                displayPanel.setWindowing(center, width);
+            }
         }
     }
 }

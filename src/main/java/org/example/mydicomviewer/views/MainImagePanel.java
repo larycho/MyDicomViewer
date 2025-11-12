@@ -4,7 +4,8 @@ import org.example.mydicomviewer.display.DicomDisplayPanel;
 
 import javax.swing.*;
 import java.awt.*;
-
+// Handles setting or changing the image panel
+// Provides a method for displaying the default "Open file" message
 public class MainImagePanel extends JPanel {
 
     private DicomDisplayPanel displayPanel;
@@ -12,6 +13,7 @@ public class MainImagePanel extends JPanel {
 
     public MainImagePanel() {
         this.setLayout(new BorderLayout());
+        setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3));
     }
 
     public void showSelectFilePrompt() {
@@ -33,30 +35,32 @@ public class MainImagePanel extends JPanel {
         setDisplayPanel(panel);
         clear();
         JComponent imagePanel = panel.getPanel();
+//        JPanel container = new JPanel() {
+//            @Override
+//            public void doLayout() {
+//                super.doLayout();
+//                //drawingPanel.setBounds(0, 0, getWidth(), getHeight());
+//                imagePanel.setBounds(0, 0, getWidth(), getHeight());
+//            }
+//        };
+//        container.setLayout(new OverlayLayout(container));
+        JPanel container = new JPanel(new BorderLayout());
+        container.setBackground(Color.BLACK);
 
-        JPanel container = new JPanel() {
-            @Override
-            public void doLayout() {
-                super.doLayout();
-                drawingPanel.setBounds(0, 0, getWidth(), getHeight());
-                imagePanel.setBounds(0, 0, getWidth(), getHeight());
-            }
-        };
+        //container.add(drawingPanel);
 
-        container.setLayout(new OverlayLayout(container));
-
-        container.add(drawingPanel);
         container.add(imagePanel);
-        add(container);
+        add(container, BorderLayout.CENTER);
 
         this.setBackground(Color.BLACK);
-
         refresh();
     }
 
-    private void refresh() {
+    public void refresh() {
         this.revalidate();
         this.repaint();
+        displayPanel.refresh();
+        setVisible(true);
     }
 
     private void clear() {
