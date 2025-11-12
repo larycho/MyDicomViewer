@@ -1,6 +1,7 @@
 package org.example.mydicomviewer;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import org.example.mydicomviewer.views.MainWindow;
 
 import javax.swing.*;
@@ -19,6 +20,7 @@ public class MyDicomViewer {
     }
 
     private static void setupLookAndFeel() {
-        FlatDarkLaf.setup();
+        //FlatDarkLaf.setup();
+        FlatIntelliJLaf.setup();
     }
 }
