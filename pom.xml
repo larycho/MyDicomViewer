@@ -85,6 +85,47 @@
             <artifactId>slf4j-api</artifactId>
             <version>2.0.17</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+            <version>1.54k</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>3D_Viewer</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2</artifactId>
+            <version>7.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-realtransform</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-ij</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.scif</groupId>
+            <artifactId>scifio</artifactId>
+            <version>0.44.1</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -92,6 +133,15 @@
             <id>www.dcm4che.org</id>
             <name>Dcm4che Repo</name>
             <url>https://maven.dcm4che.org/</url>
+        </repository>
+        <repository>
+            <id>scijava-public</id>
+            <name>SciJava Public</name>
+            <url>https://maven.scijava.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
