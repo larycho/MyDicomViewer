@@ -9,4 +9,6 @@ public class DicomImage {
     public DicomImage(BufferedImage image) {
         this.image = image;
     }
+
+    public BufferedImage getImage() { return image; }
 }

@@ -1,6 +1,8 @@
 package org.example.mydicomviewer.models;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 
 public class DicomFile {
 
@@ -16,5 +18,13 @@ public class DicomFile {
 
     public String getFilePath() {
         return file.getAbsolutePath();
+    }
+
+    public String getFileName() { return file.getName(); }
+
+    public TagGroup getTags() { return tags; }
+
+    public List<DicomImage> getImages() {
+        return series.getImages();
     }
 }

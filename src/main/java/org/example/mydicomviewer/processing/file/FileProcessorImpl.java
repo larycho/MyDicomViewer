@@ -17,10 +17,8 @@ public class FileProcessorImpl implements FileProcessor {
     }
 
     private DicomSeries getImageSeriesFromFile(File file) {
-        // TODO
-        //FileImagesProcessor processor = new FileImagesProcessorImpl();
-        //return processor.getImageSeriesFromFile(file);
-        return new DicomSeries();
+        FileImagesProcessor processor = new FileImagesProcessorImpl();
+        return processor.getImageSeriesFromFile(file);
     }
 
     private TagGroup getTagsFromFile(File file) {

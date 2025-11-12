@@ -18,4 +18,8 @@ public class DicomSeries {
     public void add(DicomImage image) {
         this.images.add(image);
     }
+
+    public List<DicomImage> getImages() {
+        return images;
+    }
 }
