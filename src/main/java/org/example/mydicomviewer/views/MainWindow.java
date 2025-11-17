@@ -11,14 +11,12 @@ import java.awt.*;
 
 public class MainWindow extends JFrame {
 
-    private MainImagePanel imagePanel;
     private MainMenuBar menuBar;
     private ToolBar toolBar;
     private DrawingOverlayPanel drawingPanel;
     private TagPanel tagPanel;
     private MultipleImagePanel multipleImagePanel;
     private FileListPanel fileListPanel;
-    private Footer footer;
 
     @Inject
     public MainWindow(MainMenuBar menuBar,
@@ -35,12 +33,13 @@ public class MainWindow extends JFrame {
         setupFrame();
 
         setupSubPanels();
+
+        setupListeners();
     }
 
     private void setupSubPanels() {
         add(multipleImagePanel, BorderLayout.CENTER);
         add(toolBar, BorderLayout.NORTH);
-        add(menuBar, BorderLayout.SOUTH);
         add(tagPanel, BorderLayout.EAST);
         add(fileListPanel, BorderLayout.WEST);
 
@@ -52,59 +51,6 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
-    }
-
-    public MainWindow() {
-        setupMenuBar();
-        setupDrawingPanel();
-        setupTagPanel();
-        setupFileListPanel();
-        //setupMainImagePanel();
-        setupMultipleImagePanel();
-        setupToolbar();
-        setupListeners();
-        setupFooter();
-
-        setTitle("My Dicom Viewer");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        pack();
-    }
-
-    private void setupFooter() {
-        footer = new Footer();
-        add(footer, BorderLayout.SOUTH);
-    }
-
-    private void setupFileListPanel() {
-        fileListPanel = new FileListPanel();
-        add(fileListPanel, BorderLayout.WEST);
-    }
-
-    private void setupMultipleImagePanel() {
-        SplitScreenMode mode = getDefaultMultiImageMode();
-        multipleImagePanel = new MultipleImagePanel(mode);
-        add(multipleImagePanel);
-    }
-    // TO BE DELETED
-    private SplitScreenMode getDefaultMultiImageMode() {
-        SplitScreenElement element = new SplitScreenElement(0, 0);
-        SplitScreenMode mode = new SplitScreenMode();
-        mode.add(element);
-        return mode;
-    }
-
-    private void setupDrawingPanel() {
-        drawingPanel = new DrawingOverlayPanel();
-    }
-
-    private void setupToolbar() {
-        this.toolBar = new ToolBar();
-        add(toolBar, BorderLayout.NORTH);
-    }
-
-    private void setupTagPanel() {
-        tagPanel = new TagPanel();
-        add(tagPanel, BorderLayout.EAST);
     }
 
     private void setupListeners() {
@@ -129,17 +75,6 @@ public class MainWindow extends JFrame {
         this.fileListPanel.addFileLoadedListener(tagDisplayer);
         this.fileListPanel.addFileLoadedListener(imageDisplayer);
         this.fileListPanel.addFileLoadedListener(resliceDisplayer);
-    }
-
-    private void setupMainImagePanel() {
-        this.imagePanel = new MainImagePanel();
-        imagePanel.showSelectFilePrompt();
-        this.add(imagePanel);
-    }
-
-    private void setupMenuBar() {
-        this.menuBar = new MainMenuBar();
-        this.setJMenuBar(menuBar);
     }
 
 

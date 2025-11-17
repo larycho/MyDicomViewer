@@ -19,12 +19,6 @@ public class MyDicomViewer {
         app.start();
     }
 
-    private static void showMainWindow() {
-        MainWindow window = new MainWindow();
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        window.setVisible(true);
-    }
-
     private static void setupLookAndFeel() {
         //FlatDarkLaf.setup();
         FlatIntelliJLaf.setup();
