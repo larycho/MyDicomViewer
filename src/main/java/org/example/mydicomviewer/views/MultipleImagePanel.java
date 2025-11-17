@@ -1,7 +1,10 @@
 package org.example.mydicomviewer.views;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.SplitScreenElement;
 import org.example.mydicomviewer.display.SplitScreenMode;
+import org.example.mydicomviewer.services.ScreenModeProvider;
 import org.scijava.parsington.Main;
 
 import javax.swing.*;
@@ -10,11 +13,22 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+@Singleton
 public class MultipleImagePanel extends JPanel {
 
     private SplitScreenMode mode;
-    private LinkedList<MainImagePanel> images;
+    private LinkedList<MainImagePanel> images = new LinkedList<>();
     private MainImagePanel currentlySelectedImage = null;
+
+    @Inject
+    public MultipleImagePanel(ScreenModeProvider provider) {
+        this.mode = provider.getDefaultScreenMode();
+
+        setLayout(new GridBagLayout());
+        setBackground(Color.BLACK);
+        setVisible(true);
+        updateDisplay();
+    }
 
     public MultipleImagePanel(SplitScreenMode mode) {
         this.mode = mode;

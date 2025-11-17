@@ -2,5 +2,16 @@ module org.example.mydicomviewer {
     requires dcm4che.core;
     requires pixelmed;
     requires com.formdev.flatlaf;
+    requires ij;
     requires java.desktop;
+    requires sc.fiji.ij3d;
+    requires org.scijava.parsington;
+    requires com.google.guice;
+
+
+    exports org.example.mydicomviewer;
+    exports org.example.mydicomviewer.views;
+    exports org.example.mydicomviewer.views.filelist;
+    exports org.example.mydicomviewer.views.reslice;
+    exports org.example.mydicomviewer.services;
 }

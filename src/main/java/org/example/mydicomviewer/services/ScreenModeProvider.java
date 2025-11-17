@@ -8,6 +8,8 @@ public interface ScreenModeProvider {
 
     List<SplitScreenMode> getAvailableScreenModes();
 
+    SplitScreenMode getDefaultScreenMode();
+
     void addScreenMode(SplitScreenMode mode);
 
     void removeScreenMode(SplitScreenMode mode);

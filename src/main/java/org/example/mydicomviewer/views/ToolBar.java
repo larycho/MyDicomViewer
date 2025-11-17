@@ -1,5 +1,6 @@
 package org.example.mydicomviewer.views;
 
+import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
 import org.example.mydicomviewer.listeners.ResliceDisplayer;
@@ -17,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+@Singleton
 public class ToolBar extends JToolBar {
 
     private JButton previous;

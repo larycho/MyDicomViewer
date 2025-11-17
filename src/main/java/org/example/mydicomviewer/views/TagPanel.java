@@ -1,9 +1,12 @@
 package org.example.mydicomviewer.views;
 
+import com.google.inject.Singleton;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+@Singleton
 public class TagPanel extends JPanel {
 
     private final int EXPANDED_WIDTH = 300;

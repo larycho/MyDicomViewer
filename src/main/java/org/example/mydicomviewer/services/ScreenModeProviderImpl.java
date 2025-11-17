@@ -22,6 +22,14 @@ public class ScreenModeProviderImpl implements ScreenModeProvider {
     }
 
     @Override
+    public SplitScreenMode getDefaultScreenMode() {
+        SplitScreenElement element = new SplitScreenElement(0, 0);
+        SplitScreenMode mode = new SplitScreenMode();
+        mode.add(element);
+        return mode;
+    }
+
+    @Override
     public void addScreenMode(SplitScreenMode mode) {
         modes.add(mode);
     }

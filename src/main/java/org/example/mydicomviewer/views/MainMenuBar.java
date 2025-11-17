@@ -1,5 +1,7 @@
 package org.example.mydicomviewer.views;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.example.mydicomviewer.commands.OpenFileCommand;
 import org.example.mydicomviewer.listeners.FileLoadedListener;
 
@@ -9,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class MainMenuBar extends JMenuBar {
 
     private JMenu fileMenu;
