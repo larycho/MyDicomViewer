@@ -3,6 +3,7 @@ package org.example.mydicomviewer.modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.listeners.FileListUpdater;
+import org.example.mydicomviewer.listeners.FooterUpdater;
 import org.example.mydicomviewer.listeners.TagDisplayer;
 import org.example.mydicomviewer.processing.file.FileImagesProcessor;
 import org.example.mydicomviewer.processing.file.FileImagesProcessorImpl;
@@ -25,5 +26,6 @@ public class MainAppModule extends AbstractModule {
 
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();
+        bind(FooterUpdater.class).asEagerSingleton();
     }
 }

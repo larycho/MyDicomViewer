@@ -18,7 +18,9 @@ public class FileImagesProcessorImpl implements FileImagesProcessor {
 
         ArrayList<DicomImage> frames = extractFrames(sourceImage);
 
-        return new DicomSeries(frames);
+        DicomSeries series = new DicomSeries(frames);
+        series.addSourceImage(sourceImage);
+        return series;
     }
 
     private SourceImage openFile(File file) {

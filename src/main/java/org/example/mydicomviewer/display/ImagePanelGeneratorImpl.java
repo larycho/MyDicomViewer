@@ -11,23 +11,9 @@ public class ImagePanelGeneratorImpl implements ImagePanelGenerator {
 
     @Override
     public DicomDisplayPanel createImageNode(DicomFile file) {
-        SourceImage image = getSourceImage(file);
+        SourceImage image = file.getSourceImage();
         SingleImagePanel panel = new SingleImagePanel(image);
         return createDicomDisplayPanel(panel, image);
-    }
-
-    private SourceImage getSourceImage(DicomFile file) {
-        String path = file.getFilePath();
-        return getSourceImage(path);
-    }
-
-    private SourceImage getSourceImage(String filePath) {
-        try {
-            return new SourceImage(filePath);
-        } catch (IOException | DicomException e) {
-            // TODO
-            throw new RuntimeException(e);
-        }
     }
 
     private DicomDisplayPanel createDicomDisplayPanel(SingleImagePanel panel, SourceImage image) {

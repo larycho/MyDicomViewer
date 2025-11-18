@@ -14,18 +14,21 @@ public class MainWindow extends JFrame {
     private TagPanel tagPanel;
     private MultipleImagePanel multipleImagePanel;
     private FileListPanel fileListPanel;
+    private Footer footer;
 
     @Inject
     public MainWindow(MainMenuBar menuBar,
                       ToolBar toolBar,
                       TagPanel tagPanel,
                       MultipleImagePanel multipleImagePanel,
-                      FileListPanel fileListPanel) {
+                      FileListPanel fileListPanel,
+                      Footer footer) {
         this.menuBar = menuBar;
         this.toolBar = toolBar;
         this.tagPanel = tagPanel;
         this.multipleImagePanel = multipleImagePanel;
         this.fileListPanel = fileListPanel;
+        this.footer = footer;
 
         setupFrame();
 
@@ -36,6 +39,7 @@ public class MainWindow extends JFrame {
     private void setupSubPanels() {
         add(multipleImagePanel, BorderLayout.CENTER);
         add(toolBar, BorderLayout.NORTH);
+        add(footer, BorderLayout.SOUTH);
         add(tagPanel, BorderLayout.EAST);
         add(fileListPanel, BorderLayout.WEST);
 
