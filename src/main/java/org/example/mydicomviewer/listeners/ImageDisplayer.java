@@ -1,17 +1,31 @@
 package org.example.mydicomviewer.listeners;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.DicomDisplayPanel;
 import org.example.mydicomviewer.display.ImagePanelGenerator;
 import org.example.mydicomviewer.display.ImagePanelGeneratorImpl;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.models.DicomFile;
+import org.example.mydicomviewer.services.FileLoadEventService;
 import org.example.mydicomviewer.views.MainImagePanel;
 import org.example.mydicomviewer.views.MultipleImagePanel;
 
+import javax.swing.*;
+
+@Singleton
 public class ImageDisplayer implements FileLoadedListener {
 
     private MultipleImagePanel multipleImagePanel;
+    private FileLoadEventService fileLoadEventService;
+
+    @Inject
+    public ImageDisplayer(MultipleImagePanel multipleImagePanel, FileLoadEventService fileLoadEventService) {
+        this.multipleImagePanel = multipleImagePanel;
+        this.fileLoadEventService = fileLoadEventService;
+        fileLoadEventService.addListener(this);
+    }
 
     public ImageDisplayer(MultipleImagePanel multipleImagePanel) {
         this.multipleImagePanel = multipleImagePanel;

@@ -1,27 +1,31 @@
 package org.example.mydicomviewer.commands;
 
+import com.google.inject.Inject;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.listeners.FileLoadedListener;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.processing.file.FileProcessor;
 import org.example.mydicomviewer.processing.file.FileProcessorImpl;
+import org.example.mydicomviewer.services.OpenFileManager;
+import org.example.mydicomviewer.workers.OpenFileWorker;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class OpenFileCommand {
 
     private List<FileLoadedListener> listeners;
+    private OpenFileManager openFileManager;
 
-    public OpenFileCommand() {
-        this.listeners = new ArrayList<>();
-    }
-
-    public OpenFileCommand(List<FileLoadedListener> listeners) {
-        this.listeners = listeners;
+    @Inject
+    public OpenFileCommand(OpenFileManager openFileManager) {
+        this.openFileManager = openFileManager;
     }
 
     public void execute() {
@@ -34,15 +38,15 @@ public class OpenFileCommand {
             fileChosenResponse(fileChooser);
 
         }
-        else {
-            // TODO
-        }
     }
 
     private void fileChosenResponse(JFileChooser fileChooser) {
         File file = fileChooser.getSelectedFile();
-        DicomFile dicomFile = openFile(file);
-        fileLoaded(dicomFile);
+        openFileUsingManager(file);
+    }
+
+    private void openFileUsingManager(File file) {
+        openFileManager.openFileUsingWorker(file);
     }
 
     private JFileChooser createFileChooser() {
@@ -67,22 +71,5 @@ public class OpenFileCommand {
         List<FileNameExtensionFilter> fileExtensions = new ArrayList<>();
         fileExtensions.add(new FileNameExtensionFilter("DICOM Files", "*.dcm"));
         return fileExtensions;
-    }
-
-    private DicomFile openFile(File file) {
-        // TODO
-        FileProcessor fileProcessor = new FileProcessorImpl();
-        return fileProcessor.readFile(file);
-    }
-
-    private void fileLoaded(DicomFile dicomFile) {
-        FileLoadedEvent event = new FileLoadedEvent(this, dicomFile);
-        notifyListeners(event);
-    }
-
-    private void notifyListeners(FileLoadedEvent event) {
-        for (FileLoadedListener listener : listeners) {
-            listener.fileLoaded(event);
-        }
     }
 }

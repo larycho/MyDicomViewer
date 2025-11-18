@@ -1,9 +1,11 @@
 package org.example.mydicomviewer.listeners;
 
+import com.google.inject.Inject;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.Tag;
 import org.example.mydicomviewer.models.TagGroup;
+import org.example.mydicomviewer.services.FileLoadEventService;
 import org.example.mydicomviewer.views.TagPanel;
 
 import javax.swing.*;
@@ -12,6 +14,14 @@ import java.util.ArrayList;
 public class TagDisplayer implements FileLoadedListener {
 
     private TagPanel tagPanel;
+    private FileLoadEventService fileLoadEventService;
+
+    @Inject
+    public TagDisplayer(TagPanel tagPanel, FileLoadEventService fileLoadEventService) {
+        this.tagPanel = tagPanel;
+        this.fileLoadEventService = fileLoadEventService;
+        fileLoadEventService.addListener(this);
+    }
 
     public TagDisplayer(TagPanel tagPanel) {
         this.tagPanel = tagPanel;

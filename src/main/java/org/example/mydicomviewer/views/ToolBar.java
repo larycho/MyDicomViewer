@@ -1,5 +1,6 @@
 package org.example.mydicomviewer.views;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
@@ -30,13 +31,28 @@ public class ToolBar extends JToolBar {
     private JButton volume3D;
     private JButton modes;
 
-    public ToolBar() {
+    private ImageDisplayer imageDisplayer;
+    private ResliceDisplayer resliceDisplayer;
+
+    @Inject
+    public ToolBar(ImageDisplayer imageDisplayer, ResliceDisplayer resliceDisplayer) {
         super();
         addFrameChangeArrows();
         addWindowingButtons();
         addDrawingButtons();
         addResliceButton();
         addScreenModeButton();
+
+        this.imageDisplayer = imageDisplayer;
+        this.resliceDisplayer = resliceDisplayer;
+        setupListeners();
+    }
+
+    private void setupListeners() {
+        addScreenModeListeners(imageDisplayer);
+        addResliceListeners(resliceDisplayer);
+        addFrameChangeListeners(imageDisplayer);
+        addWindowingListeners(imageDisplayer);
     }
 
     private void addScreenModeButton() {
@@ -102,12 +118,12 @@ public class ToolBar extends JToolBar {
         drawButton = new JToggleButton(draw);
         drawButton.setToolTipText("Draw Pencil");
         drawButton.setSelected(false);
-        drawButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                boolean drawMode = ((JToggleButton) e.getSource()).isSelected();
-                drawingOverlay.setDrawMode(drawMode);
-            }
-        });
+//        drawButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                boolean drawMode = ((JToggleButton) e.getSource()).isSelected();
+//                drawingOverlay.setDrawMode(drawMode);
+//            }
+//        });
         add(drawButton);
     }
 

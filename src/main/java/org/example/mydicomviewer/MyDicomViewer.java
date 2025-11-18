@@ -5,9 +5,6 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.example.mydicomviewer.modules.MainAppModule;
-import org.example.mydicomviewer.views.MainWindow;
-
-import javax.swing.*;
 
 public class MyDicomViewer {
 

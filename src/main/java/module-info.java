@@ -14,4 +14,7 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer.views.filelist;
     exports org.example.mydicomviewer.views.reslice;
     exports org.example.mydicomviewer.services;
+    exports org.example.mydicomviewer.processing.file;
+    exports org.example.mydicomviewer.commands;
+    exports org.example.mydicomviewer.listeners;
 }

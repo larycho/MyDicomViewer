@@ -1,9 +1,6 @@
 package org.example.mydicomviewer.views;
 
 import com.google.inject.Inject;
-import org.example.mydicomviewer.display.SplitScreenElement;
-import org.example.mydicomviewer.display.SplitScreenMode;
-import org.example.mydicomviewer.listeners.*;
 import org.example.mydicomviewer.views.filelist.FileListPanel;
 
 import javax.swing.*;
@@ -34,7 +31,6 @@ public class MainWindow extends JFrame {
 
         setupSubPanels();
 
-        setupListeners();
     }
 
     private void setupSubPanels() {
@@ -52,30 +48,4 @@ public class MainWindow extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
     }
-
-    private void setupListeners() {
-        ImageDisplayer imageDisplayer = new ImageDisplayer(this.multipleImagePanel);
-        ResliceDisplayer resliceDisplayer = new ResliceDisplayer();
-        VolumeDisplayer volumeDisplayer = new VolumeDisplayer();
-        FileListUpdater fileListUpdater = new FileListUpdater(fileListPanel);
-        TagDisplayer tagDisplayer = new TagDisplayer(tagPanel);
-        this.menuBar.addFileLoadedListener(imageDisplayer);
-        this.menuBar.addFileLoadedListener(resliceDisplayer);
-        this.menuBar.addFileLoadedListener(volumeDisplayer);
-        this.menuBar.addFileLoadedListener(tagDisplayer);
-        this.menuBar.addFileLoadedListener(fileListUpdater);
-        this.toolBar.addFrameChangeListeners(imageDisplayer);
-        this.toolBar.addWindowingListeners(imageDisplayer);
-        this.toolBar.setDrawingOverlay(drawingPanel);
-        //this.imagePanel.setDrawingPanel(drawingPanel);
-        this.toolBar.addResliceListeners(resliceDisplayer);
-        this.toolBar.add3DListeners(volumeDisplayer);
-        this.toolBar.addScreenModeListeners(imageDisplayer);
-        this.fileListPanel.addFileLoadedListener(fileListUpdater);
-        this.fileListPanel.addFileLoadedListener(tagDisplayer);
-        this.fileListPanel.addFileLoadedListener(imageDisplayer);
-        this.fileListPanel.addFileLoadedListener(resliceDisplayer);
-    }
-
-
 }

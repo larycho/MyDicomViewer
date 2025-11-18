@@ -15,15 +15,12 @@ import java.util.List;
 public class MainMenuBar extends JMenuBar {
 
     private JMenu fileMenu;
+    private OpenFileCommand command;
 
-    private List<FileLoadedListener> listeners = new ArrayList<>();
-
-    public MainMenuBar() {
+    @Inject
+    public MainMenuBar(OpenFileCommand command) {
+        this.command = command;
         setupFileMenu();
-    }
-
-    public void addFileLoadedListener(FileLoadedListener fileLoadedListener) {
-        listeners.add(fileLoadedListener);
     }
 
     private void setupFileMenu() {
@@ -35,15 +32,7 @@ public class MainMenuBar extends JMenuBar {
         JMenu fileMenu = new JMenu("File");
 
         JMenuItem openFile = new JMenuItem("Open file...");
-        openFile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                OpenFileCommand command = new OpenFileCommand(listeners);
-                command.execute();
-            }
-
-        });
+        openFile.addActionListener(e -> command.execute());
         fileMenu.add(openFile);
 
         return fileMenu;

@@ -1,5 +1,7 @@
 package org.example.mydicomviewer.views.filelist;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.example.mydicomviewer.commands.OpenFileCommand;
 import org.example.mydicomviewer.listeners.FileLoadedListener;
 
@@ -9,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
+@Singleton
 public class FileListPanel extends JPanel {
 
     private JPanel collapsedPanel;
@@ -20,8 +23,11 @@ public class FileListPanel extends JPanel {
     private FileListScrollPane scrollPane;
 
     private ArrayList<FileLoadedListener> listeners;
+    private OpenFileCommand openFileCommand;
 
-    public FileListPanel() {
+    @Inject
+    public FileListPanel(OpenFileCommand command) {
+        this.openFileCommand = command;
         cardLayout = new CardLayout();
         setLayout(cardLayout);
 
@@ -55,8 +61,7 @@ public class FileListPanel extends JPanel {
         });
 
         addFileButton.addActionListener((ActionEvent e) -> {
-            OpenFileCommand openFileCommand = new OpenFileCommand(listeners);
-            openFileCommand.execute();
+           openFileCommand.execute();
         });
     }
 
