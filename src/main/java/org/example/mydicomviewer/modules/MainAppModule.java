@@ -5,6 +5,8 @@ import com.google.inject.Singleton;
 import org.example.mydicomviewer.listeners.FileListUpdater;
 import org.example.mydicomviewer.listeners.FooterUpdater;
 import org.example.mydicomviewer.listeners.TagDisplayer;
+import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessor;
+import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessorImpl;
 import org.example.mydicomviewer.processing.file.FileImagesProcessor;
 import org.example.mydicomviewer.processing.file.FileImagesProcessorImpl;
 import org.example.mydicomviewer.processing.file.FileProcessor;
@@ -23,6 +25,8 @@ public class MainAppModule extends AbstractModule {
         bind(FileLoadStartedEventService.class).to(FileLoadStartedEventServiceImpl.class);
         bind(FileImagesProcessor.class).to(FileImagesProcessorImpl.class);
         bind(FileProcessor.class).to(FileProcessorImpl.class);
+        bind(DicomDirProcessor.class).to(DicomDirProcessorImpl.class);
+        bind(DicomDirLoadManager.class).to(DicomDirLoadManagerImpl.class);
 
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();

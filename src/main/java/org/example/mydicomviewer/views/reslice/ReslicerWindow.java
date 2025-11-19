@@ -15,7 +15,7 @@ public class ReslicerWindow extends JFrame {
     private JLabel sliceLabel;
 
     public ReslicerWindow(BufferedImage[] stack) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         reslicer = new Reslicer(stack, 2);

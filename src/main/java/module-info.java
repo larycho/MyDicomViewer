@@ -1,4 +1,5 @@
 module org.example.mydicomviewer {
+    uses org.example.mydicomviewer.plugin.Plugin;
     requires dcm4che.core;
     requires pixelmed;
     requires com.formdev.flatlaf;
@@ -17,4 +18,5 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer.processing.file;
     exports org.example.mydicomviewer.commands;
     exports org.example.mydicomviewer.listeners;
+    exports org.example.mydicomviewer.processing.dicomdir;
 }
