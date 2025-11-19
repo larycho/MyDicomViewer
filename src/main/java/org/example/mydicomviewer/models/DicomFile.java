@@ -31,4 +31,13 @@ public class DicomFile {
     }
 
     public SourceImage getSourceImage() { return series.getSourceImage(); }
+
+    public File getFile() {
+        return file;
+    }
+
+    @Override
+    public String toString() {
+        return file.getName();
+    }
 }

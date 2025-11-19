@@ -19,4 +19,5 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer.commands;
     exports org.example.mydicomviewer.listeners;
     exports org.example.mydicomviewer.processing.dicomdir;
+    exports org.example.mydicomviewer.plugin;
 }
