@@ -11,4 +11,15 @@ public class DicomImage {
     }
 
     public BufferedImage getImage() { return image; }
+
+    public int getDepth() { return image.getColorModel().getPixelSize(); }
+
+    public int getMaxPossibleValue() {
+        int depth = getDepth();
+        return 1 << depth;
+    }
+
+    public int getMinPossibleValue() {
+        return 0;
+    }
 }
