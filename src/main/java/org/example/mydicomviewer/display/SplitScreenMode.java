@@ -25,7 +25,7 @@ public class SplitScreenMode {
         elements.add(element);
     }
 
-    private int getNumberOfRows() {
+    private int getNumberOfColumns() {
         if (elements.isEmpty()) {
             return 0;
         }
@@ -40,7 +40,7 @@ public class SplitScreenMode {
         return max + 1;
     }
 
-    private int getNumberOfColumns() {
+    private int getNumberOfRows() {
         if (elements.isEmpty()) {
             return 0;
         }

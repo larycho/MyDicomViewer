@@ -39,9 +39,7 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
     @Override
     public void fileLoaded(FileLoadedEvent event) {
         DicomFile file = event.getFile();
-        String filename = file.getFileName();
-
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(filename);
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(file);
         fileListPanel.addFileToList(node);
     }
 

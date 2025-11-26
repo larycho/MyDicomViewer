@@ -29,7 +29,6 @@ public class MainAppModule extends AbstractModule {
         bind(FileProcessor.class).to(FileProcessorImpl.class);
         bind(DicomDirProcessor.class).to(DicomDirProcessorImpl.class);
         bind(DicomDirLoadManager.class).to(DicomDirLoadManagerImpl.class);
-
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();
         bind(FooterUpdater.class).asEagerSingleton();

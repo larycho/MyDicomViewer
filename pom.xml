@@ -126,6 +126,12 @@
             <artifactId>scifio</artifactId>
             <version>0.44.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.5.0-jre</version>
+        </dependency>
     </dependencies>
 
     <repositories>

@@ -6,8 +6,6 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
-import java.net.URL;
-import java.util.Objects;
 
 public class TreeIconRenderer extends DefaultTreeCellRenderer {
 
@@ -50,6 +48,9 @@ public class TreeIconRenderer extends DefaultTreeCellRenderer {
                     setIcon(imageIcon);
                     break;
             }
+        }
+        else {
+            setIcon(imageIcon);
         }
 
         return this;
