@@ -2,6 +2,8 @@ package org.example.mydicomviewer.processing.reslice;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 
 public class Reslicer {
 
@@ -46,21 +48,30 @@ public class Reslicer {
         }
     }
 
+    private BufferedImage createBufferedImage(int width, int height) {
+        ColorModel colorModel = (stack.length != 0) ? stack[0].getColorModel() : ColorModel.getRGBdefault();
+
+        WritableRaster raster = colorModel.createCompatibleWritableRaster(width, height);
+        boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
+
+        return new BufferedImage(colorModel, raster, isAlphaPremultiplied, null);
+    }
+
     private BufferedImage getXAxisSlice(int index) {
-        int imageType = BufferedImage.TYPE_BYTE_GRAY;
-        BufferedImage slice = new BufferedImage(height, depth, imageType);
+        BufferedImage slice = createBufferedImage(depth, height);
+
         for (int z = 0; z < depth; z++) {
             for (int y = 0; y < height; y++) {
                 int rgb = stack[z].getRGB(index, y);
-                slice.setRGB(y, z, rgb);
+                slice.setRGB(z, y, rgb);
             }
         }
+
         return slice;
     }
 
     private BufferedImage getYAxisSlice(int index) {
-        int imageType = BufferedImage.TYPE_BYTE_GRAY;
-        BufferedImage slice = new BufferedImage(width, depth, imageType);
+        BufferedImage slice = createBufferedImage(width, depth);
 
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -68,6 +79,7 @@ public class Reslicer {
                 slice.setRGB(x, z, rgb);
             }
         }
+
         return slice;
     }
 
