@@ -51,6 +51,10 @@ public class ScreenModeProviderImpl implements ScreenModeProvider {
         modes.add(createScreenMode(Arrays.asList(new Point(0,0), new Point(1,0))));
         // Four images in a 2x2 grid
         modes.add(createScreenMode(Arrays.asList(new Point(0,0), new Point(1,0), new Point(0,1), new Point(1,1))));
+        // Three images in a single column
+        modes.add(createScreenMode(Arrays.asList(new Point(0,0), new Point(0,1), new Point(0,2))));
+        // Three images in a single row
+        modes.add(createScreenMode(Arrays.asList(new Point(0,0), new Point(1,0), new Point(2,0))));
 
         return modes;
     }
