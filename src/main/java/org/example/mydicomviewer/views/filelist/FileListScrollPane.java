@@ -1,8 +1,7 @@
 package org.example.mydicomviewer.views.filelist;
 
-import com.google.inject.Inject;
 import org.example.mydicomviewer.models.DicomDirectoryRecord;
-import org.example.mydicomviewer.services.DicomDirLoadManager;
+import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.services.OpenFileManager;
 
 import javax.swing.*;
@@ -13,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -68,6 +68,22 @@ public class FileListScrollPane extends JScrollPane {
                 File file = path.get().toFile();
                 openFileManager.openFileUsingWorker(file);
             }
+        }
+        else if (userObject instanceof MyTreeNode imageNode) {
+            if (imageNode.isLeaf() && imageNode.getType().equals("IMAGE")) {
+                if (imageNode.isPartialFile()) {
+                    List<File> files = imageNode.getMainFile();
+                    openFileManager.openFragmentedFileUsingWorker(files);
+                }
+                else {
+                    openFileManager.openFileUsingWorker(imageNode.getFile());
+                }
+            }
+        }
+        else if (userObject instanceof DicomFile) {
+//            DicomFile dicomFile = (DicomFile) userObject;
+//            File file = dicomFile.getFile();
+//            openFileManager.openFileUsingWorker(file);
         }
     }
 

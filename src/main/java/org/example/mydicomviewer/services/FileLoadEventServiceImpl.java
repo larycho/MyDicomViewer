@@ -33,4 +33,12 @@ public class FileLoadEventServiceImpl implements FileLoadEventService {
             listener.fileLoaded(event);
         }
     }
+
+    @Override
+    public void notifyFinished(DicomFile file, Object source) {
+        FileLoadedEvent event = new FileLoadedEvent(source, file);
+        for (FileLoadedListener listener : listeners) {
+            listener.fileLoaded(event);
+        }
+    }
 }

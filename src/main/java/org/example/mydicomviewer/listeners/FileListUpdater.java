@@ -4,40 +4,52 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.events.DicomDirLoadedEvent;
 import org.example.mydicomviewer.events.FileLoadedEvent;
+import org.example.mydicomviewer.events.FolderLoadedEvent;
 import org.example.mydicomviewer.models.DicomDirectory;
 import org.example.mydicomviewer.models.DicomDirectoryRecord;
 import org.example.mydicomviewer.models.DicomFile;
+import org.example.mydicomviewer.processing.dicomdir.DicomDirPath;
 import org.example.mydicomviewer.services.DicomDirLoadManager;
 import org.example.mydicomviewer.services.FileLoadEventService;
+import org.example.mydicomviewer.services.FolderLoadedEventService;
 import org.example.mydicomviewer.views.filelist.FileListPanel;
+import org.example.mydicomviewer.views.filelist.MyTreeNode;
+import org.example.mydicomviewer.workers.OpenFragmentedFileWorker;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Singleton
-public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListener {
+public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListener, FolderLoadedListener {
 
-    private FileListPanel fileListPanel;
-    private FileLoadEventService fileLoadEventService;
+    private final FileListPanel fileListPanel;
 
     @Inject
     public FileListUpdater(
             FileListPanel fileListPanel,
             FileLoadEventService fileLoadEventService,
-            DicomDirLoadManager dicomDirLoadManager
+            DicomDirLoadManager dicomDirLoadManager,
+            FolderLoadedEventService folderLoadedEventService
     ) {
         this.fileListPanel = fileListPanel;
-        this.fileLoadEventService = fileLoadEventService;
         fileLoadEventService.addListener(this);
         dicomDirLoadManager.addListener(this);
+        folderLoadedEventService.addListener(this);
     }
 
-    public FileListUpdater(FileListPanel fileListPanel) {
-        this.fileListPanel = fileListPanel;
-    }
+//    public FileListUpdater(FileListPanel fileListPanel) {
+//        this.fileListPanel = fileListPanel;
+//    }
 
     @Override
     public void fileLoaded(FileLoadedEvent event) {
+        if (event.getSource() instanceof OpenFragmentedFileWorker) {
+            return;
+        }
         DicomFile file = event.getFile();
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(file);
         fileListPanel.addFileToList(node);
@@ -89,4 +101,42 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
             addChildren(child, node);
         }
     }
+
+    @Override
+    public void folderLoaded(FolderLoadedEvent event) {
+        MyTreeNode tree = event.getTree();
+        createRootNode(tree);
+    }
+
+    private void createRootNode(MyTreeNode node) {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(node);
+        addChildrenOfRoot(node);
+    }
+
+    private void addChildrenOfRoot(MyTreeNode root) {
+        List<MyTreeNode> children = root.getChildren();
+
+        for (MyTreeNode child : children) {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(child);
+            fileListPanel.addFileToList(node);
+            addChildrenOfNode(child, node);
+        }
+    }
+
+    private void addChildrenOfNode(MyTreeNode parentNode, DefaultMutableTreeNode parent) {
+        List<MyTreeNode> children = parentNode.getChildren();
+
+        // Browse through the children
+        for (MyTreeNode child : children) {
+            // Add child node to the panel
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(child);
+            fileListPanel.addFileToList(node, parent);
+            // Recursively add its children to the panel
+            addChildrenOfNode(child, node);
+        }
+    }
+
+
+
+
 }
