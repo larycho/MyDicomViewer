@@ -8,7 +8,6 @@ import org.example.mydicomviewer.listeners.FileListUpdater;
 import org.example.mydicomviewer.listeners.FooterUpdater;
 import org.example.mydicomviewer.listeners.TagDisplayer;
 import org.example.mydicomviewer.plugin.StartupAction;
-import org.example.mydicomviewer.processing.file.FileImagesProcessorAlternative;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirPathProcessor;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirPathProcessorImpl;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessor;
