@@ -1,9 +1,14 @@
 package org.example.mydicomviewer.processing.reslice;
 
+import org.example.mydicomviewer.models.DicomFile;
+import org.example.mydicomviewer.models.DicomImage;
+import org.example.mydicomviewer.views.image.panel.Axis;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.util.List;
 
 public class Reslicer {
 
@@ -25,12 +30,47 @@ public class Reslicer {
         this.depth = stack.length;
     }
 
+    public Reslicer(DicomFile file, int dimension) {
+        this.dimension = dimension;
+        this.stack = getImageArray(file);
+        this.height = stack[0].getHeight();
+        this.width = stack[0].getWidth();
+        this.depth = stack.length;
+    }
+
+    private BufferedImage[] getImageArray(DicomFile dicomFile) {
+        String path = dicomFile.getFilePath();
+        List<DicomImage> images = dicomFile.getImages();
+
+        int max = images.size();
+        BufferedImage[] frames = new BufferedImage[max];
+
+        for (int i = 0; i < max; i++) {
+            DicomImage image = images.get(i);
+            BufferedImage frame = image.getImage();
+            frames[i] = frame;
+        }
+        return frames;
+    }
+
     public void setStack(BufferedImage[] stack) {
         this.stack = stack;
     }
 
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+
+    public void setAxis(Axis axis) {
+        if (axis == Axis.X) {
+            this.dimension = 0;
+        }
+        else if (axis == Axis.Y) {
+            this.dimension = 1;
+        }
+        else {
+            this.dimension = 2;
+        }
     }
 
     public BufferedImage getSlice(int index) {

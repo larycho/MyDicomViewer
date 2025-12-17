@@ -1,5 +1,6 @@
 package org.example.mydicomviewer.processing.file;
 
+import com.google.inject.Inject;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomSeries;
 import org.example.mydicomviewer.models.TagGroup;
@@ -7,6 +8,15 @@ import java.io.File;
 
 
 public class FileProcessorImpl implements FileProcessor {
+
+    private FileImagesProcessor imagesProcessor;
+    private FileTagsProcessor tagsProcessor;
+
+    @Inject
+    public FileProcessorImpl(FileImagesProcessor imagesProcessor, FileTagsProcessor tagsProcessor) {
+        this.imagesProcessor = imagesProcessor;
+        this.tagsProcessor = tagsProcessor;
+    }
 
     public DicomFile readFile(File file) {
 
@@ -17,12 +27,10 @@ public class FileProcessorImpl implements FileProcessor {
     }
 
     private DicomSeries getImageSeriesFromFile(File file) {
-        FileImagesProcessor processor = new FileImagesProcessorImpl();
-        return processor.getImageSeriesFromFile(file);
+        return imagesProcessor.getImageSeriesFromFile(file);
     }
 
     private TagGroup getTagsFromFile(File file) {
-        FileTagsProcessor tagsProcessor = new FileTagsProcessorImpl();
         return tagsProcessor.getTagsFromFile(file);
     }
 

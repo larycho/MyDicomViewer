@@ -1,8 +1,6 @@
 package org.example.mydicomviewer.processing.image;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.ByteLookupTable;
-import java.awt.image.LookupOp;
+import java.awt.image.*;
 
 public class WindowingProcessorImpl implements WindowingProcessor {
 
@@ -29,11 +27,31 @@ public class WindowingProcessorImpl implements WindowingProcessor {
         return 1 << depth;
     }
 
+    private BufferedImage createBufferedImage(BufferedImage sourceImage) {
+        ColorModel colorModel = sourceImage.getColorModel();
+
+        WritableRaster raster = colorModel.createCompatibleWritableRaster(sourceImage.getWidth(), sourceImage.getHeight());
+        boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
+
+        return new BufferedImage(colorModel, raster, isAlphaPremultiplied, null);
+    }
+
     private BufferedImage applyLookUpTable(BufferedImage sourceImage, ByteLookupTable lookupTable) {
         BufferedImage newImage = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 
         LookupOp lookupOp = new LookupOp(lookupTable, null);
-        lookupOp.filter(sourceImage, newImage);
+        try {
+            lookupOp.filter(sourceImage, newImage);
+        } catch (Exception e) {
+            try {
+                newImage = createBufferedImage(sourceImage);
+                lookupOp.filter(newImage, newImage);
+            }
+            catch (Exception ex) {
+                return sourceImage;
+            }
+            return sourceImage;
+        }
 
         return newImage;
     }

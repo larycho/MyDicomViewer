@@ -27,12 +27,15 @@ public class FileImagesProcessorImpl implements FileImagesProcessor {
         try {
             return new SourceImage(file.getAbsolutePath());
         } catch (IOException | DicomException e) {
-            throw new RuntimeException(e);
-            // TODO
+            return null;
         }
     }
 
     private ArrayList<DicomImage> extractFrames(SourceImage sourceImage) {
+        if (sourceImage == null) {
+            return new ArrayList<>();
+        }
+
         int max = sourceImage.getNumberOfFrames();
         ArrayList<DicomImage> frames = new ArrayList<>();
 

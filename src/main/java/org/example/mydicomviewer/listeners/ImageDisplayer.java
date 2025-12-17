@@ -4,23 +4,35 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.*;
 import org.example.mydicomviewer.events.FileLoadedEvent;
+import org.example.mydicomviewer.events.PanelSelectedEvent;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.services.FileLoadEventService;
+import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
 import org.example.mydicomviewer.views.MultipleImagePanel;
 import org.example.mydicomviewer.views.SingularImagePanel;
+import org.example.mydicomviewer.views.SingularImagePanelInt;
+import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
+import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 
 import static java.lang.Math.round;
+import static java.lang.Math.toDegrees;
 
 
 @Singleton
-public class ImageDisplayer implements FileLoadedListener {
+public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener {
 
     private final MultipleImagePanel multipleImagePanel;
+    private ImagePanelSelectedEventService imagePanelSelectedEventService;
 
     @Inject
-    public ImageDisplayer(MultipleImagePanel multipleImagePanel, FileLoadEventService fileLoadEventService) {
+    public ImageDisplayer(MultipleImagePanel multipleImagePanel,
+                          FileLoadEventService fileLoadEventService,
+                          ImagePanelSelectedEventService panelSelectedService
+    ) {
         this.multipleImagePanel = multipleImagePanel;
+        this.imagePanelSelectedEventService = panelSelectedService;
         fileLoadEventService.addListener(this);
+        panelSelectedService.addListener(this);
     }
 
     public ImageDisplayer(MultipleImagePanel multipleImagePanel) {
@@ -31,10 +43,14 @@ public class ImageDisplayer implements FileLoadedListener {
     public void fileLoaded(FileLoadedEvent event) {
         DicomFile dicomFile = event.getFile();
 
-        ImagePanelManager imagePanelManager = new ImagePanelManager(dicomFile);
-        SingularImagePanel singleImagePanel = new SingularImagePanel(imagePanelManager);
+//        ImagePanelManager imagePanelManager = new ImagePanelManager(dicomFile);
+//        SingularImagePanel singleImagePanel = new SingularImagePanel(imagePanelManager);
+//        singleImagePanel.setMultipleImagePanel(multipleImagePanel);
+        //this.multipleImagePanel.addImage(singleImagePanel);
 
-        this.multipleImagePanel.addImage(singleImagePanel);
+        ImagePanelWrapper wrapper = ImagePanelFactory.createRegularImagePanel(dicomFile);
+        this.multipleImagePanel.addImage(wrapper);
+        wrapper.addPanelSelectedService(imagePanelSelectedEventService);
     }
 
     public void changeScreenMode(SplitScreenMode mode) {
@@ -45,29 +61,42 @@ public class ImageDisplayer implements FileLoadedListener {
 
     public void nextFrame() {
         if (multipleImagePanel.areAnyImagesAdded()) {
-            SingularImagePanel imagePanel = multipleImagePanel.getSelectedImage();
-            imagePanel.moveToNextFrame();
+            ImagePanelWrapper wrapper = multipleImagePanel.getSelectedImage();
+            if (wrapper != null) {
+                wrapper.moveToNextFrame();
+            }
         }
     }
 
     public void previousFrame() {
         if (multipleImagePanel.areAnyImagesAdded()) {
-            SingularImagePanel imagePanel = multipleImagePanel.getSelectedImage();
-            imagePanel.moveToPreviousFrame();
+            ImagePanelWrapper wrapper = multipleImagePanel.getSelectedImage();
+            if (wrapper != null) {
+                wrapper.moveToPreviousFrame();
+            }
         }
     }
 
     public void setWindowing(int center, int width) {
         if (multipleImagePanel.areAnyImagesAdded()) {
-            SingularImagePanel imagePanel = multipleImagePanel.getSelectedImage();
-            imagePanel.setWindowing(center, width);
+            ImagePanelWrapper imagePanel = multipleImagePanel.getSelectedImage();
+            if (imagePanel != null) {
+                imagePanel.setWindowing(center, width);
+            }
         }
     }
 
     public void setWindowing(double center, double width) {
         if (multipleImagePanel.areAnyImagesAdded()) {
-            SingularImagePanel imagePanel = multipleImagePanel.getSelectedImage();
-            imagePanel.setWindowing((int) round(center), (int) round(width));
+            ImagePanelWrapper imagePanel = multipleImagePanel.getSelectedImage();
+            if (imagePanel != null) {
+                imagePanel.setWindowing((int) round(center), (int) round(width));
+            }
         }
+    }
+
+    @Override
+    public void panelSelected(PanelSelectedEvent event) {
+        multipleImagePanel.setSelectedImage(event.getPanel());
     }
 }
