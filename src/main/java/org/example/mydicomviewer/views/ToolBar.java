@@ -8,16 +8,21 @@ import org.example.mydicomviewer.listeners.ResliceDisplayer;
 import org.example.mydicomviewer.listeners.VolumeDisplayer;
 import org.example.mydicomviewer.services.ScreenModeProvider;
 import org.example.mydicomviewer.services.ScreenModeProviderImpl;
+import org.example.mydicomviewer.services.SelectedImageManager;
+import org.example.mydicomviewer.views.image.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Set;
 
 @Singleton
 public class ToolBar extends JToolBar {
@@ -31,21 +36,42 @@ public class ToolBar extends JToolBar {
     private JButton volume3D;
     private JButton modes;
 
+    private Set<DrawingTool> tools;
     private ImageDisplayer imageDisplayer;
     private ResliceDisplayer resliceDisplayer;
+    private SelectedImageManager selectedImageManager;
 
     @Inject
-    public ToolBar(ImageDisplayer imageDisplayer, ResliceDisplayer resliceDisplayer) {
+    public ToolBar(ImageDisplayer imageDisplayer,
+                   ResliceDisplayer resliceDisplayer,
+                   Set<DrawingTool> pluginTools,
+                   SelectedImageManager selectedImageManager) {
         super();
+
+        createToolList(pluginTools);
+
+        this.selectedImageManager = selectedImageManager;
+
         addFrameChangeArrows();
         addWindowingButtons();
         addDrawingButtons();
         addResliceButton();
         addScreenModeButton();
+        addDrawingTools();
 
         this.imageDisplayer = imageDisplayer;
         this.resliceDisplayer = resliceDisplayer;
         setupListeners();
+    }
+
+    private void createToolList(Set<DrawingTool> pluginTools) {
+        tools = new HashSet<DrawingTool>();
+
+        tools.add(new OvalTool());
+        tools.add(new PencilTool());
+        tools.add(new LineTool());
+
+        tools.addAll(pluginTools);
     }
 
     private void setupListeners() {
@@ -125,6 +151,51 @@ public class ToolBar extends JToolBar {
 //            }
 //        });
         add(drawButton);
+    }
+
+    private void addDrawingTools() {
+        addSeparator();
+        JLabel toolLabel = new JLabel("Select tool:");
+        add(toolLabel);
+
+        JComboBox<DrawingTool> tools = new JComboBox<>();
+
+        for (DrawingTool tool : this.tools) {
+            tools.addItem(tool);
+        }
+
+        JButton apply = new JButton("Apply drawing tool");
+        apply.addActionListener(e -> {
+            DrawingTool selectedTool = (DrawingTool) tools.getSelectedItem();
+            if (selectedTool != null) {
+                selectedImageManager.setDrawingTool(selectedTool);
+            }
+        });
+
+        JButton settings = new JButton("Settings");
+
+        JPopupMenu popupMenu = new JPopupMenu();
+        JCheckBoxMenuItem everyFrame = new JCheckBoxMenuItem("Draw shapes separately for every frame");
+        everyFrame.setSelected(false);
+        everyFrame.addActionListener(e -> {
+// TODO TOOLS
+//            SingularImagePanelInt selectedImage = selectedImageManager.getSelectedImage();
+//            if (selectedImage != null) {
+//                boolean arePersisted = selectedImage.areShapesPersisted();
+//                selectedImage.setPersistShapesBetweenFrames(!arePersisted);
+//            }
+        });
+
+        popupMenu.add(everyFrame);
+
+        settings.addActionListener(e -> popupMenu.show(settings, 0, settings.getHeight()));
+
+        tools.setMaximumSize(tools.getPreferredSize());
+        tools.setMaximumRowCount(10);
+        add(tools);
+        add(apply);
+        add(settings);
+        addSeparator();
     }
 
     public void setDrawingOverlay(DrawingOverlayPanel drawingOverlay) {

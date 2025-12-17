@@ -6,6 +6,8 @@ import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.SplitScreenElement;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.services.ScreenModeProvider;
+import org.example.mydicomviewer.services.SelectedImageManager;
+import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,12 +19,15 @@ import java.util.List;
 public class MultipleImagePanel extends JPanel {
 
     private SplitScreenMode mode;
-    private LinkedList<SingularImagePanel> images = new LinkedList<>();
-    private SingularImagePanel currentlySelectedImage = null;
+    //private LinkedList<SingularImagePanelInt> images = new LinkedList<>();
+    private LinkedList<ImagePanelWrapper> wrappers = new LinkedList<>();
+    private SelectedImageManager selectedImageManager;
 
     @Inject
-    public MultipleImagePanel(ScreenModeProvider provider) {
+    public MultipleImagePanel(ScreenModeProvider provider,
+                              SelectedImageManager selectedImageManager) {
         this.mode = provider.getDefaultScreenMode();
+        this.selectedImageManager = selectedImageManager;
 
         setLayout(new GridBagLayout());
         setBackground(Color.BLACK);
@@ -32,7 +37,6 @@ public class MultipleImagePanel extends JPanel {
 
     public MultipleImagePanel(SplitScreenMode mode) {
         this.mode = mode;
-        this.images = new LinkedList<>();
         setBackground(Color.BLACK);
         setLayout(new GridBagLayout());
         setVisible(true);
@@ -43,19 +47,21 @@ public class MultipleImagePanel extends JPanel {
         this.mode = mode;
     }
 
-    public void setSelectedImage(SingularImagePanel selectedImage) {
-        currentlySelectedImage = selectedImage;
+    public void setSelectedImage(ImagePanelWrapper selectedImage) {
+        selectedImageManager.setSelectedImage(selectedImage);
+    }
+    // TODO
+    public ImagePanelWrapper getSelectedImage() {
+        return selectedImageManager.getSelectedImage();
     }
 
-    public SingularImagePanel getSelectedImage() {
-        if (currentlySelectedImage == null && !images.isEmpty()) {
-            currentlySelectedImage = images.get(0);
-        }
-        return currentlySelectedImage;
+    public void deselectCurrentImage() {
+        selectedImageManager.deselectImage();
     }
 
     public boolean areAnyImagesAdded() {
-        return !images.isEmpty();
+        //return !images.isEmpty();
+        return wrappers.isEmpty();
     }
 
     public void setAndApplyMode(SplitScreenMode mode) {
@@ -63,38 +69,46 @@ public class MultipleImagePanel extends JPanel {
         updateDisplay();
     }
 
-    public void setImages(LinkedList<SingularImagePanel> images) {
-        this.images = images;
-    }
+//    public void addImage(SingularImagePanelInt image) {
+//        int maxSlots = mode.getElements().size();
+//        if (images.size() == maxSlots) {
+//            this.images.removeLast();
+//        }
+//        this.images.add(image);
+//        updateDisplay();
+//    }
 
-    public void addImage(SingularImagePanel image) {
+    public void addImage(ImagePanelWrapper wrapper) {
         int maxSlots = mode.getElements().size();
-        if (images.size() == maxSlots) {
-            this.images.removeLast();
+        if (wrappers.size() == maxSlots) {
+            this.wrappers.removeLast();
         }
-        this.images.add(image);
+        this.wrappers.add(wrapper);
         updateDisplay();
     }
 
-    public void removeImage(SingularImagePanel image) {
-        boolean imageFound = this.images.remove(image);
-
-        if (imageFound) {
-            updateDisplay();
-        }
-    }
+//    public void removeImage(SingularImagePanel image) {
+//        boolean imageFound = this.images.remove(image);
+//
+//        if (imageFound) {
+//            updateDisplay();
+//        }
+//    }
 
     public void updateDisplay() {
         removeAll();
 
         List<SplitScreenElement> elements = mode.getElements();
-        Iterator<SingularImagePanel> iterator = images.iterator();
+        //Iterator<SingularImagePanelInt> iterator = images.iterator();
+        Iterator<ImagePanelWrapper> iterator = wrappers.iterator();
 
         for (SplitScreenElement element : elements) {
             // if there are still images to be added
             if (iterator.hasNext()) {
-                SingularImagePanel image = iterator.next();
-                addImagePanel(image, element);
+                //SingularImagePanelInt image = iterator.next();
+                ImagePanelWrapper wrapper = iterator.next();
+                //addImagePanel(image, element);
+                addImagePanel(wrapper.getPanel(), element);
             }
             // if not - add an empty panel
             else {
@@ -108,17 +122,35 @@ public class MultipleImagePanel extends JPanel {
 
     private void removeExcessImages(List<SplitScreenElement> elements) {
         int length = elements.size();
-        while (images.size() > length) {
-            SingularImagePanel image = images.removeLast();
-            remove(image);
+        while (wrappers.size() > length) {
+            ImagePanelWrapper wrapper = wrappers.removeLast();
+            //remove((Component) wrapper);
+            remove(wrapper.getPanel());
         }
     }
 
-    private void addImagePanel(SingularImagePanel image, SplitScreenElement element) {
+    public void clearDisplay() {
+        for (ImagePanelWrapper wrapper : wrappers) {
+            //remove((Component) image);
+            remove(wrapper.getPanel());
+        }
+        wrappers.clear();
+    }
+
+//    private void addImagePanel(SingularImagePanelInt image, SplitScreenElement element) {
+//        GridBagConstraints constraints = new GridBagConstraints();
+//        setConstraintsParameters(constraints, element);
+//        Component imageComponent = (Component) image;
+//        imageComponent.setPreferredSize(new Dimension(0,0));
+//        add(imageComponent, constraints);
+//    }
+
+    private void addImagePanel(JPanel imagePanel, SplitScreenElement element) {
         GridBagConstraints constraints = new GridBagConstraints();
         setConstraintsParameters(constraints, element);
-        image.setPreferredSize(new Dimension(0,0));
-        add(image, constraints);
+
+        imagePanel.setPreferredSize(new Dimension(0,0));
+        add(imagePanel, constraints);
     }
 
     private void addEmptyDisplayPanel(SplitScreenElement element) {
@@ -158,9 +190,9 @@ public class MultipleImagePanel extends JPanel {
     }
 
     public void rotate() {
-        SingularImagePanel image = images.getFirst();
-        images.removeFirst();
-        images.add(image);
+        ImagePanelWrapper wrapper = wrappers.getFirst();
+        wrappers.removeFirst();
+        wrappers.add(wrapper);
 
         removeAll();
         updateDisplay();
@@ -169,8 +201,8 @@ public class MultipleImagePanel extends JPanel {
     private void refresh() {
         revalidate();
         repaint();
-        for (SingularImagePanel image : images) {
-            image.refresh();
+        for (ImagePanelWrapper wrapper : wrappers) {
+            wrapper.refresh();
         }
     }
 }
