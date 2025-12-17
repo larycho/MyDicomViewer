@@ -1,6 +1,7 @@
 package org.example.mydicomviewer.views.image;
 
 import org.example.mydicomviewer.views.NestedImagePanel;
+import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -8,10 +9,10 @@ import java.awt.event.MouseWheelEvent;
 
 public class PanZoomTool implements ImageTool {
 
-    private NestedImagePanel imagePanel;
+    private InnerImagePanel imagePanel;
     private Point click = new Point(0, 0);
 
-    public PanZoomTool(NestedImagePanel imagePanel) {
+    public PanZoomTool(InnerImagePanel imagePanel) {
         this.imagePanel = imagePanel;
     }
 
@@ -31,11 +32,11 @@ public class PanZoomTool implements ImageTool {
 
         Point delta = calculateDelta(currentPoint);
 
-        Point pan = imagePanel.getPan();
+        Point pan = imagePanel.getOffset();
         Point newPan = new Point(pan.x + delta.x, pan.y + delta.y);
 
-        imagePanel.setPan(newPan);
-        imagePanel.repaint();
+        imagePanel.setOffset(newPan);
+        imagePanel.refresh();
         
         click = currentPoint;
     }
@@ -77,6 +78,6 @@ public class PanZoomTool implements ImageTool {
         }
 
         imagePanel.setZoom(zoom);
-        imagePanel.repaint();
+        imagePanel.refresh();
     }
 }

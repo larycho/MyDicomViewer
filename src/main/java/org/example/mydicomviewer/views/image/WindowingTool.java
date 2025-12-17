@@ -1,8 +1,12 @@
 package org.example.mydicomviewer.views.image;
 
 import org.example.mydicomviewer.display.ImagePanelManager;
+import org.example.mydicomviewer.display.ImagePanelManagerInt;
 import org.example.mydicomviewer.views.NestedImagePanel;
 import org.example.mydicomviewer.views.SingularImagePanel;
+import org.example.mydicomviewer.views.image.panel.ImageManager;
+import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
+import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -11,14 +15,11 @@ import java.awt.image.BufferedImage;
 
 public class WindowingTool implements ImageTool {
 
-    private int clickX, clickY;
     private Point click = new Point(0, 0);
-    private final ImagePanelManager imageManager;
-    private final NestedImagePanel nestedImagePanel;
+    private ImagePanelWrapper wrapper;
 
-    public WindowingTool(ImagePanelManager imageManager, NestedImagePanel nestedImagePanel) {
-        this.imageManager = imageManager;
-        this.nestedImagePanel = nestedImagePanel;
+    public WindowingTool(ImagePanelWrapper wrapper) {
+        this.wrapper = wrapper;
     }
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -50,11 +51,9 @@ public class WindowingTool implements ImageTool {
         Point currentPoint = new Point(e.getX(), e.getY());
         Point delta = new Point(currentPoint.x - click.x, currentPoint.y - click.y);
 
-        imageManager.changeWindowLevelBy(delta.x);
-        imageManager.changeWindowWidthBy(delta.y);
-        BufferedImage newImage = imageManager.getFrameForDisplay();
-
-        nestedImagePanel.setCurrentImage(newImage);
+        int level = wrapper.getWindowLevel();
+        int width = wrapper.getWindowWidth();
+        wrapper.setWindowing(level + delta.x, width + delta.y);
 
         click = currentPoint;
     }
