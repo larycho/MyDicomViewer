@@ -9,13 +9,12 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.services.FileLoadEventService;
 import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
 import org.example.mydicomviewer.views.MultipleImagePanel;
-import org.example.mydicomviewer.views.SingularImagePanel;
-import org.example.mydicomviewer.views.SingularImagePanelInt;
+
 import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 
 import static java.lang.Math.round;
-import static java.lang.Math.toDegrees;
+
 
 
 @Singleton
@@ -43,10 +42,6 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
     public void fileLoaded(FileLoadedEvent event) {
         DicomFile dicomFile = event.getFile();
 
-//        ImagePanelManager imagePanelManager = new ImagePanelManager(dicomFile);
-//        SingularImagePanel singleImagePanel = new SingularImagePanel(imagePanelManager);
-//        singleImagePanel.setMultipleImagePanel(multipleImagePanel);
-        //this.multipleImagePanel.addImage(singleImagePanel);
 
         ImagePanelWrapper wrapper = ImagePanelFactory.createRegularImagePanel(dicomFile);
         this.multipleImagePanel.addImage(wrapper);

@@ -1,7 +1,5 @@
 package org.example.mydicomviewer.services;
 
-import org.example.mydicomviewer.views.SingularImagePanel;
-import org.example.mydicomviewer.views.SingularImagePanelInt;
 import org.example.mydicomviewer.views.image.DrawingTool;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 

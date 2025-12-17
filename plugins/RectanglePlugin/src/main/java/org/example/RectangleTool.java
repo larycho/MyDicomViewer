@@ -4,7 +4,7 @@ import org.example.mydicomviewer.views.image.DrawingTool;
 
 
 import org.example.Rectangle;
-import org.example.mydicomviewer.views.NestedImagePanel;
+//import org.example.mydicomviewer.views.NestedImagePanel;
 import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
 
 import java.awt.*;

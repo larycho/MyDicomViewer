@@ -4,8 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.events.PanelSelectedEvent;
 import org.example.mydicomviewer.listeners.PanelSelectedListener;
-import org.example.mydicomviewer.views.SingularImagePanel;
-import org.example.mydicomviewer.views.SingularImagePanelInt;
 import org.example.mydicomviewer.views.image.DrawingTool;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 

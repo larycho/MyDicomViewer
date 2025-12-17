@@ -12,9 +12,6 @@ import org.example.mydicomviewer.views.MultipleImagePanel;
 import org.example.mydicomviewer.views.image.panel.Axis;
 import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
-import org.example.mydicomviewer.views.reslice.ResliceImageManager;
-import org.example.mydicomviewer.views.reslice.ResliceImagePanel;
-import org.example.mydicomviewer.views.reslice.ReslicerWindow;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -58,13 +55,6 @@ public class ResliceDisplayer implements FileLoadedListener {
             BufferedImage frame = image.getImage();
             frames[i] = frame;
         }
-
-//        ResliceImageManager managerX = new ResliceImageManager(dicomFile);
-//        ResliceImageManager managerY = new ResliceImageManager(dicomFile);
-//        ResliceImageManager managerZ = new ResliceImageManager(dicomFile);
-//        ResliceImagePanel reslicePanelX = new ResliceImagePanel(managerX, "X Axis");
-//        ResliceImagePanel reslicePanelY = new ResliceImagePanel(managerY, "Y Axis");
-//        ResliceImagePanel reslicePanelZ = new ResliceImagePanel(managerZ, "Z Axis");
         ImagePanelWrapper reslicePanelX = ImagePanelFactory.createResliceImagePanel(dicomFile);
         ImagePanelWrapper reslicePanelY = ImagePanelFactory.createResliceImagePanel(dicomFile);
         ImagePanelWrapper reslicePanelZ = ImagePanelFactory.createResliceImagePanel(dicomFile);

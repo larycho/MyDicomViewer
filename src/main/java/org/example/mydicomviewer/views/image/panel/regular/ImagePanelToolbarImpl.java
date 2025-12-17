@@ -2,8 +2,7 @@ package org.example.mydicomviewer.views.image.panel.regular;
 
 import org.example.mydicomviewer.events.PanelSelectedEvent;
 import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
-import org.example.mydicomviewer.views.MultipleImagePanel;
-import org.example.mydicomviewer.views.SingularImagePanel;
+
 import org.example.mydicomviewer.views.image.panel.Axis;
 import org.example.mydicomviewer.views.image.panel.ImagePanelToolbar;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;

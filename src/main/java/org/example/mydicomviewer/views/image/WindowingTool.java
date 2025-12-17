@@ -1,17 +1,13 @@
 package org.example.mydicomviewer.views.image;
 
-import org.example.mydicomviewer.display.ImagePanelManager;
-import org.example.mydicomviewer.display.ImagePanelManagerInt;
-import org.example.mydicomviewer.views.NestedImagePanel;
-import org.example.mydicomviewer.views.SingularImagePanel;
-import org.example.mydicomviewer.views.image.panel.ImageManager;
+
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
-import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
+
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.image.BufferedImage;
+
 
 public class WindowingTool implements ImageTool {
 

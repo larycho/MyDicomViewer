@@ -19,7 +19,6 @@ import java.util.List;
 public class MultipleImagePanel extends JPanel {
 
     private SplitScreenMode mode;
-    //private LinkedList<SingularImagePanelInt> images = new LinkedList<>();
     private LinkedList<ImagePanelWrapper> wrappers = new LinkedList<>();
     private SelectedImageManager selectedImageManager;
 
@@ -60,7 +59,6 @@ public class MultipleImagePanel extends JPanel {
     }
 
     public boolean areAnyImagesAdded() {
-        //return !images.isEmpty();
         return wrappers.isEmpty();
     }
 
@@ -69,14 +67,6 @@ public class MultipleImagePanel extends JPanel {
         updateDisplay();
     }
 
-//    public void addImage(SingularImagePanelInt image) {
-//        int maxSlots = mode.getElements().size();
-//        if (images.size() == maxSlots) {
-//            this.images.removeLast();
-//        }
-//        this.images.add(image);
-//        updateDisplay();
-//    }
 
     public void addImage(ImagePanelWrapper wrapper) {
         int maxSlots = mode.getElements().size();
@@ -87,27 +77,17 @@ public class MultipleImagePanel extends JPanel {
         updateDisplay();
     }
 
-//    public void removeImage(SingularImagePanel image) {
-//        boolean imageFound = this.images.remove(image);
-//
-//        if (imageFound) {
-//            updateDisplay();
-//        }
-//    }
 
     public void updateDisplay() {
         removeAll();
 
         List<SplitScreenElement> elements = mode.getElements();
-        //Iterator<SingularImagePanelInt> iterator = images.iterator();
         Iterator<ImagePanelWrapper> iterator = wrappers.iterator();
 
         for (SplitScreenElement element : elements) {
             // if there are still images to be added
             if (iterator.hasNext()) {
-                //SingularImagePanelInt image = iterator.next();
                 ImagePanelWrapper wrapper = iterator.next();
-                //addImagePanel(image, element);
                 addImagePanel(wrapper.getPanel(), element);
             }
             // if not - add an empty panel
@@ -137,13 +117,6 @@ public class MultipleImagePanel extends JPanel {
         wrappers.clear();
     }
 
-//    private void addImagePanel(SingularImagePanelInt image, SplitScreenElement element) {
-//        GridBagConstraints constraints = new GridBagConstraints();
-//        setConstraintsParameters(constraints, element);
-//        Component imageComponent = (Component) image;
-//        imageComponent.setPreferredSize(new Dimension(0,0));
-//        add(imageComponent, constraints);
-//    }
 
     private void addImagePanel(JPanel imagePanel, SplitScreenElement element) {
         GridBagConstraints constraints = new GridBagConstraints();

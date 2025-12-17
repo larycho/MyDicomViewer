@@ -1,7 +1,6 @@
 package org.example.mydicomviewer.views.image;
 
 import org.example.mydicomviewer.models.shapes.FreehandLine;
-import org.example.mydicomviewer.views.NestedImagePanel;
 import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
 
 import java.awt.*;
@@ -16,15 +15,9 @@ public class PencilTool implements DrawingTool {
     private InnerImagePanel imagePanel;
     private FreehandLine line;
 
-//    public PencilTool(NestedImagePanel imagePanel) {
-//        this.imagePanel = imagePanel;
-//    }
 
     public PencilTool() {}
 
-//    public void setImagePanel(NestedImagePanel imagePanel) {
-//        this.imagePanel = imagePanel;
-//    }
 
     public void setImagePanel(InnerImagePanel imagePanel) {
         this.imagePanel = imagePanel;

@@ -13,7 +13,6 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer;
     exports org.example.mydicomviewer.views;
     exports org.example.mydicomviewer.views.filelist;
-    exports org.example.mydicomviewer.views.reslice;
     exports org.example.mydicomviewer.services;
     exports org.example.mydicomviewer.processing.file;
     exports org.example.mydicomviewer.commands;

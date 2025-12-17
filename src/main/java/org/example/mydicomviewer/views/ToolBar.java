@@ -178,12 +178,6 @@ public class ToolBar extends JToolBar {
         JCheckBoxMenuItem everyFrame = new JCheckBoxMenuItem("Draw shapes separately for every frame");
         everyFrame.setSelected(false);
         everyFrame.addActionListener(e -> {
-// TODO TOOLS
-//            SingularImagePanelInt selectedImage = selectedImageManager.getSelectedImage();
-//            if (selectedImage != null) {
-//                boolean arePersisted = selectedImage.areShapesPersisted();
-//                selectedImage.setPersistShapesBetweenFrames(!arePersisted);
-//            }
         });
 
         popupMenu.add(everyFrame);

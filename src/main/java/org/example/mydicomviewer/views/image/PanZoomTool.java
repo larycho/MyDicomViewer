@@ -1,6 +1,5 @@
 package org.example.mydicomviewer.views.image;
 
-import org.example.mydicomviewer.views.NestedImagePanel;
 import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
 
 import java.awt.*;

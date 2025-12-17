@@ -1,6 +1,5 @@
 package org.example.mydicomviewer.events;
 
-import org.example.mydicomviewer.views.SingularImagePanel;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 
 import java.util.EventObject;

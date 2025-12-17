@@ -1,8 +1,6 @@
 package org.example.mydicomviewer.views.image;
 
-import org.example.mydicomviewer.models.shapes.FreehandLine;
 import org.example.mydicomviewer.models.shapes.StraightLine;
-import org.example.mydicomviewer.views.NestedImagePanel;
 import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
 
 import java.awt.*;
