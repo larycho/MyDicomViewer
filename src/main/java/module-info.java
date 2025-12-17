@@ -21,4 +21,7 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer.processing.dicomdir;
     exports org.example.mydicomviewer.plugin;
     exports org.example.mydicomviewer.views.image;
+    exports org.example.mydicomviewer.models.shapes;
+    exports org.example.mydicomviewer.views.image.panel;
+    exports org.example.mydicomviewer.models;
 }
