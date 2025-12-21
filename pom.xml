@@ -46,18 +46,24 @@
             <groupId>com.pixelmed</groupId>
             <artifactId>pixelmed</artifactId>
             <version>25.02.20</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/pixelmed-25.02.20.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.pixelmed</groupId>
             <artifactId>pixelmed-codec</artifactId>
             <version>25.02.20</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/pixelmed-codec-25.02.20.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.pixelmed</groupId>
             <artifactId>pixelmed-imageio</artifactId>
             <version>25.02.20</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/pixelmed-imageio-25.02.20.jar</systemPath>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-core -->
