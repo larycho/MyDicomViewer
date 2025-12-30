@@ -5,7 +5,6 @@ import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
 import org.example.mydicomviewer.listeners.ResliceDisplayer;
-import org.example.mydicomviewer.listeners.VolumeDisplayer;
 import org.example.mydicomviewer.services.ScreenModeProvider;
 import org.example.mydicomviewer.services.ScreenModeProviderImpl;
 import org.example.mydicomviewer.services.SelectedImageManager;
@@ -14,13 +13,10 @@ import org.example.mydicomviewer.views.image.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Set;
 
@@ -31,9 +27,7 @@ public class ToolBar extends JToolBar {
     private JButton next;
     private JButton manualWindowing;
     private JToggleButton drawButton;
-    private DrawingOverlayPanel drawingOverlay;
     private JButton reslice;
-    private JButton volume3D;
     private JButton modes;
 
     private Set<DrawingTool> tools;
@@ -135,21 +129,12 @@ public class ToolBar extends JToolBar {
         reslice.addActionListener(e -> resliceDisplayer.display());
     }
 
-    public void add3DListeners(VolumeDisplayer volumeDisplayer) {
-        reslice.addActionListener(e -> volumeDisplayer.display());
-    }
 
     private void addDrawingButtons() {
         ImageIcon draw = createImageIcon("src/main/resources/org/example/mydicomviewer/icons/pencil.png");
         drawButton = new JToggleButton(draw);
         drawButton.setToolTipText("Draw Pencil");
         drawButton.setSelected(false);
-//        drawButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                boolean drawMode = ((JToggleButton) e.getSource()).isSelected();
-//                drawingOverlay.setDrawMode(drawMode);
-//            }
-//        });
         add(drawButton);
     }
 
@@ -190,10 +175,6 @@ public class ToolBar extends JToolBar {
         add(apply);
         add(settings);
         addSeparator();
-    }
-
-    public void setDrawingOverlay(DrawingOverlayPanel drawingOverlay) {
-        this.drawingOverlay = drawingOverlay;
     }
 
     private void addWindowingButtons() {
