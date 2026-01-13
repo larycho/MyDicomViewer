@@ -6,11 +6,16 @@ public class WindowingProcessorImpl implements WindowingProcessor {
 
     private int windowLevel;
     private int windowWidth;
+    private double rescaleSlope;
+    private double rescaleIntercept;
 
     @Override
-    public BufferedImage applyWindowing(BufferedImage image, int windowLevel, int windowWidth) {
+    public BufferedImage applyWindowing(BufferedImage image, int windowLevel, int windowWidth,
+                                        double rescaleIntercept, double rescaleSlope) {
         this.windowLevel = windowLevel;
         this.windowWidth = windowWidth;
+        this.rescaleSlope = rescaleSlope;
+        this.rescaleIntercept = rescaleIntercept;
         return applyWindowing(image);
     }
 
@@ -70,16 +75,19 @@ public class WindowingProcessorImpl implements WindowingProcessor {
     }
 
     private int generateLookUpTableValue(int i, int min, int max) {
+
+        double valueHu = (i * rescaleSlope) + rescaleIntercept;
+
         int value;
 
-        if (i <= min) {
+        if (valueHu <= min) {
             value = 0;
         }
-        else if (i >= max) {
+        else if (valueHu >= max) {
             value = 255;
         }
         else {
-            value = (int) 255.0 * (i - min) / windowWidth;
+            value = (int) (255.0 * (valueHu - min) / windowWidth);
         }
         return value;
     }

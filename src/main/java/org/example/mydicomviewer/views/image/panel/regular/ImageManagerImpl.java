@@ -7,6 +7,7 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomImage;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
 import org.example.mydicomviewer.models.shapes.Point3D;
+import org.example.mydicomviewer.processing.file.TagProcessor;
 import org.example.mydicomviewer.processing.image.WindowingProcessor;
 import org.example.mydicomviewer.processing.image.WindowingProcessorImpl;
 import org.example.mydicomviewer.services.DistanceCalculator;
@@ -16,17 +17,16 @@ import org.example.mydicomviewer.views.image.panel.ImageManager;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ImageManagerImpl implements ImageManager {
 
     private DicomFile dicomFile;
 
-    private int windowLevel = 150;
-    private int windowWidth = 300;
+    private int windowLevel;
+    private int windowWidth;
+    private double rescaleSlope;
+    private double rescaleIntercept;
     private int currentFrame = 0;
 
     private boolean persistShapes = true;
@@ -36,6 +36,7 @@ public class ImageManagerImpl implements ImageManager {
 
     public ImageManagerImpl(DicomFile dicomFile) {
         this.dicomFile = dicomFile;
+        initializeWindowingParams();
     }
 
     @Override
@@ -49,7 +50,7 @@ public class ImageManagerImpl implements ImageManager {
         DicomImage currentImage = images.get(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage.getImage(), level, width);
+        return windowingProcessor.applyWindowing(currentImage.getImage(), level, width, rescaleIntercept, rescaleSlope);
     }
 
     @Override
@@ -122,7 +123,7 @@ public class ImageManagerImpl implements ImageManager {
         DicomImage currentImage = images.get(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage.getImage(), windowLevel, windowWidth);
+        return windowingProcessor.applyWindowing(currentImage.getImage(), windowLevel, windowWidth, rescaleIntercept, rescaleSlope);
     }
 
     @Override
@@ -240,5 +241,19 @@ public class ImageManagerImpl implements ImageManager {
 
     private Point3D get3DPoint(Point2D.Double p1) {
         return new Point3D(p1.getX(), p1.getY(), 0.0);
+    }
+
+    private void initializeWindowingParams() {
+        TagProcessor tagProcessor = new TagProcessor(dicomFile);
+
+        Optional<Double> center = tagProcessor.getWindowCenter();
+        Optional<Double> width = tagProcessor.getWindowWidth();
+        Optional<Double> slope = tagProcessor.getRescaleSlope();
+        Optional<Double> intercept = tagProcessor.getRescaleIntercept();
+
+        windowLevel = (int) Math.round(center.orElse(150.0));
+        windowWidth = (int) Math.round(width.orElse(300.0));
+        rescaleIntercept = intercept.orElse(0.0);
+        rescaleSlope = slope.orElse(1.0);
     }
 }

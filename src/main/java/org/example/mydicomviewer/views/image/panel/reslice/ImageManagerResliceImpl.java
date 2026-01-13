@@ -8,6 +8,7 @@ import org.example.mydicomviewer.display.overlay.OverlayText;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
 import org.example.mydicomviewer.models.shapes.Point3D;
+import org.example.mydicomviewer.processing.file.TagProcessor;
 import org.example.mydicomviewer.processing.image.WindowingProcessor;
 import org.example.mydicomviewer.processing.image.WindowingProcessorImpl;
 import org.example.mydicomviewer.processing.reslice.Reslicer;
@@ -21,14 +22,17 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ImageManagerResliceImpl implements ImageManager {
 
     private DicomFile dicomFile;
 
     private Axis currentAxis = Axis.Z;
-    private int windowLevel = 150;
-    private int windowWidth = 300;
+    private int windowLevel;
+    private int windowWidth;
+    private double rescaleIntercept;
+    private double rescaleSlope;
 
     private int currentFrame = 0;
 
@@ -39,6 +43,7 @@ public class ImageManagerResliceImpl implements ImageManager {
     public ImageManagerResliceImpl(DicomFile dicomFile) {
         this.dicomFile = dicomFile;
         this.reslicer = new Reslicer(dicomFile, 2);
+        initializeWindowingParams();
         createShapeManager();
     }
 
@@ -59,7 +64,7 @@ public class ImageManagerResliceImpl implements ImageManager {
         BufferedImage currentImage = getSlice(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage, level, width);
+        return windowingProcessor.applyWindowing(currentImage, level, width, rescaleIntercept, rescaleSlope);
 
     }
 
@@ -136,7 +141,7 @@ public class ImageManagerResliceImpl implements ImageManager {
         BufferedImage currentImage = getSlice(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage, windowLevel, windowWidth);
+        return windowingProcessor.applyWindowing(currentImage, windowLevel, windowWidth, rescaleIntercept, rescaleSlope);
     }
 
     @Override
@@ -282,7 +287,19 @@ public class ImageManagerResliceImpl implements ImageManager {
         return reslicer.getSlice(sliceIndex);
     }
 
+    private void initializeWindowingParams() {
+        TagProcessor tagProcessor = new TagProcessor(dicomFile);
 
+        Optional<Double> center = tagProcessor.getWindowCenter();
+        Optional<Double> width = tagProcessor.getWindowWidth();
+        Optional<Double> slope = tagProcessor.getRescaleSlope();
+        Optional<Double> intercept = tagProcessor.getRescaleIntercept();
+
+        windowLevel = (int) Math.round(center.orElse(150.0));
+        windowWidth = (int) Math.round(width.orElse(300.0));
+        rescaleIntercept = intercept.orElse(0.0);
+        rescaleSlope = slope.orElse(1.0);
+    }
 
 
 }

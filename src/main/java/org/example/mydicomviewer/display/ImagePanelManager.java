@@ -94,7 +94,7 @@ public class ImagePanelManager implements ImagePanelManagerInt {
         DicomImage currentImage = images.get(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage.getImage(), windowLevel, windowWidth);
+        return windowingProcessor.applyWindowing(currentImage.getImage(), windowLevel, windowWidth, 0, 1);
     }
     @Override
     public void setPersistShapesBetweenFrames(boolean persistShapes) {
