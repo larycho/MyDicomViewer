@@ -26,7 +26,7 @@ public class OverlayGeneratorImpl implements OverlayGenerator {
         List<Tag> tags = group.allTags();
 
         for (Tag tag : tags) {
-            String address = tag.getAddress();
+            String address = tag.getAddress().toString();
             switch (address) {
                 case PATIENT_NAME:
                     overlayText.addTopLeft("Name: " + tag.getValue());

@@ -40,4 +40,12 @@ public class DicomFile {
     public String toString() {
         return file.getName();
     }
+
+    public boolean containsTag(TagAddress address) {
+        return tags.containsTag(address);
+    }
+
+    public Tag getTag(TagAddress address) {
+        return tags.getTag(address);
+    }
 }

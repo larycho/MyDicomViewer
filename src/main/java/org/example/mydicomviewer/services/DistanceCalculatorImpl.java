@@ -139,7 +139,7 @@ public class DistanceCalculatorImpl implements DistanceCalculator {
         List<Tag> tags = file.getTags().allTags();
 
         for (Tag tag : tags) {
-            String address = tag.getAddress();
+            String address = tag.getAddress().toString();
             if (address.contains(searchAddress)) {
                 return tag;
             }

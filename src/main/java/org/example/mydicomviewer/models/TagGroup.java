@@ -20,4 +20,21 @@ public class TagGroup {
         return tags;
     }
 
+    public boolean containsTag(TagAddress soughtAddress) {
+        for (Tag tag : tags) {
+            if (tag.getAddress().equals(soughtAddress)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Tag getTag(TagAddress soughtAddress) {
+        for (Tag tag : tags) {
+            if (tag.getAddress().equals(soughtAddress)) {
+                return tag;
+            }
+        }
+        return null;
+    }
 }

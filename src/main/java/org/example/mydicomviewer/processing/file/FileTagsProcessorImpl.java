@@ -5,6 +5,7 @@ import org.dcm4che3.data.ElementDictionary;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.util.TagUtils;
 import org.example.mydicomviewer.models.Tag;
+import org.example.mydicomviewer.models.TagAddress;
 import org.example.mydicomviewer.models.TagGroup;
 
 import java.io.File;
@@ -46,10 +47,36 @@ public class FileTagsProcessorImpl implements FileTagsProcessor {
 
     private Tag createTag(int tagNumber, Attributes attributes) {
 
-        String address = TagUtils.toString(tagNumber);
+        TagAddress address = createTagAddress(tagNumber);
         String description = ElementDictionary.getStandardElementDictionary().keywordOf(tagNumber);
         String value = attributes.getString(tagNumber);
 
         return new Tag(address, description, value);
+    }
+
+    private TagAddress createTagAddress(int tagNumber) {
+
+        String addressAsString = TagUtils.toString(tagNumber);
+
+        String[] addressParts = addressAsString.split(",");
+        String[] cleanParts = cleanUpAddressParts(addressParts);
+
+        String groupNumber = cleanParts[0];
+        String elementNumber = cleanParts[1];
+
+
+        return new TagAddress(groupNumber, elementNumber);
+    }
+
+    private String[] cleanUpAddressParts(String[] addressParts) {
+        String groupNumber = addressParts[0];
+        groupNumber = groupNumber.replace("(", "");
+        groupNumber = groupNumber.trim();
+
+        String elementNumber = addressParts[1];
+        elementNumber = elementNumber.replace(")", "");
+        elementNumber = elementNumber.trim();
+
+        return new String[]{groupNumber, elementNumber};
     }
 }

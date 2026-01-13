@@ -63,7 +63,7 @@ public class TagDisplayer implements FileLoadedListener {
         for (int i = 0; i < rows; i++) {
             Tag tag = tags.get(i);
 
-            dataArray[i][0] = tag.getAddress();
+            dataArray[i][0] = tag.getAddress().toString();
             dataArray[i][1] = tag.getDescription();
             dataArray[i][2] = tag.getValue();
         }
