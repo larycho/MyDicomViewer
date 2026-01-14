@@ -1,18 +1,17 @@
 package org.example.mydicomviewer.commands;
 
 import com.google.inject.Inject;
-import org.example.mydicomviewer.services.DicomDirLoadManager;
 import org.example.mydicomviewer.services.FolderLoadManager;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.prefs.Preferences;
 
 public class OpenFolderCommand {
 
     private final FolderLoadManager folderLoadManager;
+    Preferences preferences = Preferences.userRoot().node("com/example/mydicomviewer/commands");
+    private static final String LAST_OPEN_DIR = "last_open_dir";
 
     @Inject
     public OpenFolderCommand(FolderLoadManager folderLoadManager) {
@@ -33,6 +32,7 @@ public class OpenFolderCommand {
 
     private void fileChosenResponse(JFileChooser fileChooser) {
         File file = fileChooser.getSelectedFile();
+        updateLastDirectory(file);
         openDicomDir(file);
     }
 
@@ -41,12 +41,21 @@ public class OpenFolderCommand {
     }
 
     private JFileChooser createFileChooser() {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(getLastDirectory());
 
         fileChooser.setDialogTitle("Open Folder");
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         return fileChooser;
+    }
+
+    private String getLastDirectory() {
+        return preferences.get(LAST_OPEN_DIR, System.getProperty("user.home"));
+    }
+
+    private void updateLastDirectory(File file) {
+        String newDir = file.getParent();
+        preferences.put(LAST_OPEN_DIR, newDir);
     }
 }
 

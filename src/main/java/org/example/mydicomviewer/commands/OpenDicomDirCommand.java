@@ -8,10 +8,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class OpenDicomDirCommand {
 
     private final DicomDirLoadManager dicomDirLoadManager;
+    Preferences preferences = Preferences.userRoot().node("com/example/mydicomviewer/commands");
+    private static final String LAST_OPEN_DIR = "last_open_dir";
 
     @Inject
     public OpenDicomDirCommand(DicomDirLoadManager dicomDirLoadManager) {
@@ -32,6 +35,7 @@ public class OpenDicomDirCommand {
 
     private void fileChosenResponse(JFileChooser fileChooser) {
         File file = fileChooser.getSelectedFile();
+        updateLastDirectory(file);
         openDicomDir(file);
     }
 
@@ -40,7 +44,7 @@ public class OpenDicomDirCommand {
     }
 
     private JFileChooser createFileChooser() {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(getLastDirectory());
 
         fileChooser.setDialogTitle("Open File");
         fileChooser = addFileFilters(fileChooser);
@@ -61,5 +65,15 @@ public class OpenDicomDirCommand {
         List<FileNameExtensionFilter> fileExtensions = new ArrayList<>();
         fileExtensions.add(new FileNameExtensionFilter("DICOMDIR Files", "*.dcm", "*.*"));
         return fileExtensions;
+    }
+
+
+    private String getLastDirectory() {
+        return preferences.get(LAST_OPEN_DIR, System.getProperty("user.home"));
+    }
+
+    private void updateLastDirectory(File file) {
+        String newDir = file.getParent();
+        preferences.put(LAST_OPEN_DIR, newDir);
     }
 }
