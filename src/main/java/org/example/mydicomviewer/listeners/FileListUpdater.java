@@ -8,20 +8,16 @@ import org.example.mydicomviewer.events.FolderLoadedEvent;
 import org.example.mydicomviewer.models.DicomDirectory;
 import org.example.mydicomviewer.models.DicomDirectoryRecord;
 import org.example.mydicomviewer.models.DicomFile;
-import org.example.mydicomviewer.processing.dicomdir.DicomDirPath;
 import org.example.mydicomviewer.services.DicomDirLoadManager;
 import org.example.mydicomviewer.services.FileLoadEventService;
 import org.example.mydicomviewer.services.FolderLoadedEventService;
 import org.example.mydicomviewer.views.filelist.FileListPanel;
-import org.example.mydicomviewer.views.filelist.MyTreeNode;
+import org.example.mydicomviewer.views.filelist.FileNodeType;
+import org.example.mydicomviewer.views.filelist.FileTreeNode;
 import org.example.mydicomviewer.workers.OpenFragmentedFileWorker;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @Singleton
 public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListener, FolderLoadedListener {
@@ -41,16 +37,17 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
         folderLoadedEventService.addListener(this);
     }
 
-//    public FileListUpdater(FileListPanel fileListPanel) {
-//        this.fileListPanel = fileListPanel;
-//    }
-
     @Override
     public void fileLoaded(FileLoadedEvent event) {
         if (event.getSource() instanceof OpenFragmentedFileWorker) {
             return;
         }
         DicomFile file = event.getFile();
+
+        if (fileListPanel.getState().containsFile(file.getFile())) {
+            return;
+        }
+
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(file);
         fileListPanel.addFileToList(node);
     }
@@ -83,7 +80,7 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
     }
 
     private boolean isRecordPrivate(DicomDirectoryRecord record) {
-        return record.getType().contains("PRIVATE");
+        return record.getType().equals(FileNodeType.PRIVATE);
     }
 
     private void addChildren(DicomDirectoryRecord record, DefaultMutableTreeNode parent) {
@@ -104,30 +101,30 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
 
     @Override
     public void folderLoaded(FolderLoadedEvent event) {
-        MyTreeNode tree = event.getTree();
+        FileTreeNode tree = event.getTree();
         createRootNode(tree);
     }
 
-    private void createRootNode(MyTreeNode node) {
+    private void createRootNode(FileTreeNode node) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(node);
         addChildrenOfRoot(node);
     }
 
-    private void addChildrenOfRoot(MyTreeNode root) {
-        List<MyTreeNode> children = root.getChildren();
+    private void addChildrenOfRoot(FileTreeNode root) {
+        List<FileTreeNode> children = root.getChildren();
 
-        for (MyTreeNode child : children) {
+        for (FileTreeNode child : children) {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(child);
             fileListPanel.addFileToList(node);
             addChildrenOfNode(child, node);
         }
     }
 
-    private void addChildrenOfNode(MyTreeNode parentNode, DefaultMutableTreeNode parent) {
-        List<MyTreeNode> children = parentNode.getChildren();
+    private void addChildrenOfNode(FileTreeNode parentNode, DefaultMutableTreeNode parent) {
+        List<FileTreeNode> children = parentNode.getChildren();
 
         // Browse through the children
-        for (MyTreeNode child : children) {
+        for (FileTreeNode child : children) {
             // Add child node to the panel
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(child);
             fileListPanel.addFileToList(node, parent);

@@ -27,10 +27,10 @@ public class TreeIconRenderer extends DefaultTreeCellRenderer {
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         Object userObject = node.getUserObject();
-        String type = null;
+        FileNodeType type = null;
 
-        if (userObject instanceof MyTreeNode treeNode) {
-            type = treeNode.getType();
+        if (userObject instanceof FileTreeNode treeNode) {
+            type = treeNode.getNodeType();
         }
         else if (userObject instanceof DicomDirectoryRecord record) {
             type = record.getType();
@@ -38,16 +38,16 @@ public class TreeIconRenderer extends DefaultTreeCellRenderer {
 
         if (type != null) {
             switch (type) {
-                case "PATIENT":
+                case PATIENT:
                     setIcon(patientIcon);
                     break;
-                case "SERIES":
+                case SERIES:
                     setIcon(seriesIcon);
                     break;
-                case "STUDY":
+                case STUDY:
                     setIcon(studyIcon);
                     break;
-                case "IMAGE":
+                case IMAGE:
                     setIcon(imageIcon);
                     break;
                 default:

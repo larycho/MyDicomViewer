@@ -10,6 +10,5 @@ public interface FileLoadEventService {
     void addListener(FileLoadedListener listener);
     void removeListener(FileLoadedListener listener);
     void notifyFinished(DicomFile file);
-
     void notifyFinished(DicomFile file, Object source);
 }

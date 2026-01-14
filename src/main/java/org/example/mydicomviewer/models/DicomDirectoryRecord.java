@@ -1,11 +1,13 @@
 package org.example.mydicomviewer.models;
 
+import org.example.mydicomviewer.views.filelist.FileNodeType;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DicomDirectoryRecord {
 
-    private String type;
+    private FileNodeType type;
     private String text;
     private DicomDirectory mainDicomDirectory;
 
@@ -15,12 +17,12 @@ public class DicomDirectoryRecord {
         this.text = text;
     }
 
-    public DicomDirectoryRecord(String type, String text) {
+    public DicomDirectoryRecord(FileNodeType type, String text) {
         this.type = type;
         this.text = text;
     }
 
-    public DicomDirectoryRecord(String type, String text, DicomDirectory mainDicomDirectory) {
+    public DicomDirectoryRecord(FileNodeType type, String text, DicomDirectory mainDicomDirectory) {
         this.type = type;
         this.text = text;
         this.mainDicomDirectory = mainDicomDirectory;
@@ -30,12 +32,8 @@ public class DicomDirectoryRecord {
         return mainDicomDirectory;
     }
 
-    public String getType() {
+    public FileNodeType getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getText() {
@@ -60,7 +58,8 @@ public class DicomDirectoryRecord {
 
     @Override
     public String toString() {
-        String modifiedType = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
+        String typeString = type.toString();
+        String modifiedType = typeString.substring(0, 1).toUpperCase() + typeString.substring(1).toLowerCase();
         return modifiedType + ": " + text;
     }
 }

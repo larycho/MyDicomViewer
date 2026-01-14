@@ -22,6 +22,7 @@ public class FileListScrollPane extends JScrollPane {
     DefaultTreeModel treeModel;
     DefaultMutableTreeNode root;
     OpenFileManager openFileManager;
+    FileListState state = new FileListState();
 
     public FileListScrollPane(OpenFileManager openFileManager) {
         super();
@@ -66,24 +67,37 @@ public class FileListScrollPane extends JScrollPane {
             Optional<Path> path = findFile(directory, filename);
             if (path.isPresent()) {
                 File file = path.get().toFile();
+                if (!state.containsFile(file)) {
+                    state.addFile(file);
+                }
                 openFileManager.openFileUsingWorker(file);
             }
         }
-        else if (userObject instanceof MyTreeNode imageNode) {
-            if (imageNode.isLeaf() && imageNode.getType().equals("IMAGE")) {
+        else if (userObject instanceof FileTreeNode imageNode) {
+            if (imageNode.isLeaf() && imageNode.getNodeType().equals(FileNodeType.IMAGE)) {
+
                 if (imageNode.isPartialFile()) {
                     List<File> files = imageNode.getMainFile();
+
+                    if (!state.containsFile(imageNode.getFile())) {
+                        state.addFiles(files);
+                    }
+
                     openFileManager.openFragmentedFileUsingWorker(files);
                 }
                 else {
+                    if (!state.containsFile(imageNode.getFile())) {
+                        state.addFile(imageNode.getFile());
+                    }
                     openFileManager.openFileUsingWorker(imageNode.getFile());
                 }
             }
         }
-        else if (userObject instanceof DicomFile) {
-//            DicomFile dicomFile = (DicomFile) userObject;
-//            File file = dicomFile.getFile();
-//            openFileManager.openFileUsingWorker(file);
+        else if (userObject instanceof DicomFile dicomFile) {
+            if (!state.containsFile(dicomFile.getFile())) {
+                state.addFile(dicomFile.getFile());
+            }
+            openFileManager.openFileUsingWorker(dicomFile.getFile());
         }
     }
 
@@ -96,6 +110,10 @@ public class FileListScrollPane extends JScrollPane {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public FileListState getState() {
+        return state;
     }
 
     public void addNode(DefaultMutableTreeNode node) {

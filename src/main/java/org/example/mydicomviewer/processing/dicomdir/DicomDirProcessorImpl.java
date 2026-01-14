@@ -5,6 +5,7 @@ import org.dcm4che3.data.Tag;
 import org.dcm4che3.media.DicomDirReader;
 import org.example.mydicomviewer.models.DicomDirectory;
 import org.example.mydicomviewer.models.DicomDirectoryRecord;
+import org.example.mydicomviewer.views.filelist.FileNodeType;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class DicomDirProcessorImpl implements DicomDirProcessor {
     }
 
     private DicomDirectoryRecord createRecord(Attributes recordAttributes) {
-        String type = getRecordType(recordAttributes);
+        FileNodeType type = getFileNodeType(recordAttributes);
         String text = getRecordText(recordAttributes);
         return new DicomDirectoryRecord(type, text, mainDicomDirectory);
     }
@@ -59,20 +60,20 @@ public class DicomDirProcessorImpl implements DicomDirProcessor {
     }
 
     private String getRecordText(Attributes recordAttributes) {
-        String recordType = recordAttributes.getString(Tag.DirectoryRecordType, "");
+        FileNodeType recordType = getFileNodeType(recordAttributes);//recordAttributes.getString(Tag.DirectoryRecordType, "");
         String text = "";
 
         switch (recordType) {
-            case "PATIENT":
+            case PATIENT:
                 text = recordAttributes.getString(Tag.PatientName, "");
                 break;
-            case "STUDY":
+            case STUDY:
                 text = recordAttributes.getString(Tag.StudyID, "");
                 break;
-            case "SERIES":
+            case SERIES:
                 text = recordAttributes.getString(Tag.Modality, "");
                 break;
-            case "IMAGE":
+            case IMAGE:
                 text = recordAttributes.getString(Tag.ReferencedFileID, "");
                 break;
             default:
@@ -80,5 +81,22 @@ public class DicomDirProcessorImpl implements DicomDirProcessor {
         }
 
         return text;
+    }
+
+    private FileNodeType getFileNodeType(Attributes recordAttributes) {
+        String recordType = recordAttributes.getString(Tag.DirectoryRecordType, "");
+
+        switch (recordType) {
+            case "PATIENT":
+                return FileNodeType.PATIENT;
+            case "STUDY":
+                return FileNodeType.STUDY;
+            case "SERIES":
+                return FileNodeType.SERIES;
+            case "IMAGE":
+                return FileNodeType.IMAGE;
+            default:
+                return FileNodeType.PRIVATE;
+        }
     }
 }

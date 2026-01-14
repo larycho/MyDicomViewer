@@ -12,7 +12,6 @@ import java.io.File;
 public class FooterUpdater implements FileLoadedListener, FileLoadStartedListener {
 
     private final Footer footer;
-    //private final FileLoadStartedEventService fileLoadStartedEventService;
 
     @Inject
     public FooterUpdater(

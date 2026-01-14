@@ -1,17 +1,16 @@
 package org.example.mydicomviewer.views.filelist;
 
-
-import org.example.mydicomviewer.models.DicomFile;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyTreeNode {
+public class FileTreeNode {
     private String type;
+    private FileNodeType nodeType = FileNodeType.IMAGE;
     private String text;
-    private List<MyTreeNode> children = new ArrayList<MyTreeNode>();
+    private List<FileTreeNode> children = new ArrayList<FileTreeNode>();
     private boolean isLeaf = false;
+    private boolean isRoot = false;
     private File file;
     private boolean isPartialFile = false;
     private List<File> mainFile;
@@ -41,6 +40,14 @@ public class MyTreeNode {
         isLeaf = leaf;
     }
 
+    public boolean isRoot() {
+        return isRoot;
+    }
+
+    public void setRoot(boolean root) {
+        isRoot = root;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
@@ -49,16 +56,24 @@ public class MyTreeNode {
         return type;
     }
 
+    public FileNodeType getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(FileNodeType nodeType) {
+        this.nodeType = nodeType;
+    }
+
     public String getText() {
         return text;
     }
     public void setText(String text) {
         this.text = text;
     }
-    public List<MyTreeNode> getChildren() {
+    public List<FileTreeNode> getChildren() {
         return children;
     }
-    public void addChild(MyTreeNode child) {
+    public void addChild(FileTreeNode child) {
         children.add(child);
     }
 
@@ -73,14 +88,14 @@ public class MyTreeNode {
     @Override
     public String toString() {
         String base = "";
-        switch (type) {
-            case "PATIENT":
+        switch (nodeType) {
+            case PATIENT:
                 base = "Patient ID: ";
                 break;
-            case "STUDY":
+            case STUDY:
                 base = "Study ID: ";
                 break;
-            case "SERIES":
+            case SERIES:
                 base = "Series number: ";
                 break;
             default:

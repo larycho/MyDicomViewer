@@ -35,6 +35,10 @@ public class FileListPanel extends JPanel {
         setupActionListeners();
     }
 
+    public FileListState getState() {
+        return scrollPane.getState();
+    }
+
     public void addFileToList(DefaultMutableTreeNode node) {
         scrollPane.addNode(node);
     }
