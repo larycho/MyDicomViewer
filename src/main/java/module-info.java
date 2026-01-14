@@ -8,6 +8,8 @@ module org.example.mydicomviewer {
     requires sc.fiji.ij3d;
     requires org.scijava.parsington;
     requires com.google.guice;
+    requires net.imagej;
+    requires java.prefs;
 
 
     exports org.example.mydicomviewer;
