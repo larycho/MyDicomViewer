@@ -2,18 +2,13 @@ package org.example.mydicomviewer.views.filelist;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.example.mydicomviewer.commands.OpenDicomDirCommand;
-import org.example.mydicomviewer.commands.OpenFileCommand;
-import org.example.mydicomviewer.commands.OpenFolderCommand;
-import org.example.mydicomviewer.listeners.FileLoadedListener;
-import org.example.mydicomviewer.services.DicomDirLoadManager;
+
 import org.example.mydicomviewer.services.OpenFileManager;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 
 @Singleton
 public class FileListPanel extends JPanel {
@@ -23,24 +18,12 @@ public class FileListPanel extends JPanel {
     private CardLayout cardLayout;
     private JButton expandButton;
     private JButton collapseButton;
-    private JButton addFileButton;
-    private JButton addDicomdirButton;
-    private JButton addFolderButton;
     private FileListScrollPane scrollPane;
-
-    private OpenFileCommand openFileCommand;
-    private OpenDicomDirCommand commandDir;
     private OpenFileManager openFileManager;
-    private OpenFolderCommand openFolderCommand;
 
     @Inject
-    public FileListPanel(OpenFileCommand command,
-                         OpenDicomDirCommand commandDir,
-                         OpenFolderCommand openFolderCommand,
-                         OpenFileManager openFileManager) {
-        this.openFileCommand = command;
-        this.commandDir = commandDir;
-        this.openFolderCommand = openFolderCommand;
+    public FileListPanel(OpenFileManager openFileManager) {
+
         this.openFileManager = openFileManager;
         cardLayout = new CardLayout();
         setLayout(cardLayout);
@@ -72,18 +55,6 @@ public class FileListPanel extends JPanel {
             this.getParent().repaint();
             this.getParent().revalidate();
         });
-
-        addFileButton.addActionListener((ActionEvent e) -> {
-           openFileCommand.execute();
-        });
-
-        addDicomdirButton.addActionListener((ActionEvent e) -> {
-            commandDir.execute();
-        });
-
-        addFolderButton.addActionListener((ActionEvent e) -> {
-            openFolderCommand.execute();
-        });
     }
 
     private void setCardSides() {
@@ -97,21 +68,12 @@ public class FileListPanel extends JPanel {
         expandedPanel.setPreferredSize(new Dimension(300, 100));
 
         collapseButton = new JButton("Hide panel");
-        addFileButton = new JButton("Add new file");
-        addDicomdirButton = new JButton("Add a Dicomdir");
-        addFolderButton = new JButton("Add a Folder");
 
         scrollPane = new FileListScrollPane(openFileManager);
         expandedPanel.add(collapseButton);
-        expandedPanel.add(addFileButton);
-        expandedPanel.add(addDicomdirButton);
-        expandedPanel.add(addFolderButton);
         expandedPanel.add(scrollPane);
 
         collapseButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        addFileButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        addDicomdirButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        addFolderButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 

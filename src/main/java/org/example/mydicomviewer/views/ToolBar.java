@@ -2,6 +2,9 @@ package org.example.mydicomviewer.views;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.example.mydicomviewer.commands.OpenDicomDirCommand;
+import org.example.mydicomviewer.commands.OpenFileCommand;
+import org.example.mydicomviewer.commands.OpenFolderCommand;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
 import org.example.mydicomviewer.listeners.ResliceDisplayer;
@@ -10,45 +13,50 @@ import org.example.mydicomviewer.services.ScreenModeProviderImpl;
 import org.example.mydicomviewer.services.SelectedImageManager;
 import org.example.mydicomviewer.views.image.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.List;
-import java.io.File;
 import java.util.Set;
 
 @Singleton
 public class ToolBar extends JToolBar {
 
-    private JButton previous;
-    private JButton next;
     private JButton manualWindowing;
-    private JToggleButton drawButton;
     private JButton reslice;
     private JButton modes;
+    private JButton addFiles;
+
+    private JPopupMenu addFilesMenu;
 
     private Set<DrawingTool> tools;
-    private ImageDisplayer imageDisplayer;
-    private ResliceDisplayer resliceDisplayer;
-    private SelectedImageManager selectedImageManager;
+    private final ImageDisplayer imageDisplayer;
+    private final ResliceDisplayer resliceDisplayer;
+    private final SelectedImageManager selectedImageManager;
+
+    private final OpenFileCommand openFileCommand;
+    private final OpenDicomDirCommand commandDir;
+    private final OpenFolderCommand openFolderCommand;
 
     @Inject
     public ToolBar(ImageDisplayer imageDisplayer,
                    ResliceDisplayer resliceDisplayer,
                    Set<DrawingTool> pluginTools,
-                   SelectedImageManager selectedImageManager) {
+                   SelectedImageManager selectedImageManager,
+                   OpenFileCommand openFileCommand,
+                   OpenDicomDirCommand commandDir,
+                   OpenFolderCommand openFolderCommand) {
         super();
+
+        this.openFileCommand = openFileCommand;
+        this.openFolderCommand = openFolderCommand;
+        this.commandDir = commandDir;
 
         createToolList(pluginTools);
 
         this.selectedImageManager = selectedImageManager;
 
-        addFrameChangeArrows();
-        addWindowingButtons();
-        addDrawingButtons();
+        addFilesButton();
         addResliceButton();
         addScreenModeButton();
         addDrawingTools();
@@ -59,7 +67,7 @@ public class ToolBar extends JToolBar {
     }
 
     private void createToolList(Set<DrawingTool> pluginTools) {
-        tools = new HashSet<DrawingTool>();
+        tools = new HashSet<>();
 
         tools.add(new OvalTool());
         tools.add(new PencilTool());
@@ -71,8 +79,6 @@ public class ToolBar extends JToolBar {
     private void setupListeners() {
         addScreenModeListeners(imageDisplayer);
         addResliceListeners(resliceDisplayer);
-        addFrameChangeListeners(imageDisplayer);
-        addWindowingListeners(imageDisplayer);
     }
 
     private void addScreenModeButton() {
@@ -95,47 +101,13 @@ public class ToolBar extends JToolBar {
     }
 
     private void addResliceButton() {
-        ImageIcon resliceIcon = createImageIcon("src/main/resources/org/example/mydicomviewer/icons/3d-model.png");
-        reslice = new JButton(resliceIcon);
-        reslice.setToolTipText("Reslice");
+        reslice = new JButton("Reslice");
         add(reslice);
-    }
-
-    private ImageIcon createImageIcon(String path) {
-        File file = new File(path);
-        try {
-            BufferedImage src = ImageIO.read(file);
-            BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = image.createGraphics();
-
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                    RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                    RenderingHints.VALUE_RENDER_QUALITY);
-
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-
-            g2d.drawImage(src, 0, 0, 40, 40, null);
-            g2d.dispose();
-            return new ImageIcon(image);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        addSeparator();
     }
 
     public void addResliceListeners(ResliceDisplayer resliceDisplayer) {
         reslice.addActionListener(e -> resliceDisplayer.display());
-    }
-
-
-    private void addDrawingButtons() {
-        ImageIcon draw = createImageIcon("src/main/resources/org/example/mydicomviewer/icons/pencil.png");
-        drawButton = new JToggleButton(draw);
-        drawButton.setToolTipText("Draw Pencil");
-        drawButton.setSelected(false);
-        add(drawButton);
     }
 
     private void addDrawingTools() {
@@ -184,25 +156,6 @@ public class ToolBar extends JToolBar {
         add(manualWindowing);
     }
 
-    private void addFrameChangeArrows() {
-        ImageIcon rightArrow = createImageIcon("src/main/resources/org/example/mydicomviewer/icons/next.png");
-        ImageIcon leftArrow = createImageIcon("src/main/resources/org/example/mydicomviewer/icons/previous.png");
-
-        previous = new JButton(leftArrow);
-        next = new JButton(rightArrow);
-
-        previous.setToolTipText("Previous frame");
-        next.setToolTipText("Next frame");
-
-        add(previous);
-        add(next);
-    }
-
-    public void addFrameChangeListeners(ImageDisplayer imageDisplayer) {
-        previous.addActionListener(e -> imageDisplayer.previousFrame());
-        next.addActionListener(e -> imageDisplayer.nextFrame());
-    }
-
     public void addWindowingListeners(ImageDisplayer imageDisplayer) {
         manualWindowing.addActionListener(e -> {
             WindowingPopup popup = new WindowingPopup();
@@ -221,5 +174,30 @@ public class ToolBar extends JToolBar {
         imageDisplayer.setWindowing(center, width);
     }
 
+    private void addFilesButton() {
+        addFiles = new JButton("Add new...");
 
+        createAddFilesPopupMenu();
+        addFiles.addActionListener(e -> addFilesMenu.show(addFiles, 0, addFiles.getHeight()));
+
+        add(addFiles);
+        addSeparator();
+    }
+
+    private void createAddFilesPopupMenu() {
+        addFilesMenu = new JPopupMenu();
+
+        JMenuItem singleFile = new JMenuItem("...single DICOM file");
+        singleFile.addActionListener((ActionEvent e) -> openFileCommand.execute());
+        addFilesMenu.add(singleFile);
+
+        JMenuItem folder = new JMenuItem("...DICOM image folder");
+        folder.addActionListener((ActionEvent e) -> openFolderCommand.execute());
+        addFilesMenu.add(folder);
+
+        JMenuItem dicomdir = new JMenuItem("...DICOMDIR");
+        dicomdir.addActionListener((ActionEvent e) -> commandDir.execute());
+        addFilesMenu.add(dicomdir);
+
+    }
 }

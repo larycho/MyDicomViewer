@@ -24,7 +24,7 @@ public class MainMenuBar extends JMenuBar {
                        ExportImagesCommand exportCommand) {
         this.command = command;
         this.exportCommand = exportCommand;
-        setupFileMenu();
+        //setupFileMenu();
     }
 
     private void setupFileMenu() {
