@@ -1,5 +1,7 @@
 package org.example.mydicomviewer.processing.image;
 
+import org.example.mydicomviewer.processing.file.PhotometricInterpretation;
+
 import java.awt.image.*;
 
 public class WindowingProcessorImpl implements WindowingProcessor {
@@ -8,6 +10,8 @@ public class WindowingProcessorImpl implements WindowingProcessor {
     private int windowWidth;
     private double rescaleSlope;
     private double rescaleIntercept;
+    private boolean isSigned;
+    private PhotometricInterpretation photometricInterpretation;
 
     @Override
     public BufferedImage applyWindowing(BufferedImage image, int windowLevel, int windowWidth,
@@ -19,7 +23,22 @@ public class WindowingProcessorImpl implements WindowingProcessor {
         return applyWindowing(image);
     }
 
+    @Override
+    public BufferedImage applyWindowing(BufferedImage image, WindowingParameters parameters) {
+        this.windowLevel = parameters.getWindowLevel();
+        this.windowWidth = parameters.getWindowWidth();
+        this.rescaleSlope = parameters.getRescaleSlope();
+        this.rescaleIntercept = parameters.getRescaleIntercept();
+        this.isSigned = parameters.isSigned();
+        this.photometricInterpretation = parameters.getPhotometricInterpretation();
+        return applyWindowing(image);
+    }
+
     public BufferedImage applyWindowing(BufferedImage sourceImage) {
+        if (photometricInterpretation == PhotometricInterpretation.RGB) {
+            return sourceImage;
+        }
+
         int lutSize = getLutSize(sourceImage);
 
         ByteLookupTable lookupTable = generateLookUpTable(lutSize);
@@ -68,7 +87,13 @@ public class WindowingProcessorImpl implements WindowingProcessor {
         int max = windowLevel + (windowWidth / 2);
 
         for (int i = 0; i < size; i++) {
-            int value = generateLookUpTableValue(i, min, max);
+            int trueValue = i;
+
+            if (isSigned) {
+                trueValue = (short) i;
+            }
+
+            int value = generateLookUpTableValue(trueValue, min, max);
             lut[i] = (byte) value;
         }
         return new ByteLookupTable(0, lut);

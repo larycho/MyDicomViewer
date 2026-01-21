@@ -44,6 +44,9 @@ public class ResliceDisplayer implements FileLoadedListener {
     }
 
     public void display() {
+        if (dicomFile == null) {
+            return;
+        }
         String path = dicomFile.getFilePath();
         List<DicomImage> images = dicomFile.getImages();
 
