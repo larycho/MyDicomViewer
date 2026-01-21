@@ -2,18 +2,37 @@ package org.example.mydicomviewer.views.filelist;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FileTreeNode {
     private String type;
     private FileNodeType nodeType = FileNodeType.IMAGE;
     private String text;
+    private String id;
     private List<FileTreeNode> children = new ArrayList<FileTreeNode>();
     private boolean isLeaf = false;
     private boolean isRoot = false;
     private File file;
     private boolean isPartialFile = false;
     private List<File> mainFile;
+
+    public void sortChildren() {
+        children.sort(Comparator.comparing(FileTreeNode::getText));
+        for (FileTreeNode child : children) {
+            child.sortChildren();
+        }
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
 
     public File getFile() {
         return file;

@@ -36,6 +36,18 @@ public class FileListScrollPane extends JScrollPane {
         setViewportView(tree);
     }
 
+    public void clear() {
+        root = new DefaultMutableTreeNode("Root");
+        treeModel = new DefaultTreeModel(root);
+        tree = new JTree(treeModel);
+        tree.setRootVisible(false);
+        tree.setCellRenderer(new TreeIconRenderer());
+        addActionListeners();
+        setViewportView(tree);
+        revalidate();
+        repaint();
+    }
+
     public void addActionListeners() {
         tree.addMouseListener(new MouseAdapter() {
            @Override

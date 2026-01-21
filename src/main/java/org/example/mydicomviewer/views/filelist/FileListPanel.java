@@ -35,6 +35,12 @@ public class FileListPanel extends JPanel {
         setupActionListeners();
     }
 
+    public void clear() {
+        scrollPane.clear();
+        revalidate();
+        repaint();
+    }
+
     public FileListState getState() {
         return scrollPane.getState();
     }

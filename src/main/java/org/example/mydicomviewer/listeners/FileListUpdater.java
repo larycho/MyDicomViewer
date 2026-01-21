@@ -54,6 +54,7 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
 
     @Override
     public void dicomDirLoaded(DicomDirLoadedEvent dicomDirLoadedEvent) {
+        fileListPanel.clear();
         DicomDirectory directory = dicomDirLoadedEvent.getDicomDirectory();
         addRootNode(directory);
     }
@@ -101,6 +102,7 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
 
     @Override
     public void folderLoaded(FolderLoadedEvent event) {
+        fileListPanel.clear();
         FileTreeNode tree = event.getTree();
         createRootNode(tree);
     }

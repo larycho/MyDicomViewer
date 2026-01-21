@@ -1,26 +1,35 @@
 package org.example.mydicomviewer.listeners;
 
 import com.google.inject.Inject;
+import org.example.mydicomviewer.events.DicomDirLoadedEvent;
 import org.example.mydicomviewer.events.FileLoadedEvent;
+import org.example.mydicomviewer.events.FolderLoadedEvent;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.Tag;
 import org.example.mydicomviewer.models.TagGroup;
+import org.example.mydicomviewer.services.DicomDirLoadManager;
 import org.example.mydicomviewer.services.FileLoadEventService;
+import org.example.mydicomviewer.services.FolderLoadedEventService;
 import org.example.mydicomviewer.views.TagPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class TagDisplayer implements FileLoadedListener {
+public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, DicomDirLoadedListener {
 
     private TagPanel tagPanel;
     private FileLoadEventService fileLoadEventService;
 
     @Inject
-    public TagDisplayer(TagPanel tagPanel, FileLoadEventService fileLoadEventService) {
+    public TagDisplayer(TagPanel tagPanel,
+                        FileLoadEventService fileLoadEventService,
+                        FolderLoadedEventService folderLoadedEventService,
+                        DicomDirLoadManager dicomDirLoadManager) {
         this.tagPanel = tagPanel;
         this.fileLoadEventService = fileLoadEventService;
         fileLoadEventService.addListener(this);
+        folderLoadedEventService.addListener(this);
+        dicomDirLoadManager.addListener(this);
     }
 
     public TagDisplayer(TagPanel tagPanel) {
@@ -68,5 +77,15 @@ public class TagDisplayer implements FileLoadedListener {
             dataArray[i][2] = tag.getValue();
         }
         return dataArray;
+    }
+
+    @Override
+    public void dicomDirLoaded(DicomDirLoadedEvent dicomDirLoadedEvent) {
+        tagPanel.clearScrollPane();
+    }
+
+    @Override
+    public void folderLoaded(FolderLoadedEvent event) {
+        tagPanel.clearScrollPane();
     }
 }

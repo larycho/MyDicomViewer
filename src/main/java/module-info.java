@@ -4,12 +4,14 @@ module org.example.mydicomviewer {
     requires pixelmed;
     requires com.formdev.flatlaf;
     requires ij;
-    requires java.desktop;
     requires sc.fiji.ij3d;
     requires org.scijava.parsington;
     requires com.google.guice;
     requires net.imagej;
     requires java.prefs;
+    requires java.desktop;
+    requires org.kordamp.ikonli.swing;
+    requires org.kordamp.ikonli.materialdesign2;
 
 
     exports org.example.mydicomviewer;

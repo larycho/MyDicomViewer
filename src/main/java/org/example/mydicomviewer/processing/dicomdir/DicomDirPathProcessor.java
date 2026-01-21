@@ -2,7 +2,8 @@
 package org.example.mydicomviewer.processing.dicomdir;
 
 import java.io.File;
+import java.util.Optional;
 
 public interface DicomDirPathProcessor {
-    DicomDirPath getDicomDirPath(File file);
+    Optional<DicomDirPath> getDicomDirPath(File file);
 }

@@ -33,6 +33,10 @@ public class TagPanel extends JPanel {
         scrollPane.setViewportView(table);
     }
 
+    public void clearScrollPane() {
+        scrollPane.setViewportView(null);
+    }
+
     private void refresh() {
         repaint();
         revalidate();

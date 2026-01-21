@@ -59,7 +59,7 @@ public class MultipleImagePanel extends JPanel {
     }
 
     public boolean areAnyImagesAdded() {
-        return wrappers.isEmpty();
+        return !wrappers.isEmpty();
     }
 
     public void setAndApplyMode(SplitScreenMode mode) {
@@ -115,6 +115,7 @@ public class MultipleImagePanel extends JPanel {
             remove(wrapper.getPanel());
         }
         wrappers.clear();
+        updateDisplay();
     }
 
 

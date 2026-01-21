@@ -42,6 +42,43 @@ public class TagProcessor {
         return getTagValue(address);
     }
 
+    public Optional<Boolean> getPixelRepresentation() {
+
+        TagAddress address = TagNumber.PIXEL_REPRESENTATION.getAddress();
+
+        return getBooleanTagValue(address);
+    }
+
+    public Optional<PhotometricInterpretation> getPhotometricInterpretation() {
+
+        TagAddress address = TagNumber.PHOTOMETRIC_INTERPRETATION.getAddress();
+
+        String value = getStringTagValue(address).orElse("");
+
+        switch (value) {
+            case "MONOCHROME1":
+                return Optional.of(PhotometricInterpretation.MONOCHROME1);
+            case "MONOCHROME2":
+                return Optional.of(PhotometricInterpretation.MONOCHROME2);
+            case "RGB":
+                return Optional.of(PhotometricInterpretation.RGB);
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<String> getStringTagValue(TagAddress address) {
+
+        if (dicomFile.containsTag(address)) {
+
+            Tag tag = dicomFile.getTag(address);
+            String content = tag.getValue();
+            return Optional.of(content);
+
+        }
+        return Optional.empty();
+    }
+
     private Optional<Double> getTagValue(TagAddress address) {
 
         if (dicomFile.containsTag(address)) {
@@ -64,4 +101,56 @@ public class TagProcessor {
             return Optional.empty();
         }
     }
+
+    private Optional<Boolean> getBooleanTagValue(TagAddress address) {
+
+        if (dicomFile.containsTag(address)) {
+
+            Tag tag = dicomFile.getTag(address);
+            String content = tag.getValue();
+
+            Optional<Boolean> intResult = parseBooleanFromInt(content);
+            if (intResult.isPresent()) {
+                return intResult;
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<Boolean> parseBooleanFromInt(String content) {
+        Optional<Integer> intResult = parseIntValue(content);
+
+        if (intResult.isPresent()) {
+            if (intResult.get() == 1) {
+                return Optional.of(true);
+            }
+            if (intResult.get() == 0) {
+                return Optional.of(false);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<Boolean> parseBooleanValue(String text) {
+
+        try {
+            Boolean center = Boolean.parseBoolean(text);
+            return Optional.of(center);
+        }
+        catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Integer> parseIntValue(String text) {
+
+        try {
+            Integer value = Integer.parseInt(text);
+            return Optional.of(value);
+        }
+        catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
 }

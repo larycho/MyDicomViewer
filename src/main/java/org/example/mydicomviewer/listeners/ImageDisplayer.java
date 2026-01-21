@@ -3,11 +3,12 @@ package org.example.mydicomviewer.listeners;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.*;
+import org.example.mydicomviewer.events.DicomDirLoadedEvent;
 import org.example.mydicomviewer.events.FileLoadedEvent;
+import org.example.mydicomviewer.events.FolderLoadedEvent;
 import org.example.mydicomviewer.events.PanelSelectedEvent;
 import org.example.mydicomviewer.models.DicomFile;
-import org.example.mydicomviewer.services.FileLoadEventService;
-import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
+import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.MultipleImagePanel;
 
 import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
@@ -18,7 +19,7 @@ import static java.lang.Math.round;
 
 
 @Singleton
-public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener {
+public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener {
 
     private final MultipleImagePanel multipleImagePanel;
     private ImagePanelSelectedEventService imagePanelSelectedEventService;
@@ -26,16 +27,30 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
     @Inject
     public ImageDisplayer(MultipleImagePanel multipleImagePanel,
                           FileLoadEventService fileLoadEventService,
-                          ImagePanelSelectedEventService panelSelectedService
+                          ImagePanelSelectedEventService panelSelectedService,
+                          DicomDirLoadManager dicomDirLoadManager,
+                          FolderLoadedEventService folderLoadedEventService
     ) {
         this.multipleImagePanel = multipleImagePanel;
         this.imagePanelSelectedEventService = panelSelectedService;
         fileLoadEventService.addListener(this);
         panelSelectedService.addListener(this);
+        dicomDirLoadManager.addListener(this);
+        folderLoadedEventService.addListener(this);
     }
 
     public ImageDisplayer(MultipleImagePanel multipleImagePanel) {
         this.multipleImagePanel = multipleImagePanel;
+    }
+
+    @Override
+    public void folderLoaded(FolderLoadedEvent event) {
+        this.multipleImagePanel.clearDisplay();
+    }
+
+    @Override
+    public void dicomDirLoaded(DicomDirLoadedEvent dicomDirLoadedEvent) {
+        this.multipleImagePanel.clearDisplay();
     }
 
     @Override

@@ -42,9 +42,12 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
         Map<DicomDirPath, ArrayList<File>> groupedFiles = new HashMap<>();
 
         for (File file : files) {
-            DicomDirPath path = dicomDirPathProcessor.getDicomDirPath(file);
-            groupedFiles.putIfAbsent(path, new ArrayList<>());
-            groupedFiles.get(path).add(file);
+            Optional<DicomDirPath> result = dicomDirPathProcessor.getDicomDirPath(file);
+            if (result.isPresent()) {
+                DicomDirPath path = result.get();
+                groupedFiles.putIfAbsent(path, new ArrayList<>());
+                groupedFiles.get(path).add(file);
+            }
         }
 
         return groupedFiles;
@@ -55,8 +58,12 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
 
         try (Stream<Path> walk = Files.walk(folder.toPath())) {
             walk.filter(p -> !Files.isDirectory(p))
-                .filter(p -> p.toFile().getName().endsWith(".dcm"))
-                .forEach(p -> {files.add(p.toFile());});
+                    .filter(p -> !p.toFile().isHidden())
+                    .filter(p -> {
+                        String fileName = p.toFile().getName();
+                        return fileName.endsWith(".dcm") || !fileName.contains(".");
+                    })
+                    .forEach(p -> {files.add(p.toFile());});
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,11 +76,11 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
         tree.setRoot(true);
 
         for (DicomDirPath key : mappings.keySet()) {
-            String patientId = key.getPatientId();
+            String patientId = key.getPatientId() == null ? "" : key.getPatientId();
 
             boolean found = false;
             for (FileTreeNode child : tree.getChildren()) {
-                if ( (child.getNodeType().equals(FileNodeType.PATIENT)) && (Objects.equals(child.getText(), key.getPatientId())) ) {
+                if ( (child.getNodeType().equals(FileNodeType.PATIENT)) && (Objects.equals(child.getId(), patientId)) ) {
                     browseStudy(child, key, mappings);
                     found = true;
                     break;
@@ -82,21 +89,23 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
             if (!found) {
                 FileTreeNode patientNode = new FileTreeNode();
                 patientNode.setNodeType(FileNodeType.PATIENT);
-                patientNode.setText(patientId);
+                patientNode.setId(patientId == null ? "" : patientId);
+                patientNode.setText(patientId == null ? "" : patientId);
                 tree.addChild(patientNode);
                 browseStudy(patientNode, key, mappings);
             }
 
         }
+        //tree.sortChildren();
         return tree;
     }
 
     private void browseStudy(FileTreeNode node, DicomDirPath key, Map<DicomDirPath, ArrayList<File>> mappings) {
-        String studyId = key.getStudyId();
+        String studyId = key.getStudyIdOrUid();
 
         boolean found = false;
         for (FileTreeNode child : node.getChildren()) {
-            if ( (child.getNodeType().equals(FileNodeType.STUDY)) && (child.getText().equals(studyId)) ) {
+            if ((child.getNodeType().equals(FileNodeType.STUDY)) && (child.getId().equals(key.getStudyIdOrUid() == null ? "" : key.getStudyIdOrUid()))) {
                 browseSeries(child, key, mappings);
                 found = true;
                 break;
@@ -105,18 +114,19 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
         if (!found) {
             FileTreeNode studyNode = new FileTreeNode();
             studyNode.setNodeType(FileNodeType.STUDY);
-            studyNode.setText(studyId);
+            studyNode.setId(studyId == null ? "" : studyId);
+            studyNode.setText(key.getStudyId() == null ? "" : key.getStudyId());
             node.addChild(studyNode);
             browseSeries(studyNode, key, mappings);
         }
     }
 
     private void browseSeries(FileTreeNode node, DicomDirPath key, Map<DicomDirPath, ArrayList<File>> mappings) {
-        String seriesId = key.getSeriesId();
+        String seriesId = key.getSeriesIdOrUid();
 
         boolean found = false;
         for (FileTreeNode child : node.getChildren()) {
-            if ( (child.getNodeType().equals(FileNodeType.SERIES)) && (Objects.equals(child.getText(), seriesId)) ) {
+            if ( (child.getNodeType().equals(FileNodeType.SERIES)) && (Objects.equals(child.getId(), seriesId)) ) {
                 browseImages(child, key, mappings);
                 setMainFile(child);
                 found = true;
@@ -126,7 +136,8 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
         if (!found) {
             FileTreeNode seriesNode = new FileTreeNode();
             seriesNode.setNodeType(FileNodeType.SERIES);
-            seriesNode.setText(seriesId);
+            seriesNode.setId(seriesId == null ? "" : seriesId);
+            seriesNode.setText(key.getSeriesId() == null ? "" : key.getSeriesId());
             node.addChild(seriesNode);
             browseImages(seriesNode, key, mappings);
             setMainFile(seriesNode);
@@ -155,6 +166,7 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
         for (File file : files) {
             FileTreeNode imageNode = new FileTreeNode();
             imageNode.setNodeType(FileNodeType.IMAGE);
+            imageNode.setId(instanceId == null ? "" : instanceId);
             imageNode.setText(file.getName());
             imageNode.setLeaf(true);
             imageNode.setFile(file);

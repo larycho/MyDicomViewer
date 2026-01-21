@@ -7,7 +7,9 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomImage;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
 import org.example.mydicomviewer.models.shapes.Point3D;
+import org.example.mydicomviewer.processing.file.PhotometricInterpretation;
 import org.example.mydicomviewer.processing.file.TagProcessor;
+import org.example.mydicomviewer.processing.image.WindowingParameters;
 import org.example.mydicomviewer.processing.image.WindowingProcessor;
 import org.example.mydicomviewer.processing.image.WindowingProcessorImpl;
 import org.example.mydicomviewer.services.DistanceCalculator;
@@ -23,6 +25,7 @@ public class ImageManagerImpl implements ImageManager {
 
     private DicomFile dicomFile;
 
+    private WindowingParameters windowingParameters = new WindowingParameters();
     private int windowLevel;
     private int windowWidth;
     private double rescaleSlope;
@@ -50,27 +53,31 @@ public class ImageManagerImpl implements ImageManager {
         DicomImage currentImage = images.get(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage.getImage(), level, width, rescaleIntercept, rescaleSlope);
+        //return windowingProcessor.applyWindowing(currentImage.getImage(), level, width, rescaleIntercept, rescaleSlope);
+        return windowingProcessor.applyWindowing(currentImage.getImage(), windowingParameters);
     }
 
     @Override
     public int getWindowWidth() {
-        return windowWidth;
+        return windowingParameters.getWindowWidth();
     }
 
     @Override
     public void setWindowWidth(int width) {
-        this.windowWidth = width;
+        windowingParameters.setWindowWidth(width);
+        //this.windowWidth = width;
     }
 
     @Override
     public int getWindowLevel() {
-        return windowLevel;
+        return windowingParameters.getWindowLevel();
+        //return windowLevel;
     }
 
     @Override
     public void setWindowLevel(int windowLevel) {
-        this.windowLevel = windowLevel;
+        windowingParameters.setWindowLevel(windowLevel);
+        //this.windowLevel = windowLevel;
     }
 
     @Override
@@ -123,7 +130,8 @@ public class ImageManagerImpl implements ImageManager {
         DicomImage currentImage = images.get(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage.getImage(), windowLevel, windowWidth, rescaleIntercept, rescaleSlope);
+        //return windowingProcessor.applyWindowing(currentImage.getImage(), windowLevel, windowWidth, rescaleIntercept, rescaleSlope);
+        return windowingProcessor.applyWindowing(currentImage.getImage(), windowingParameters);
     }
 
     @Override
@@ -250,10 +258,21 @@ public class ImageManagerImpl implements ImageManager {
         Optional<Double> width = tagProcessor.getWindowWidth();
         Optional<Double> slope = tagProcessor.getRescaleSlope();
         Optional<Double> intercept = tagProcessor.getRescaleIntercept();
+        Optional<Boolean> signed = tagProcessor.getPixelRepresentation();
+        Optional<PhotometricInterpretation> photometricInterpretation = tagProcessor.getPhotometricInterpretation();
 
         windowLevel = (int) Math.round(center.orElse(150.0));
         windowWidth = (int) Math.round(width.orElse(300.0));
         rescaleIntercept = intercept.orElse(0.0);
         rescaleSlope = slope.orElse(1.0);
+        boolean isSigned = signed.orElse(false);
+        PhotometricInterpretation photometric = photometricInterpretation.orElse(PhotometricInterpretation.RGB);
+
+        windowingParameters.setWindowLevel(windowLevel);
+        windowingParameters.setWindowWidth(windowWidth);
+        windowingParameters.setRescaleSlope(rescaleSlope);
+        windowingParameters.setRescaleIntercept(rescaleIntercept);
+        windowingParameters.setSigned(isSigned);
+        windowingParameters.setPhotometricInterpretation(photometric);
     }
 }

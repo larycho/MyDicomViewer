@@ -6,7 +6,7 @@ import java.util.List;
 
 public class FileListState {
 
-    private List<File> displayedFiles = new ArrayList<File>();
+    private final List<File> displayedFiles = new ArrayList<File>();
 
     public void addFile(File file) {
         displayedFiles.add(file);
@@ -23,6 +23,10 @@ public class FileListState {
             }
         }
         return false;
+    }
+
+    public void clearFiles() {
+        displayedFiles.clear();
     }
 
 }

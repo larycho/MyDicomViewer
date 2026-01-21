@@ -12,8 +12,11 @@ import org.example.mydicomviewer.services.ScreenModeProvider;
 import org.example.mydicomviewer.services.ScreenModeProviderImpl;
 import org.example.mydicomviewer.services.SelectedImageManager;
 import org.example.mydicomviewer.views.image.*;
+import org.kordamp.ikonli.materialdesign2.*;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +41,9 @@ public class ToolBar extends JToolBar {
     private final OpenDicomDirCommand commandDir;
     private final OpenFolderCommand openFolderCommand;
 
+    private final int DEFAULT_ICON_SIZE = 40;
+    private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
+
     @Inject
     public ToolBar(ImageDisplayer imageDisplayer,
                    ResliceDisplayer resliceDisplayer,
@@ -59,6 +65,7 @@ public class ToolBar extends JToolBar {
         addFilesButton();
         addResliceButton();
         addScreenModeButton();
+        addWindowingButtons();
         addDrawingTools();
 
         this.imageDisplayer = imageDisplayer;
@@ -78,11 +85,14 @@ public class ToolBar extends JToolBar {
 
     private void setupListeners() {
         addScreenModeListeners(imageDisplayer);
+        addWindowingListeners(imageDisplayer);
         addResliceListeners(resliceDisplayer);
     }
 
     private void addScreenModeButton() {
-        modes = new JButton("Modes");
+        FontIcon icon = FontIcon.of(MaterialDesignV.VIEW_DASHBOARD, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        modes = new JButton(icon);
+        modes.setToolTipText("Select screen mode");
         add(modes);
     }
 
@@ -101,7 +111,9 @@ public class ToolBar extends JToolBar {
     }
 
     private void addResliceButton() {
-        reslice = new JButton("Reslice");
+        FontIcon icon = FontIcon.of(MaterialDesignA.AXIS_ARROW, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        reslice = new JButton(icon);
+        reslice.setToolTipText("Reslice - Multiplanar Reconstruction");
         add(reslice);
         addSeparator();
     }
@@ -112,6 +124,7 @@ public class ToolBar extends JToolBar {
 
     private void addDrawingTools() {
         addSeparator();
+
         JLabel toolLabel = new JLabel("Select tool:");
         add(toolLabel);
 
@@ -121,7 +134,9 @@ public class ToolBar extends JToolBar {
             tools.addItem(tool);
         }
 
-        JButton apply = new JButton("Apply drawing tool");
+        FontIcon drawIcon = FontIcon.of(MaterialDesignD.DRAW, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton apply = new JButton(drawIcon);
+        apply.setToolTipText("Apply drawing tool");
         apply.addActionListener(e -> {
             DrawingTool selectedTool = (DrawingTool) tools.getSelectedItem();
             if (selectedTool != null) {
@@ -129,7 +144,9 @@ public class ToolBar extends JToolBar {
             }
         });
 
-        JButton settings = new JButton("Settings");
+        FontIcon settingsIcon = FontIcon.of(MaterialDesignC.COG, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton settings = new JButton(settingsIcon);
+        settings.setToolTipText("Draw settings");
 
         JPopupMenu popupMenu = new JPopupMenu();
         JCheckBoxMenuItem everyFrame = new JCheckBoxMenuItem("Draw shapes separately for every frame");
@@ -150,8 +167,9 @@ public class ToolBar extends JToolBar {
     }
 
     private void addWindowingButtons() {
-        ImageIcon draw = new ImageIcon("src/main/resources/org/example/mydicomviewer/icons/windowing.png");
-        manualWindowing = new JButton(draw);
+        addSeparator();
+        FontIcon icon = FontIcon.of(MaterialDesignC.CONTRAST_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        manualWindowing = new JButton(icon);
         manualWindowing.setToolTipText("Manual windowing");
         add(manualWindowing);
     }
@@ -175,7 +193,9 @@ public class ToolBar extends JToolBar {
     }
 
     private void addFilesButton() {
-        addFiles = new JButton("Add new...");
+        FontIcon icon = FontIcon.of(MaterialDesignF.FOLDER_PLUS, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        addFiles = new JButton(icon);
+        addFiles.setToolTipText("Add new files");
 
         createAddFilesPopupMenu();
         addFiles.addActionListener(e -> addFilesMenu.show(addFiles, 0, addFiles.getHeight()));
@@ -187,15 +207,15 @@ public class ToolBar extends JToolBar {
     private void createAddFilesPopupMenu() {
         addFilesMenu = new JPopupMenu();
 
-        JMenuItem singleFile = new JMenuItem("...single DICOM file");
+        JMenuItem singleFile = new JMenuItem("Add a single file");
         singleFile.addActionListener((ActionEvent e) -> openFileCommand.execute());
         addFilesMenu.add(singleFile);
 
-        JMenuItem folder = new JMenuItem("...DICOM image folder");
+        JMenuItem folder = new JMenuItem("Add a DICOM image folder");
         folder.addActionListener((ActionEvent e) -> openFolderCommand.execute());
         addFilesMenu.add(folder);
 
-        JMenuItem dicomdir = new JMenuItem("...DICOMDIR");
+        JMenuItem dicomdir = new JMenuItem("Add a DICOMDIR");
         dicomdir.addActionListener((ActionEvent e) -> commandDir.execute());
         addFilesMenu.add(dicomdir);
 

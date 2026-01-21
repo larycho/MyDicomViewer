@@ -9,6 +9,40 @@ public class DicomDirPath {
     private String seriesId;
     private String instanceId;
 
+    private String studyInstanceUID;
+    private String seriesInstanceUID;
+
+    public String getStudyIdOrUid() {
+        if (studyId == null) {
+            return studyInstanceUID;
+        }
+        return studyId;
+    }
+
+    public String getSeriesIdOrUid() {
+        if (seriesId == null) {
+            return seriesInstanceUID;
+        }
+        return seriesId;
+    }
+
+    public String getSeriesInstanceUID() {
+        return seriesInstanceUID;
+    }
+
+    public void setSeriesInstanceUID(String seriesInstanceUID) {
+        this.seriesInstanceUID = seriesInstanceUID;
+    }
+
+
+    public String getStudyInstanceUID() {
+        return studyInstanceUID;
+    }
+
+    public void setStudyInstanceUID(String studyInstanceUID) {
+        this.studyInstanceUID = studyInstanceUID;
+    }
+
     public String getPatientId() {
         return patientId;
     }
