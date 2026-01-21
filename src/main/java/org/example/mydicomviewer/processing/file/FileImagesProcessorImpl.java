@@ -9,13 +9,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class FileImagesProcessorImpl implements FileImagesProcessor {
 
     @Override
     public DicomSeries getImageSeriesFromFile(File file) {
-        SourceImage sourceImage = openFile(file);
+        Optional<SourceImage> sourceImage = openFile(file);
 
+        return sourceImage.map(this::imageReadCorrectly).orElseGet(this::imageCouldNotBeRead);
+    }
+
+
+    private DicomSeries imageReadCorrectly(SourceImage sourceImage) {
         ArrayList<DicomImage> frames = extractFrames(sourceImage);
 
         DicomSeries series = new DicomSeries(frames);
@@ -23,11 +29,12 @@ public class FileImagesProcessorImpl implements FileImagesProcessor {
         return series;
     }
 
-    private SourceImage openFile(File file) {
+    private Optional<SourceImage> openFile(File file) {
         try {
-            return new SourceImage(file.getAbsolutePath());
+            SourceImage sourceImage = new SourceImage(file.getAbsolutePath());
+            return Optional.of(sourceImage);
         } catch (IOException | DicomException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -45,5 +52,9 @@ public class FileImagesProcessorImpl implements FileImagesProcessor {
             frames.add(frame);
         }
         return frames;
+    }
+
+    private DicomSeries imageCouldNotBeRead() {
+        return new DicomSeries(new ArrayList<>());
     }
 }
