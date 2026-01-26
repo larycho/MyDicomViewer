@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ImagePanelWrapperImpl implements ImagePanelWrapper {
 
-    private ImageManager imageManager;
+    private final ImageManager imageManager;
     private ImagePanel imagePanel;
 
     public ImagePanelWrapperImpl(ImageManager imageManager) {
@@ -73,6 +73,13 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     public void setWindowing(int level, int width) {
         imageManager.setWindowLevel(level);
         imageManager.setWindowWidth(width);
+        BufferedImage image = imageManager.getCurrentFrame();
+        imagePanel.setImage(image);
+    }
+
+    @Override
+    public void resetWindowing() {
+        imageManager.resetWindowing();
         BufferedImage image = imageManager.getCurrentFrame();
         imagePanel.setImage(image);
     }

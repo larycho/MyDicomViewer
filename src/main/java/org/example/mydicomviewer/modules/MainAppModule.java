@@ -7,6 +7,7 @@ import com.google.inject.multibindings.OptionalBinder;
 import org.example.mydicomviewer.listeners.FileListUpdater;
 import org.example.mydicomviewer.listeners.FooterUpdater;
 import org.example.mydicomviewer.listeners.TagDisplayer;
+import org.example.mydicomviewer.listeners.ToolBarUpdater;
 import org.example.mydicomviewer.plugin.StartupAction;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirPathProcessor;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirPathProcessorImpl;
@@ -44,6 +45,7 @@ public class MainAppModule extends AbstractModule {
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();
         bind(FooterUpdater.class).asEagerSingleton();
+        bind(ToolBarUpdater.class).asEagerSingleton();
 
         Multibinder.newSetBinder(binder(), StartupAction.class);
         Multibinder.newSetBinder(binder(), DrawingTool.class);

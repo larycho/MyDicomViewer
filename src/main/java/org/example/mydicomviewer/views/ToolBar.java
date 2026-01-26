@@ -8,9 +8,8 @@ import org.example.mydicomviewer.commands.OpenFolderCommand;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
 import org.example.mydicomviewer.listeners.ResliceDisplayer;
-import org.example.mydicomviewer.services.ScreenModeProvider;
-import org.example.mydicomviewer.services.ScreenModeProviderImpl;
-import org.example.mydicomviewer.services.SelectedImageManager;
+import org.example.mydicomviewer.processing.image.WindowPreset;
+import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.image.*;
 import org.kordamp.ikonli.materialdesign2.*;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -18,9 +17,8 @@ import org.kordamp.ikonli.swing.FontIcon;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 @Singleton
 public class ToolBar extends JToolBar {
@@ -30,9 +28,13 @@ public class ToolBar extends JToolBar {
     private JButton modes;
     private JButton addFiles;
 
+    private JComboBox<WindowPreset> presetComboBox;
+
     private JPopupMenu addFilesMenu;
 
     private Set<DrawingTool> tools;
+    private List<WindowPreset> presets;
+
     private final ImageDisplayer imageDisplayer;
     private final ResliceDisplayer resliceDisplayer;
     private final SelectedImageManager selectedImageManager;
@@ -59,6 +61,7 @@ public class ToolBar extends JToolBar {
         this.commandDir = commandDir;
 
         createToolList(pluginTools);
+        createPresetList();
 
         this.selectedImageManager = selectedImageManager;
 
@@ -66,6 +69,7 @@ public class ToolBar extends JToolBar {
         addResliceButton();
         addScreenModeButton();
         addWindowingButtons();
+        addWindowPresetSelection();
         addDrawingTools();
 
         this.imageDisplayer = imageDisplayer;
@@ -83,10 +87,22 @@ public class ToolBar extends JToolBar {
         tools.addAll(pluginTools);
     }
 
+    private void createPresetList() {
+        presets = new ArrayList<>();
+        presets.add(new WindowPreset(0, 0, "Default"));
+
+        WindowingPresetProvider presetProvider = new WindowingPresetProviderImpl();
+        List<WindowPreset> additionalPresets = presetProvider.getAvailablePresets();
+        additionalPresets.sort(Comparator.comparing(WindowPreset::getName));
+
+        presets.addAll(additionalPresets);
+    }
+
     private void setupListeners() {
         addScreenModeListeners(imageDisplayer);
         addWindowingListeners(imageDisplayer);
         addResliceListeners(resliceDisplayer);
+        addPresetSelectionListeners();
     }
 
     private void addScreenModeButton() {
@@ -219,5 +235,46 @@ public class ToolBar extends JToolBar {
         dicomdir.addActionListener((ActionEvent e) -> commandDir.execute());
         addFilesMenu.add(dicomdir);
 
+    }
+
+    private void addWindowPresetSelection() {
+        presetComboBox = new JComboBox<>();
+
+        for (WindowPreset preset : this.presets) {
+            presetComboBox.addItem(preset);
+        }
+
+        presetComboBox.setMaximumSize(presetComboBox.getPreferredSize());
+        presetComboBox.setMaximumRowCount(10);
+        add(presetComboBox);
+    }
+
+    private void addPresetSelectionListeners() {
+        presetComboBox.addActionListener(e -> {
+            if (e.getSource() instanceof JComboBox comboBox) {
+                if (comboBox.getSelectedItem() instanceof WindowPreset preset) {
+
+                    if (preset.getName().equals("Default")) {
+                        imageDisplayer.setDefaultWindowing();
+                    }
+                    else {
+                        imageDisplayer.setPreset(preset);
+                    }
+                }
+            }
+        });
+    }
+
+    public void showDefaultPreset() {
+
+        for (int i = 0; i < presetComboBox.getItemCount(); i++) {
+
+            WindowPreset preset = presetComboBox.getItemAt(i);
+
+            if (preset.getName().equals("Default")) {
+                presetComboBox.setSelectedIndex(i);
+                break;
+            }
+        }
     }
 }

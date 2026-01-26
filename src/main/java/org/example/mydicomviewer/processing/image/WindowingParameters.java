@@ -18,7 +18,12 @@ public class WindowingParameters {
     }
 
     public void setWindowWidth(int windowWidth) {
-        this.windowWidth = windowWidth;
+        if (windowWidth == 0) {
+            this.windowWidth = 1;
+        }
+        else {
+            this.windowWidth = windowWidth;
+        }
     }
 
     public int getWindowLevel() {

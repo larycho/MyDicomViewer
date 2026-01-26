@@ -165,6 +165,12 @@ public class TagProcessor {
 
         int windowLevel = (int) Math.round(center.orElse(150.0));
         int windowWidth = (int) Math.round(width.orElse(300.0));
+
+        if (windowWidth == 0 && windowLevel == 0) {
+            windowWidth = 400;
+            windowLevel = 50;
+        }
+
         double rescaleIntercept = intercept.orElse(0.0);
         double rescaleSlope = slope.orElse(1.0);
         boolean isSigned = signed.orElse(false);

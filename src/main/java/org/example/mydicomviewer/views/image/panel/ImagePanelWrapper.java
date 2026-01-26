@@ -25,6 +25,8 @@ public interface ImagePanelWrapper {
 
     void setWindowing(int level, int width);
 
+    void resetWindowing();
+
     int getWindowLevel();
 
     int getWindowWidth();

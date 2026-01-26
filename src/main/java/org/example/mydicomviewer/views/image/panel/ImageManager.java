@@ -3,11 +3,9 @@ package org.example.mydicomviewer.views.image.panel;
 import org.example.mydicomviewer.display.overlay.OverlayText;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
-import org.example.mydicomviewer.models.shapes.Point3D;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +26,8 @@ public interface ImageManager {
     void changeWindowLevelBy(int delta);
 
     void changeWindowWidthBy(int delta);
+
+    void resetWindowing();
 
     BufferedImage moveToNextFrame();
 

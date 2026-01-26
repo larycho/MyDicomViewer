@@ -67,6 +67,10 @@ public class MultipleImagePanel extends JPanel {
         updateDisplay();
     }
 
+    public List<ImagePanelWrapper> getAllImages() {
+        return wrappers;
+    }
+
 
     public void addImage(ImagePanelWrapper wrapper) {
         int maxSlots = mode.getElements().size();

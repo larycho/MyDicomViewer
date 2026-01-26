@@ -98,6 +98,12 @@ public class ImageManagerResliceImpl implements ImageManager {
     }
 
     @Override
+    public void resetWindowing() {
+        TagProcessor tagProcessor = new TagProcessor(dicomFile);
+        windowingParameters = tagProcessor.getWindowingParameters();
+    }
+
+    @Override
     public BufferedImage moveToNextFrame() {
         int maxFrameNumber = getMaxFrameIndex();
 

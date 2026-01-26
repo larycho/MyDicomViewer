@@ -85,6 +85,12 @@ public class ImageManagerImpl implements ImageManager {
     }
 
     @Override
+    public void resetWindowing() {
+        TagProcessor tagProcessor = new TagProcessor(dicomFile);
+        windowingParameters = tagProcessor.getWindowingParameters();
+    }
+
+    @Override
     public BufferedImage moveToNextFrame() {
         int maxIndex = dicomFile.getImages().size() - 1;
         if (currentFrame == maxIndex) {

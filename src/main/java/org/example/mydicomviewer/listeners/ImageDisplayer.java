@@ -8,11 +8,14 @@ import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.events.FolderLoadedEvent;
 import org.example.mydicomviewer.events.PanelSelectedEvent;
 import org.example.mydicomviewer.models.DicomFile;
+import org.example.mydicomviewer.processing.image.WindowPreset;
 import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.MultipleImagePanel;
 
 import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
+
+import java.util.List;
 
 import static java.lang.Math.round;
 
@@ -22,7 +25,7 @@ import static java.lang.Math.round;
 public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener {
 
     private final MultipleImagePanel multipleImagePanel;
-    private ImagePanelSelectedEventService imagePanelSelectedEventService;
+    private final ImagePanelSelectedEventService imagePanelSelectedEventService;
 
     @Inject
     public ImageDisplayer(MultipleImagePanel multipleImagePanel,
@@ -37,10 +40,6 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         panelSelectedService.addListener(this);
         dicomDirLoadManager.addListener(this);
         folderLoadedEventService.addListener(this);
-    }
-
-    public ImageDisplayer(MultipleImagePanel multipleImagePanel) {
-        this.multipleImagePanel = multipleImagePanel;
     }
 
     @Override
@@ -102,6 +101,22 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
             if (imagePanel != null) {
                 imagePanel.setWindowing((int) round(center), (int) round(width));
             }
+        }
+    }
+
+    public void setPreset(WindowPreset preset) {
+        List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
+
+        for (ImagePanelWrapper wrapper : wrappers) {
+            wrapper.setWindowing(preset.getLevel(), preset.getWidth());
+        }
+    }
+
+    public void setDefaultWindowing() {
+        List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
+
+        for (ImagePanelWrapper wrapper : wrappers) {
+            wrapper.resetWindowing();
         }
     }
 
