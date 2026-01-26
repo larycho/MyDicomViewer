@@ -12,6 +12,7 @@ module org.example.mydicomviewer {
     requires java.desktop;
     requires org.kordamp.ikonli.swing;
     requires org.kordamp.ikonli.materialdesign2;
+    requires org.slf4j;
 
 
     exports org.example.mydicomviewer;

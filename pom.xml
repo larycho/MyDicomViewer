@@ -58,24 +58,18 @@
             <groupId>com.pixelmed</groupId>
             <artifactId>pixelmed</artifactId>
             <version>25.02.20</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/pixelmed-25.02.20.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.pixelmed</groupId>
             <artifactId>pixelmed-codec</artifactId>
             <version>25.02.20</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/pixelmed-codec-25.02.20.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.pixelmed</groupId>
             <artifactId>pixelmed-imageio</artifactId>
             <version>25.02.20</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/pixelmed-imageio-25.02.20.jar</systemPath>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-core -->
@@ -92,11 +86,11 @@
             <version>1.4.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.18</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback</groupId>-->
+<!--            <artifactId>logback-classic</artifactId>-->
+<!--            <version>1.5.18</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -154,6 +148,13 @@
 
     <repositories>
         <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>www.dcm4che.org</id>
             <name>Dcm4che Repo</name>
             <url>https://maven.dcm4che.org/</url>
@@ -166,6 +167,10 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>local-project-repo</id>
+            <url>file://${project.basedir}/repo</url>
         </repository>
     </repositories>
 
@@ -199,26 +204,29 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-shade-plugin</artifactId>-->
-<!--                <version>3.5.0</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>shade</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <transformers>-->
-<!--                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
-<!--                                    <mainClass>org.example.mydicomviewer.MyDicomViewer</mainClass>-->
-<!--                                </transformer>-->
-<!--                            </transformers>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.example.mydicomviewer.MyDicomViewer</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
         </plugins>
     </build>
 </project>

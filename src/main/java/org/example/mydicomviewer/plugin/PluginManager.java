@@ -26,11 +26,16 @@ public class PluginManager {
     private ClassLoader searchForPlugins(File directory) throws Exception {
 
         File[] jars = directory.listFiles((dir, name) -> name.endsWith(".jar"));
+
+        if (jars == null) {
+            return null;
+        }
+        if (jars.length == 0) {
+            return null;
+        }
+
         for (File jar : jars) {
             System.out.println("Searching for plugins in " + jar);
-        }
-        if (jars == null || jars.length == 0) {
-            return null;
         }
 
         URL[] urls = convertFilesToURLs(jars);
