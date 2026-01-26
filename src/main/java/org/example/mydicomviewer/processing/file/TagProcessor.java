@@ -3,6 +3,7 @@ package org.example.mydicomviewer.processing.file;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.Tag;
 import org.example.mydicomviewer.models.TagAddress;
+import org.example.mydicomviewer.processing.image.WindowingParameters;
 
 import java.util.Optional;
 
@@ -151,6 +152,32 @@ public class TagProcessor {
         catch (NumberFormatException e) {
             return Optional.empty();
         }
+    }
+
+    public WindowingParameters getWindowingParameters() {
+
+        Optional<Double> center = getWindowCenter();
+        Optional<Double> width = getWindowWidth();
+        Optional<Double> slope = getRescaleSlope();
+        Optional<Double> intercept = getRescaleIntercept();
+        Optional<Boolean> signed = getPixelRepresentation();
+        Optional<PhotometricInterpretation> photometricInterpretation = getPhotometricInterpretation();
+
+        int windowLevel = (int) Math.round(center.orElse(150.0));
+        int windowWidth = (int) Math.round(width.orElse(300.0));
+        double rescaleIntercept = intercept.orElse(0.0);
+        double rescaleSlope = slope.orElse(1.0);
+        boolean isSigned = signed.orElse(false);
+        PhotometricInterpretation photometric = photometricInterpretation.orElse(PhotometricInterpretation.RGB);
+
+        WindowingParameters windowingParameters = new WindowingParameters();
+        windowingParameters.setWindowLevel(windowLevel);
+        windowingParameters.setWindowWidth(windowWidth);
+        windowingParameters.setRescaleSlope(rescaleSlope);
+        windowingParameters.setRescaleIntercept(rescaleIntercept);
+        windowingParameters.setSigned(isSigned);
+        windowingParameters.setPhotometricInterpretation(photometric);
+        return windowingParameters;
     }
 
 }

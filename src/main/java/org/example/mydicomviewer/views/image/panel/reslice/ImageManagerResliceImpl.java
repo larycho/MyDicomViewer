@@ -9,6 +9,7 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
 import org.example.mydicomviewer.models.shapes.Point3D;
 import org.example.mydicomviewer.processing.file.TagProcessor;
+import org.example.mydicomviewer.processing.image.WindowingParameters;
 import org.example.mydicomviewer.processing.image.WindowingProcessor;
 import org.example.mydicomviewer.processing.image.WindowingProcessorImpl;
 import org.example.mydicomviewer.processing.reslice.Reslicer;
@@ -22,23 +23,20 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ImageManagerResliceImpl implements ImageManager {
 
-    private DicomFile dicomFile;
+    private final DicomFile dicomFile;
 
     private Axis currentAxis = Axis.Z;
-    private int windowLevel;
-    private int windowWidth;
-    private double rescaleIntercept;
-    private double rescaleSlope;
+
+    private WindowingParameters windowingParameters;
 
     private int currentFrame = 0;
 
     private Map<Axis, ShapeManager> shapeManagers;
 
-    private Reslicer reslicer;
+    private final Reslicer reslicer;
 
     public ImageManagerResliceImpl(DicomFile dicomFile) {
         this.dicomFile = dicomFile;
@@ -64,38 +62,39 @@ public class ImageManagerResliceImpl implements ImageManager {
         BufferedImage currentImage = getSlice(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage, level, width, rescaleIntercept, rescaleSlope);
-
+        return windowingProcessor.applyWindowing(currentImage, windowingParameters);
     }
 
     @Override
     public int getWindowWidth() {
-        return windowWidth;
+        return windowingParameters.getWindowWidth();
     }
 
     @Override
     public void setWindowWidth(int width) {
-        this.windowWidth = width;
+        windowingParameters.setWindowWidth(width);
     }
 
     @Override
     public int getWindowLevel() {
-        return windowLevel;
+        return windowingParameters.getWindowLevel();
     }
 
     @Override
     public void setWindowLevel(int windowLevel) {
-        this.windowLevel = windowLevel;
+        windowingParameters.setWindowLevel(windowLevel);
     }
 
     @Override
     public void changeWindowLevelBy(int delta) {
-        windowLevel = windowLevel + delta;
+        int newLevel = windowingParameters.getWindowLevel() + delta;
+        windowingParameters.setWindowLevel(newLevel);
     }
 
     @Override
     public void changeWindowWidthBy(int delta) {
-        windowWidth = windowWidth + delta;
+        int newWidth = windowingParameters.getWindowWidth() + delta;
+        windowingParameters.setWindowWidth(newWidth);
     }
 
     @Override
@@ -141,7 +140,7 @@ public class ImageManagerResliceImpl implements ImageManager {
         BufferedImage currentImage = getSlice(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        return windowingProcessor.applyWindowing(currentImage, windowLevel, windowWidth, rescaleIntercept, rescaleSlope);
+        return windowingProcessor.applyWindowing(currentImage, windowingParameters);
     }
 
     @Override
@@ -289,16 +288,7 @@ public class ImageManagerResliceImpl implements ImageManager {
 
     private void initializeWindowingParams() {
         TagProcessor tagProcessor = new TagProcessor(dicomFile);
-
-        Optional<Double> center = tagProcessor.getWindowCenter();
-        Optional<Double> width = tagProcessor.getWindowWidth();
-        Optional<Double> slope = tagProcessor.getRescaleSlope();
-        Optional<Double> intercept = tagProcessor.getRescaleIntercept();
-
-        windowLevel = (int) Math.round(center.orElse(150.0));
-        windowWidth = (int) Math.round(width.orElse(300.0));
-        rescaleIntercept = intercept.orElse(0.0);
-        rescaleSlope = slope.orElse(1.0);
+        windowingParameters = tagProcessor.getWindowingParameters();
     }
 
 

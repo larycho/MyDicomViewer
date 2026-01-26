@@ -7,7 +7,6 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomImage;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
 import org.example.mydicomviewer.models.shapes.Point3D;
-import org.example.mydicomviewer.processing.file.PhotometricInterpretation;
 import org.example.mydicomviewer.processing.file.TagProcessor;
 import org.example.mydicomviewer.processing.image.WindowingParameters;
 import org.example.mydicomviewer.processing.image.WindowingProcessor;
@@ -23,19 +22,16 @@ import java.util.*;
 
 public class ImageManagerImpl implements ImageManager {
 
-    private DicomFile dicomFile;
+    private final DicomFile dicomFile;
 
-    private WindowingParameters windowingParameters = new WindowingParameters();
-    private int windowLevel;
-    private int windowWidth;
-    private double rescaleSlope;
-    private double rescaleIntercept;
+    private WindowingParameters windowingParameters;
+
     private int currentFrame = 0;
 
     private boolean persistShapes = true;
 
-    private List<DrawableShape> currentShapes = new ArrayList<>();
-    private Map<Integer, List<DrawableShape>> shapesForEachFrame = new HashMap<>();
+    private final List<DrawableShape> currentShapes = new ArrayList<>();
+    private final Map<Integer, List<DrawableShape>> shapesForEachFrame = new HashMap<>();
 
     public ImageManagerImpl(DicomFile dicomFile) {
         this.dicomFile = dicomFile;
@@ -53,7 +49,6 @@ public class ImageManagerImpl implements ImageManager {
         DicomImage currentImage = images.get(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        //return windowingProcessor.applyWindowing(currentImage.getImage(), level, width, rescaleIntercept, rescaleSlope);
         return windowingProcessor.applyWindowing(currentImage.getImage(), windowingParameters);
     }
 
@@ -65,29 +60,28 @@ public class ImageManagerImpl implements ImageManager {
     @Override
     public void setWindowWidth(int width) {
         windowingParameters.setWindowWidth(width);
-        //this.windowWidth = width;
     }
 
     @Override
     public int getWindowLevel() {
         return windowingParameters.getWindowLevel();
-        //return windowLevel;
     }
 
     @Override
     public void setWindowLevel(int windowLevel) {
         windowingParameters.setWindowLevel(windowLevel);
-        //this.windowLevel = windowLevel;
     }
 
     @Override
     public void changeWindowLevelBy(int delta) {
-        windowLevel = windowLevel + delta;
+        int newLevel = windowingParameters.getWindowLevel() + delta;
+        windowingParameters.setWindowLevel(newLevel);
     }
 
     @Override
     public void changeWindowWidthBy(int delta) {
-        windowWidth = windowWidth + delta;
+        int newWidth = windowingParameters.getWindowWidth() + delta;
+        windowingParameters.setWindowWidth(newWidth);
     }
 
     @Override
@@ -130,7 +124,6 @@ public class ImageManagerImpl implements ImageManager {
         DicomImage currentImage = images.get(currentFrame);
 
         WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
-        //return windowingProcessor.applyWindowing(currentImage.getImage(), windowLevel, windowWidth, rescaleIntercept, rescaleSlope);
         return windowingProcessor.applyWindowing(currentImage.getImage(), windowingParameters);
     }
 
@@ -253,26 +246,6 @@ public class ImageManagerImpl implements ImageManager {
 
     private void initializeWindowingParams() {
         TagProcessor tagProcessor = new TagProcessor(dicomFile);
-
-        Optional<Double> center = tagProcessor.getWindowCenter();
-        Optional<Double> width = tagProcessor.getWindowWidth();
-        Optional<Double> slope = tagProcessor.getRescaleSlope();
-        Optional<Double> intercept = tagProcessor.getRescaleIntercept();
-        Optional<Boolean> signed = tagProcessor.getPixelRepresentation();
-        Optional<PhotometricInterpretation> photometricInterpretation = tagProcessor.getPhotometricInterpretation();
-
-        windowLevel = (int) Math.round(center.orElse(150.0));
-        windowWidth = (int) Math.round(width.orElse(300.0));
-        rescaleIntercept = intercept.orElse(0.0);
-        rescaleSlope = slope.orElse(1.0);
-        boolean isSigned = signed.orElse(false);
-        PhotometricInterpretation photometric = photometricInterpretation.orElse(PhotometricInterpretation.RGB);
-
-        windowingParameters.setWindowLevel(windowLevel);
-        windowingParameters.setWindowWidth(windowWidth);
-        windowingParameters.setRescaleSlope(rescaleSlope);
-        windowingParameters.setRescaleIntercept(rescaleIntercept);
-        windowingParameters.setSigned(isSigned);
-        windowingParameters.setPhotometricInterpretation(photometric);
+        windowingParameters = tagProcessor.getWindowingParameters();
     }
 }
