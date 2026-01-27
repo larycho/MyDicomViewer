@@ -38,6 +38,11 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     }
 
     @Override
+    public void centerImage() {
+        imagePanel.centerImage();
+    }
+
+    @Override
     public int getCurrentFrameNumber() {
         return imageManager.getCurrentFrameNumber();
     }
@@ -176,6 +181,7 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
         imageManager.setAxis(axis);
         BufferedImage image = imageManager.getCurrentFrame();
         imagePanel.setImage(image);
+        imagePanel.centerImage();
         imagePanel.setAxis(axis);
     }
 }

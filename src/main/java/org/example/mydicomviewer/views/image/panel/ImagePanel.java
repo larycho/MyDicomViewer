@@ -33,4 +33,6 @@ public interface ImagePanel {
     void setWindowingTool();
 
     void setAxis(Axis axis);
+
+    void centerImage();
 }

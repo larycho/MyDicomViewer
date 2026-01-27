@@ -120,10 +120,17 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
             }
         });
 
+        JMenuItem centerImage = new JMenuItem("Center Image");
+        centerImage.addActionListener(e -> {
+            wrapper.centerImage();
+            wrapper.refresh();
+        });
+
         popupMenu.add(overlayItem);
         popupMenu.add(windowingMode);
         popupMenu.add(panAndZoomMode);
         popupMenu.add(selectImage);
+        popupMenu.add(centerImage);
 
         return popupMenu;
     }

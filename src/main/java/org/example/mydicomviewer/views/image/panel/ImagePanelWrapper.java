@@ -67,4 +67,5 @@ public interface ImagePanelWrapper {
 
     void addPanelSelectedService(ImagePanelSelectedEventService panelSelectedService);
 
+    void centerImage();
 }

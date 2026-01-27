@@ -7,6 +7,8 @@ import org.example.mydicomviewer.views.image.ImageTool;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -35,13 +37,15 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
     private JLabel bottomLeft;
     private JLabel bottomRight;
 
+    private boolean hasBeenDrawn = false;
+
     public InnerImagePanelImpl(ImagePanelWrapper imagePanelWrapper, ImageManager imageManager) {
         this.imagePanelWrapper = imagePanelWrapper;
         this.imageManager = imageManager;
 
         setVisualParameters();
-
         setOverlay();
+        //addCentering();
     }
 
     private void setVisualParameters() {
@@ -54,6 +58,16 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
         overlayText = imagePanelWrapper.getOverlay();
         addCornerLabels();
         updateBottomRight();
+    }
+
+    private void addCentering() {
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                centerImage();
+                removeComponentListener(this);
+            }
+        });
     }
 
     private void addCornerLabels() {
@@ -215,13 +229,11 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
     public void setZoom(double zoom) {
         this.zoom = zoom;
         updateBottomRight();
-        repaint();
     }
 
     @Override
     public void setOffset(Point p) {
         offset = new Point(p);
-        repaint();
     }
 
     @Override
@@ -240,8 +252,84 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
     }
 
     @Override
+    public void centerImage() {
+
+        if (!imageCanBeDrawn()) { return; }
+
+        double newZoom = calculateZoomForCentering();
+        setZoom(newZoom);
+
+        Point newOffset = calculateOffsetForCentering();
+        setOffset(newOffset);
+    }
+
+    private Point calculateOffsetForCentering() {
+
+        int x = getHorizontalCenteringOffset();
+        int y = getVerticalCenteringOffset();
+
+        return new Point(x, y);
+    }
+
+    private int getHorizontalCenteringOffset() {
+
+        int panelWidth = this.getWidth();
+        int imageWidth = (int) (image.getWidth() * zoom);
+
+        return (panelWidth - imageWidth) / 2;
+    }
+
+    private int getVerticalCenteringOffset() {
+
+        int panelHeight = this.getHeight();
+
+        double ratio = imageManager.getAspectRatioShift();
+        double imageHeight = image.getHeight() * zoom * ratio;
+
+        return (int) ((panelHeight - imageHeight) / 2);
+    }
+
+    private double calculateZoomForCentering() {
+
+        double horizontalZoom = calculateZoomForHorizontalFilling();
+        double verticalZoom = calculateZoomForVerticalFilling();
+
+        return Math.min(horizontalZoom, verticalZoom);
+    }
+
+    private double calculateZoomForHorizontalFilling() {
+
+        int panelWidth = this.getWidth();
+        int imageWidth = image.getWidth();
+
+        return (double) panelWidth / imageWidth;
+    }
+
+    private double calculateZoomForVerticalFilling() {
+
+        int panelHeight = this.getHeight();
+        int imageHeight = image.getHeight();
+        double ratio = imageManager.getAspectRatioShift();
+
+        return (double) panelHeight / (ratio * imageHeight);
+    }
+
+    private boolean imageCanBeDrawn() {
+
+        if (image == null) { return false; }
+
+        return image.getWidth() != 0 && image.getHeight() != 0;
+    }
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        if (!hasBeenDrawn) {
+            centerImage();
+            hasBeenDrawn = true;
+        }
+
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -251,7 +339,6 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
 
         transform.translate(offset.x, offset.y);
         transform.scale(zoom, zoom * ratio);
-
 
         g2.drawImage(image, transform, null);
 

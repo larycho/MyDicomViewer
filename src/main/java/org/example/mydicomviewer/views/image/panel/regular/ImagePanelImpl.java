@@ -16,10 +16,10 @@ import java.util.List;
 
 public class ImagePanelImpl extends JPanel implements ImagePanel {
 
-    private ImagePanelWrapper imagePanelWrapper;
-    private ImageManager manager;
+    private final ImagePanelWrapper imagePanelWrapper;
+    private final ImageManager manager;
 
-    private ImagePanelToolbar toolbar;
+    private final ImagePanelToolbar toolbar;
     private InnerImagePanel nestedImagePanel;
 
     public ImagePanelImpl(ImageManager manager, ImagePanelWrapper wrapper, ImagePanelToolbar toolbar) {
@@ -135,5 +135,10 @@ public class ImagePanelImpl extends JPanel implements ImagePanel {
     @Override
     public void setAxis(Axis axis) {
         toolbar.setAxis(axis);
+    }
+
+    @Override
+    public void centerImage() {
+        nestedImagePanel.centerImage();
     }
 }

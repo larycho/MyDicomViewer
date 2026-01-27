@@ -99,9 +99,18 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
 
     private JPopupMenu getPopupMenu() {
         JPopupMenu popupMenu = new JPopupMenu();
+
         JMenuItem overlayItem = new JMenuItem("Toggle overlay (on/off)");
         overlayItem.addActionListener(e -> {wrapper.toggleOverlay();});
         popupMenu.add(overlayItem);
+
+        JMenuItem centerItem = new JMenuItem("Center image");
+        centerItem.addActionListener(e -> {
+            wrapper.centerImage();
+            wrapper.refresh();
+        });
+        popupMenu.add(centerItem);
+
         return popupMenu;
     }
 
