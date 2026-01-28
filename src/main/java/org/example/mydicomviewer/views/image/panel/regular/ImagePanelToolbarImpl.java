@@ -123,4 +123,8 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     public void addPanelSelectedService(ImagePanelSelectedEventService selectedEventService) {
         this.selectedEventService = selectedEventService;
     }
+
+    @Override
+    public void setFrameNumber(int frameIndex) {
+    }
 }

@@ -63,6 +63,8 @@ public interface ImagePanelWrapper {
 
     void setAxis(Axis axis);
 
+    Axis getAxis();
+
     void displayDefaultImage();
 
     void addPanelSelectedService(ImagePanelSelectedEventService panelSelectedService);

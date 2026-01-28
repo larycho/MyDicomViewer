@@ -3,18 +3,17 @@ package org.example.mydicomviewer.listeners;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.*;
-import org.example.mydicomviewer.events.DicomDirLoadedEvent;
-import org.example.mydicomviewer.events.FileLoadedEvent;
-import org.example.mydicomviewer.events.FolderLoadedEvent;
-import org.example.mydicomviewer.events.PanelSelectedEvent;
+import org.example.mydicomviewer.events.*;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.processing.image.WindowPreset;
 import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.MultipleImagePanel;
 
+import org.example.mydicomviewer.views.image.panel.Axis;
 import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 
+import java.io.File;
 import java.util.List;
 
 import static java.lang.Math.round;
@@ -22,7 +21,7 @@ import static java.lang.Math.round;
 
 
 @Singleton
-public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener {
+public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener, FragmentedFileSelectedListener {
 
     private final MultipleImagePanel multipleImagePanel;
     private final ImagePanelSelectedEventService imagePanelSelectedEventService;
@@ -32,7 +31,8 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
                           FileLoadEventService fileLoadEventService,
                           ImagePanelSelectedEventService panelSelectedService,
                           DicomDirLoadManager dicomDirLoadManager,
-                          FolderLoadedEventService folderLoadedEventService
+                          FolderLoadedEventService folderLoadedEventService,
+                          FragmentedFileEventService fragmentedFileEventService
     ) {
         this.multipleImagePanel = multipleImagePanel;
         this.imagePanelSelectedEventService = panelSelectedService;
@@ -40,6 +40,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         panelSelectedService.addListener(this);
         dicomDirLoadManager.addListener(this);
         folderLoadedEventService.addListener(this);
+        fragmentedFileEventService.addListener(this);
     }
 
     @Override
@@ -85,6 +86,65 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
             }
         }
     }
+
+    @Override
+    public void fragmentedFileSelected(FragmentedFileSelectedEvent event) {
+
+        if (!isFileOpened(event.getSourceFiles())) { return; }
+
+        List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
+
+        for (ImagePanelWrapper wrapper : wrappers) {
+
+            changeFrameIfCorrectFile(event, wrapper);
+
+        }
+    }
+
+    private void changeFrameIfCorrectFile(FragmentedFileSelectedEvent event, ImagePanelWrapper wrapper) {
+
+        if (isCorrectFileForFrameChange(event, wrapper)) {
+
+            int index = event.getInstanceNumber();
+            wrapper.moveToFrame(index);
+
+        }
+    }
+
+    private boolean isCorrectFileForFrameChange(FragmentedFileSelectedEvent event, ImagePanelWrapper wrapper) {
+        File openedFile = wrapper.getDicomFile().getFile();
+        boolean fileOpened = isFileOnList(event.getSourceFiles(), openedFile);
+
+        Axis axis = wrapper.getAxis();
+
+        return fileOpened && (axis == Axis.Z);
+    }
+
+    public boolean isFileOpened(List<File> files) {
+        List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
+
+        for (ImagePanelWrapper wrapper : wrappers) {
+
+            File openedFile = wrapper.getDicomFile().getFile();
+            boolean isOnList = isFileOnList(files, openedFile);
+
+            if (isOnList) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isFileOnList(List<File> files, File openedFile) {
+        for (File file : files) {
+            if (openedFile.getAbsolutePath().equals(file.getAbsolutePath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void setWindowing(int center, int width) {
         if (multipleImagePanel.areAnyImagesAdded()) {

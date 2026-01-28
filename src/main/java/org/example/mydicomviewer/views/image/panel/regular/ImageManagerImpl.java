@@ -116,7 +116,10 @@ public class ImageManagerImpl implements ImageManager {
 
     @Override
     public void setCurrentFrameNumber(int frameNumber) {
-        this.currentFrame = frameNumber;
+        int maxIndex = dicomFile.getImages().size() - 1;
+        if (frameNumber < maxIndex && frameNumber >= 0) {
+            currentFrame = frameNumber;
+        }
     }
 
     @Override
@@ -227,6 +230,11 @@ public class ImageManagerImpl implements ImageManager {
 
     @Override
     public void setAxis(Axis axis) {
+    }
+
+    @Override
+    public Axis getAxis() {
+        return Axis.Z;
     }
 
     @Override

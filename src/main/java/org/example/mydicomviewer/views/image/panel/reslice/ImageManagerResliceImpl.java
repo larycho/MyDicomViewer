@@ -133,7 +133,11 @@ public class ImageManagerResliceImpl implements ImageManager {
 
     @Override
     public void setCurrentFrameNumber(int frameNumber) {
-        this.currentFrame = frameNumber;
+        int maxFrameNumber = getMaxFrameIndex();
+
+        if (frameNumber <= maxFrameNumber && frameNumber >= 0) {
+            currentFrame = frameNumber;
+        }
     }
 
     @Override
@@ -216,6 +220,11 @@ public class ImageManagerResliceImpl implements ImageManager {
     public void setAxis(Axis axis) {
         this.currentAxis = axis;
         updateReslicerAxis();
+    }
+
+    @Override
+    public Axis getAxis() {
+        return currentAxis;
     }
 
     @Override

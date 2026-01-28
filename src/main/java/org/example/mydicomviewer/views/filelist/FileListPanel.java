@@ -3,6 +3,8 @@ package org.example.mydicomviewer.views.filelist;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.example.mydicomviewer.listeners.ImageDisplayer;
+import org.example.mydicomviewer.services.FragmentedFileEventService;
 import org.example.mydicomviewer.services.OpenFileManager;
 
 import javax.swing.*;
@@ -20,11 +22,17 @@ public class FileListPanel extends JPanel {
     private JButton collapseButton;
     private FileListScrollPane scrollPane;
     private OpenFileManager openFileManager;
+    private final ImageDisplayer imageDisplayer;
+    private final FragmentedFileEventService fragmentedFileEventService;
 
     @Inject
-    public FileListPanel(OpenFileManager openFileManager) {
+    public FileListPanel(OpenFileManager openFileManager,
+                         ImageDisplayer imageDisplayer,
+                         FragmentedFileEventService fragmentedService) {
 
         this.openFileManager = openFileManager;
+        this.imageDisplayer = imageDisplayer;
+        this.fragmentedFileEventService = fragmentedService;
         cardLayout = new CardLayout();
         setLayout(cardLayout);
 
@@ -79,7 +87,7 @@ public class FileListPanel extends JPanel {
 
         collapseButton = new JButton("Hide panel");
 
-        scrollPane = new FileListScrollPane(openFileManager);
+        scrollPane = new FileListScrollPane(openFileManager, imageDisplayer, fragmentedFileEventService);
         expandedPanel.add(collapseButton);
         expandedPanel.add(scrollPane);
 

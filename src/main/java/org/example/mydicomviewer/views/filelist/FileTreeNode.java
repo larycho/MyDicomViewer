@@ -2,7 +2,6 @@ package org.example.mydicomviewer.views.filelist;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -11,15 +10,17 @@ public class FileTreeNode {
     private FileNodeType nodeType = FileNodeType.IMAGE;
     private String text;
     private String id;
-    private List<FileTreeNode> children = new ArrayList<FileTreeNode>();
+    private final List<FileTreeNode> children = new ArrayList<>();
     private boolean isLeaf = false;
     private boolean isRoot = false;
     private File file;
     private boolean isPartialFile = false;
+
+    private int instanceNumber;
     private List<File> mainFile;
 
     public void sortChildren() {
-        children.sort(Comparator.comparing(FileTreeNode::getText));
+        children.sort(Comparator.comparing(FileTreeNode::getInstanceNumber));
         for (FileTreeNode child : children) {
             child.sortChildren();
         }
@@ -32,7 +33,6 @@ public class FileTreeNode {
     public String getId() {
         return id;
     }
-
 
     public File getFile() {
         return file;
@@ -50,7 +50,6 @@ public class FileTreeNode {
         isPartialFile = partialFile;
     }
 
-
     public boolean isLeaf() {
         return isLeaf;
     }
@@ -59,20 +58,8 @@ public class FileTreeNode {
         isLeaf = leaf;
     }
 
-    public boolean isRoot() {
-        return isRoot;
-    }
-
     public void setRoot(boolean root) {
         isRoot = root;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public FileNodeType getNodeType() {
@@ -83,15 +70,14 @@ public class FileTreeNode {
         this.nodeType = nodeType;
     }
 
-    public String getText() {
-        return text;
-    }
     public void setText(String text) {
         this.text = text;
     }
+
     public List<FileTreeNode> getChildren() {
         return children;
     }
+
     public void addChild(FileTreeNode child) {
         children.add(child);
     }
@@ -102,6 +88,14 @@ public class FileTreeNode {
 
     public void setMainFile(List<File> mainFile) {
         this.mainFile = new ArrayList<>(mainFile);
+    }
+
+    public int getInstanceNumber() {
+        return instanceNumber;
+    }
+
+    public void setInstanceNumber(int instanceNumber) {
+        this.instanceNumber = instanceNumber;
     }
 
     @Override

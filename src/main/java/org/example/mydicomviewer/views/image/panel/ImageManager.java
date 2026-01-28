@@ -61,6 +61,8 @@ public interface ImageManager {
 
     void setAxis(Axis axis);
 
+    Axis getAxis();
+
     double getDistance(Point2D.Double p1, Point2D.Double p2);
 
     double getAspectRatioShift();

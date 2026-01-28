@@ -51,7 +51,17 @@ public class MultipleImagePanel extends JPanel {
     }
     // TODO
     public ImagePanelWrapper getSelectedImage() {
-        return selectedImageManager.getSelectedImage();
+        ImagePanelWrapper wrapper = selectedImageManager.getSelectedImage();
+
+        if (wrapper != null) {
+            return wrapper;
+        }
+
+        if (!wrappers.isEmpty()) {
+            return wrappers.getFirst();
+        }
+
+        return null;
     }
 
     public void deselectCurrentImage() {

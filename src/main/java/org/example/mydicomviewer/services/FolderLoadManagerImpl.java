@@ -96,7 +96,7 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
             }
 
         }
-        //tree.sortChildren();
+        tree.sortChildren();
         return tree;
     }
 
@@ -171,11 +171,23 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
             imageNode.setLeaf(true);
             imageNode.setFile(file);
 
+            Optional<Integer> instanceNumber = parseInt(instanceId);
+            imageNode.setInstanceNumber(instanceNumber.orElse(0));
+
             if (files.size() > 1) {
                 imageNode.setPartialFile(true);
                 imageNode.setMainFile(files);
             }
             node.addChild(imageNode);
+        }
+    }
+
+    private Optional<Integer> parseInt(String input) {
+        try {
+            return Optional.of(Integer.parseInt(input));
+        }
+        catch (NumberFormatException e) {
+            return Optional.empty();
         }
     }
 

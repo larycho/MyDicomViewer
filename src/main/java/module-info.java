@@ -13,6 +13,7 @@ module org.example.mydicomviewer {
     requires org.kordamp.ikonli.swing;
     requires org.kordamp.ikonli.materialdesign2;
     requires org.slf4j;
+    requires io.scif;
 
 
     exports org.example.mydicomviewer;
@@ -28,4 +29,5 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer.models.shapes;
     exports org.example.mydicomviewer.views.image.panel;
     exports org.example.mydicomviewer.models;
+    exports org.example.mydicomviewer.events;
 }

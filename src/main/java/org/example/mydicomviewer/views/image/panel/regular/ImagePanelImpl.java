@@ -141,4 +141,9 @@ public class ImagePanelImpl extends JPanel implements ImagePanel {
     public void centerImage() {
         nestedImagePanel.centerImage();
     }
+
+    @Override
+    public void setFrameNumber(int frameIndex) {
+        toolbar.setFrameNumber(frameIndex);
+    }
 }

@@ -172,8 +172,10 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     @Override
     public void moveToFrame(int frameIndex) {
         imageManager.setCurrentFrameNumber(frameIndex);
+
         BufferedImage image = imageManager.getCurrentFrame();
         imagePanel.setImage(image);
+        imagePanel.setFrameNumber(frameIndex);
     }
 
     @Override
@@ -183,5 +185,10 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
         imagePanel.setImage(image);
         imagePanel.centerImage();
         imagePanel.setAxis(axis);
+    }
+
+    @Override
+    public Axis getAxis() {
+        return imageManager.getAxis();
     }
 }

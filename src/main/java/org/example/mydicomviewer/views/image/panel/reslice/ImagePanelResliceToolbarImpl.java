@@ -147,6 +147,7 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
 
         int maxIndex = wrapper.getNumberOfFrames() - 1;
         sliceSlider.setMaximum(maxIndex);
+        setMaxSliceLabelWidth(maxIndex);
         adjustTickSpacing();
     }
 
@@ -191,6 +192,8 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
         sliceLabel.setText(String.format("Slice: %d / %d", sliceIndex, maxIndex));
 
         wrapper.moveToFrame(sliceIndex);
+
+        setMaxSliceLabelWidth(maxIndex);
     }
 
     private void adjustTickSpacing() {
@@ -211,6 +214,19 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
     @Override
     public void addPanelSelectedService(ImagePanelSelectedEventService panelSelectedService) {
         this.selectedEventService = panelSelectedService;
+    }
+
+    @Override
+    public void setFrameNumber(int frameIndex) {
+        int maxIndex = wrapper.getNumberOfFrames() - 1;
+
+        if (frameIndex > maxIndex || frameIndex < 0) { return; }
+
+        sliceSlider.setValue(frameIndex);
+
+        sliceLabel.setText(String.format("Slice: %d / %d", frameIndex, maxIndex));
+
+        setMaxSliceLabelWidth(maxIndex);
     }
 
     public void updateLabel() {

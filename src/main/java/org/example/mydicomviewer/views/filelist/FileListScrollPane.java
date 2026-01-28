@@ -1,7 +1,9 @@
 package org.example.mydicomviewer.views.filelist;
 
+import org.example.mydicomviewer.listeners.ImageDisplayer;
 import org.example.mydicomviewer.models.DicomDirectoryRecord;
 import org.example.mydicomviewer.models.DicomFile;
+import org.example.mydicomviewer.services.FragmentedFileEventService;
 import org.example.mydicomviewer.services.OpenFileManager;
 
 import javax.swing.*;
@@ -22,11 +24,17 @@ public class FileListScrollPane extends JScrollPane {
     DefaultTreeModel treeModel;
     DefaultMutableTreeNode root;
     OpenFileManager openFileManager;
+    ImageDisplayer imageDisplayer;
+    FragmentedFileEventService fragmentedFileEventService;
     FileListState state = new FileListState();
 
-    public FileListScrollPane(OpenFileManager openFileManager) {
+    public FileListScrollPane(OpenFileManager openFileManager,
+                              ImageDisplayer imageDisplayer,
+                              FragmentedFileEventService fragmentedFileEventService) {
         super();
         this.openFileManager = openFileManager;
+        this.imageDisplayer = imageDisplayer;
+        this.fragmentedFileEventService = fragmentedFileEventService;
         root = new DefaultMutableTreeNode("Root");
         treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
@@ -95,7 +103,14 @@ public class FileListScrollPane extends JScrollPane {
                         state.addFiles(files);
                     }
 
-                    openFileManager.openFragmentedFileUsingWorker(files);
+                    boolean opened = imageDisplayer.isFileOpened(files);
+
+                    if (opened) {
+                        fragmentedFileEventService.notifyListeners(files, imageNode.getInstanceNumber());
+                    }
+                    else {
+                        openFileManager.openFragmentedFileUsingWorker(files);
+                    }
                 }
                 else {
                     if (!state.containsFile(imageNode.getFile())) {

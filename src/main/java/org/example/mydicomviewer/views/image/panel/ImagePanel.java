@@ -35,4 +35,6 @@ public interface ImagePanel {
     void setAxis(Axis axis);
 
     void centerImage();
+
+    void setFrameNumber(int frameIndex);
 }

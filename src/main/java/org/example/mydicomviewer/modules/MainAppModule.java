@@ -41,6 +41,7 @@ public class MainAppModule extends AbstractModule {
         bind(ImagePanelSelectedEventService.class).to(ImagePanelSelectedEventServiceImpl.class);
         bind(SelectedImageManager.class).to(SelectedImageManagerImpl.class);
         bind(FileReloadEventService.class).to(FileReloadEventServiceImpl.class);
+        bind(FragmentedFileEventService.class).to(FragmentedFileEventServiceImpl.class);
 
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();
