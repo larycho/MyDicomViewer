@@ -103,7 +103,12 @@ public class LineTool implements DrawingTool {
     }
 
     @Override
+    public String getToolName() {
+        return "Straight Line";
+    }
+
+    @Override
     public String toString() {
-        return "Straight line";
+        return getToolName();
     }
 }

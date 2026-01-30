@@ -144,7 +144,12 @@ public class OvalTool implements DrawingTool {
     }
 
     @Override
-    public String toString() {
+    public String getToolName() {
         return "Ellipse";
+    }
+
+    @Override
+    public String toString() {
+        return getToolName();
     }
 }

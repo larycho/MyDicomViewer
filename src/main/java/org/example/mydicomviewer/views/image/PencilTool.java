@@ -15,10 +15,6 @@ public class PencilTool implements DrawingTool {
     private InnerImagePanel imagePanel;
     private FreehandLine line;
 
-
-    public PencilTool() {}
-
-
     public void setImagePanel(InnerImagePanel imagePanel) {
         this.imagePanel = imagePanel;
     }
@@ -91,7 +87,12 @@ public class PencilTool implements DrawingTool {
     }
 
     @Override
-    public String toString() {
+    public String getToolName() {
         return "Pencil";
+    }
+
+    @Override
+    public String toString() {
+        return getToolName();
     }
 }

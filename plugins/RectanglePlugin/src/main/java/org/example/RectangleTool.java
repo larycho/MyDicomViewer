@@ -3,8 +3,6 @@ package org.example;
 import org.example.mydicomviewer.views.image.DrawingTool;
 
 
-import org.example.Rectangle;
-//import org.example.mydicomviewer.views.NestedImagePanel;
 import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
 
 import java.awt.*;
@@ -18,12 +16,6 @@ public class RectangleTool implements DrawingTool {
 
     private InnerImagePanel imagePanel;
     private Rectangle rectangle;
-
-    public RectangleTool(InnerImagePanel imagePanel) {
-        this.imagePanel = imagePanel;
-    }
-
-    public RectangleTool() {}
 
     public void setImagePanel(InnerImagePanel imagePanel) {
         this.imagePanel = imagePanel;
@@ -131,8 +123,13 @@ public class RectangleTool implements DrawingTool {
     }
 
     @Override
-    public String toString() {
+    public String getToolName() {
         return "Rectangle";
+    }
+
+    @Override
+    public String toString() {
+        return getToolName();
     }
 
 }

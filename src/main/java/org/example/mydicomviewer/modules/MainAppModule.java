@@ -16,7 +16,7 @@ import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessorImpl;
 import org.example.mydicomviewer.processing.file.*;
 import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.*;
-import org.example.mydicomviewer.views.image.DrawingTool;
+import org.example.mydicomviewer.views.image.DrawingToolFactory;
 
 public class MainAppModule extends AbstractModule {
     @Override
@@ -49,6 +49,6 @@ public class MainAppModule extends AbstractModule {
         bind(ToolBarUpdater.class).asEagerSingleton();
 
         Multibinder.newSetBinder(binder(), StartupAction.class);
-        Multibinder.newSetBinder(binder(), DrawingTool.class);
+        Multibinder.newSetBinder(binder(), DrawingToolFactory.class);
     }
 }

@@ -32,7 +32,7 @@ public class ToolBar extends JToolBar {
 
     private JPopupMenu addFilesMenu;
 
-    private Set<DrawingTool> tools;
+    private Set<DrawingToolFactory> tools;
     private List<WindowPreset> presets;
 
     private final ImageDisplayer imageDisplayer;
@@ -49,7 +49,7 @@ public class ToolBar extends JToolBar {
     @Inject
     public ToolBar(ImageDisplayer imageDisplayer,
                    ResliceDisplayer resliceDisplayer,
-                   Set<DrawingTool> pluginTools,
+                   Set<DrawingToolFactory> pluginTools,
                    SelectedImageManager selectedImageManager,
                    OpenFileCommand openFileCommand,
                    OpenDicomDirCommand commandDir,
@@ -77,12 +77,12 @@ public class ToolBar extends JToolBar {
         setupListeners();
     }
 
-    private void createToolList(Set<DrawingTool> pluginTools) {
+    private void createToolList(Set<DrawingToolFactory> pluginTools) {
         tools = new HashSet<>();
 
-        tools.add(new OvalTool());
-        tools.add(new PencilTool());
-        tools.add(new LineTool());
+        tools.add(new OvalToolFactory());
+        tools.add(new PencilToolFactory());
+        tools.add(new LineToolFactory());
 
         tools.addAll(pluginTools);
     }
@@ -144,9 +144,9 @@ public class ToolBar extends JToolBar {
         JLabel toolLabel = new JLabel("Select tool:");
         add(toolLabel);
 
-        JComboBox<DrawingTool> tools = new JComboBox<>();
+        JComboBox<DrawingToolFactory> tools = new JComboBox<>();
 
-        for (DrawingTool tool : this.tools) {
+        for (DrawingToolFactory tool : this.tools) {
             tools.addItem(tool);
         }
 
@@ -154,8 +154,9 @@ public class ToolBar extends JToolBar {
         JButton apply = new JButton(drawIcon);
         apply.setToolTipText("Apply drawing tool");
         apply.addActionListener(e -> {
-            DrawingTool selectedTool = (DrawingTool) tools.getSelectedItem();
-            if (selectedTool != null) {
+            DrawingToolFactory factory = (DrawingToolFactory) tools.getSelectedItem();
+            if (factory != null) {
+                DrawingTool selectedTool = factory.getTool();
                 selectedImageManager.setDrawingTool(selectedTool);
             }
         });
