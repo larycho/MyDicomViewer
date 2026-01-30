@@ -5,6 +5,7 @@ import org.example.mydicomviewer.views.image.DrawingTool;
 import org.example.mydicomviewer.views.image.ImageTool;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -33,4 +34,6 @@ public interface InnerImagePanel {
     double getDistance(Point2D.Double p1, Point2D.Double p2);
 
     void centerImage();
+
+    AffineTransform getTransform();
 }

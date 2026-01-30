@@ -134,13 +134,9 @@ public class OvalTool implements DrawingTool {
     }
 
     private Point2D.Double transformPoint(double x, double y) {
-        double zoom = imagePanel.getZoom();
-        Point pan = imagePanel.getOffset();
 
         try {
-            AffineTransform transform = new AffineTransform();
-            transform.scale(zoom, zoom);
-            transform.translate(pan.x, pan.y);
+            AffineTransform transform = imagePanel.getTransform();
             return (Point2D.Double) transform.inverseTransform(new Point2D.Double(x, y), null);
         } catch (NoninvertibleTransformException e) {
             return new Point2D.Double(x, y);

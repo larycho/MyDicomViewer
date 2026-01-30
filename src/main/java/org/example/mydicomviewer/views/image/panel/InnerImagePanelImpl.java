@@ -322,6 +322,17 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
     }
 
     @Override
+    public AffineTransform getTransform() {
+        double ratio = imageManager.getAspectRatioShift();
+
+        AffineTransform transform = new AffineTransform();
+        transform.translate(offset.x, offset.y);
+        transform.scale(zoom, zoom * ratio);
+
+        return transform;
+    }
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -334,11 +345,7 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
-        double ratio = imageManager.getAspectRatioShift();
-        AffineTransform transform = new AffineTransform();
-
-        transform.translate(offset.x, offset.y);
-        transform.scale(zoom, zoom * ratio);
+        AffineTransform transform = getTransform();
 
         g2.drawImage(image, transform, null);
 
