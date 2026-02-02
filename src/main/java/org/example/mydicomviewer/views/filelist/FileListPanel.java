@@ -6,6 +6,8 @@ import com.google.inject.Singleton;
 import org.example.mydicomviewer.listeners.ImageDisplayer;
 import org.example.mydicomviewer.services.FragmentedFileEventService;
 import org.example.mydicomviewer.services.OpenFileManager;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -17,13 +19,18 @@ public class FileListPanel extends JPanel {
 
     private JPanel collapsedPanel;
     private JPanel expandedPanel;
-    private CardLayout cardLayout;
+    private final CardLayout cardLayout;
+
+    private JPanel topPanel;
     private JButton expandButton;
     private JButton collapseButton;
     private FileListScrollPane scrollPane;
-    private OpenFileManager openFileManager;
+    private final OpenFileManager openFileManager;
     private final ImageDisplayer imageDisplayer;
     private final FragmentedFileEventService fragmentedFileEventService;
+
+    private final int DEFAULT_ICON_SIZE = 20;
+    private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
     @Inject
     public FileListPanel(OpenFileManager openFileManager,
@@ -81,23 +88,54 @@ public class FileListPanel extends JPanel {
     }
 
     private void createExpandedPanel() {
+
+        initialExpandedPanelConfig();
+        createSubPanelsOfExpandedPanel();
+        addSubPanelsToExpandedPanel();
+    }
+
+    private void initialExpandedPanelConfig() {
         expandedPanel = new JPanel();
-        expandedPanel.setLayout(new BoxLayout(expandedPanel, BoxLayout.Y_AXIS));
+        expandedPanel.setLayout(new BorderLayout());
         expandedPanel.setPreferredSize(new Dimension(300, 100));
+    }
 
-        collapseButton = new JButton("Hide panel");
-
+    private void createSubPanelsOfExpandedPanel() {
+        topPanel = createTopOfExpandedPanel();
         scrollPane = new FileListScrollPane(openFileManager, imageDisplayer, fragmentedFileEventService);
-        expandedPanel.add(collapseButton);
-        expandedPanel.add(scrollPane);
+    }
 
-        collapseButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+    private void addSubPanelsToExpandedPanel() {
+        expandedPanel.add(topPanel, BorderLayout.NORTH);
+        expandedPanel.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private JPanel createTopOfExpandedPanel() {
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+
+        // Creating title label
+        JLabel title = new JLabel("Opened DICOM Files", SwingConstants.CENTER);
+
+        // Creating 'collapse' button
+        FontIcon icon = FontIcon.of(MaterialDesignA.ARROW_LEFT_DROP_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        collapseButton = new JButton(icon);
+        collapseButton.setToolTipText("Hide panel");
+
+        // Adding them to the panel
+        topPanel.add(title, BorderLayout.CENTER);
+        topPanel.add(collapseButton, BorderLayout.EAST);
+
+        return topPanel;
     }
 
     private void createCollapsedPanel() {
         collapsedPanel = new JPanel();
-        expandButton = new JButton(">");
+
+        FontIcon icon = FontIcon.of(MaterialDesignA.ARROW_RIGHT_DROP_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        expandButton = new JButton(icon);
+        expandButton.setToolTipText("Expand file list panel");
+
         collapsedPanel.add(expandButton);
     }
 

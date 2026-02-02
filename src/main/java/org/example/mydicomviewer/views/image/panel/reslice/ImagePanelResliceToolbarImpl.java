@@ -17,15 +17,14 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
     private JComboBox<String> axisSelector;
     private JButton settings;
 
-    private ImagePanelWrapper wrapper;
+    private final ImagePanelWrapper wrapper;
     private ImagePanelSelectedEventService selectedEventService;
 
-    private int depth;
     private boolean isSelected = false;
 
     public ImagePanelResliceToolbarImpl(ImagePanelWrapper wrapper) {
         this.wrapper = wrapper;
-        this.depth = this.wrapper.getNumberOfFrames();
+        int depth = this.wrapper.getNumberOfFrames();
 
         createControlPanel(depth);
         add(Box.createGlue());
@@ -34,13 +33,13 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
 
     private void createControlPanel(int depth) {
         JPanel axisPanel = createAxisPanel();
-        JPanel labelPanel = createSliceLabel(depth);
+        sliceLabel = createSliceLabel(depth);
         JPanel sliderPanel = createSliceSliderPanel(depth);
 
         addListeners();
 
         add(axisPanel);
-        add(labelPanel);
+        add(sliceLabel);
         add(sliderPanel);
     }
 
@@ -52,34 +51,22 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
     }
 
     private void createSliceSlider(int depth) {
-        sliceSlider = new JSlider(0, depth - 1, depth / 2);
+        sliceSlider = new JSlider(0, depth - 1);
         sliceSlider.setValue(0);
-
-        if (depth - 1 > 1000) {
-            sliceSlider.setMajorTickSpacing(500);
-            sliceSlider.setMinorTickSpacing(250);
-            sliceSlider.setLabelTable(sliceSlider.createStandardLabels(250));
-        }
-        else {
-            sliceSlider.setMajorTickSpacing(100);
-            sliceSlider.setMinorTickSpacing(25);
-            sliceSlider.setLabelTable(sliceSlider.createStandardLabels(100));
-        }
+        adjustTickSpacing();
         sliceSlider.setPaintTicks(true);
-        sliceSlider.setPaintLabels(true);
     }
 
-    private JPanel createSliceLabel(int depth) {
-        sliceLabel = new JLabel("Slice: " + (depth / 2));
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        labelPanel.add(sliceLabel);
-        return labelPanel;
+    private JLabel createSliceLabel(int depth) {
+        sliceLabel = new JLabel("Slice: " + (depth / 2) + "/" + (depth - 1));
+        sliceLabel.setVerticalAlignment(SwingConstants.CENTER);
+        setMaxSliceLabelWidth(depth);
+        return sliceLabel;
     }
 
     private JPanel createAxisPanel() {
         axisSelector = new JComboBox<>(new String[]{"Z Axis", "Y Axis", "X Axis"});
         JPanel axisPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        axisPanel.add(new JLabel("View Axis:"));
         axisPanel.add(axisSelector);
         return axisPanel;
     }
@@ -87,9 +74,7 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
     private void addSettingsButtonAndMenu() {
         settings = new JButton("Settings");
 
-        settings.addActionListener(e -> {
-            getPopupMenu().show(settings, 0, settings.getHeight());
-        });
+        settings.addActionListener(e -> getPopupMenu().show(settings, 0, settings.getHeight()));
 
         add(settings);
     }
@@ -98,7 +83,7 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
         JPopupMenu popupMenu = new JPopupMenu();
 
         JMenuItem overlayItem = new JMenuItem("Toggle overlay (on/off)");
-        overlayItem.addActionListener(e -> {wrapper.toggleOverlay();});
+        overlayItem.addActionListener(e -> wrapper.toggleOverlay());
 
         JMenuItem windowingMode = new JMenuItem("Windowing Mode");
         windowingMode.addActionListener(e -> wrapper.setWindowingTool());
@@ -192,8 +177,6 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
         sliceLabel.setText(String.format("Slice: %d / %d", sliceIndex, maxIndex));
 
         wrapper.moveToFrame(sliceIndex);
-
-        setMaxSliceLabelWidth(maxIndex);
     }
 
     private void adjustTickSpacing() {
@@ -202,12 +185,10 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
         if (maxIndex > 1000) {
             sliceSlider.setMajorTickSpacing(500);
             sliceSlider.setMinorTickSpacing(250);
-            sliceSlider.setLabelTable(sliceSlider.createStandardLabels(250));
         }
         else {
             sliceSlider.setMajorTickSpacing(100);
             sliceSlider.setMinorTickSpacing(25);
-            sliceSlider.setLabelTable(sliceSlider.createStandardLabels(100));
         }
     }
 
@@ -252,6 +233,9 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
         FontMetrics fontMetrics = sliceLabel.getFontMetrics(sliceLabel.getFont());
         int maxWidth = fontMetrics.stringWidth(maxString);
 
-        sliceLabel.setPreferredSize(new Dimension(maxWidth + 10, sliceLabel.getPreferredSize().height));
+        sliceLabel.setPreferredSize(new Dimension(maxWidth + 5, sliceLabel.getPreferredSize().height));
+        sliceLabel.setMinimumSize(new Dimension(maxWidth + 5, sliceLabel.getPreferredSize().height));
+        sliceLabel.revalidate();
+        sliceLabel.repaint();
     }
 }

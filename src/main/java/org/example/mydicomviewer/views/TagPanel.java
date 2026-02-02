@@ -1,6 +1,8 @@
 package org.example.mydicomviewer.views;
 
 import com.google.inject.Singleton;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,14 +11,18 @@ import java.awt.event.ActionEvent;
 @Singleton
 public class TagPanel extends JPanel {
 
-    private final int EXPANDED_WIDTH = 300;
-
     private JPanel collapsedPanel;
+
     private JPanel expandedPanel;
-    private CardLayout cardLayout;
+
+    private final CardLayout cardLayout;
     private JButton expandButton;
     private JButton collapseButton;
     private JScrollPane scrollPane;
+
+
+    private final int DEFAULT_ICON_SIZE = 20;
+    private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
     public TagPanel() {
         cardLayout = new CardLayout();
@@ -37,28 +43,45 @@ public class TagPanel extends JPanel {
         scrollPane.setViewportView(null);
     }
 
-    private void refresh() {
-        repaint();
-        revalidate();
-    }
-
     private void createExpandedPanel() {
         expandedPanel = new JPanel();
-        expandedPanel.setLayout(new BoxLayout(expandedPanel, BoxLayout.Y_AXIS));
+        expandedPanel.setLayout(new BorderLayout());
         expandedPanel.setPreferredSize(new Dimension(300, 100));
 
-        collapseButton = new JButton("Hide panel");
+        JPanel topOfExpandedPanel = createTopOfExpandedPanel();
         scrollPane = new JScrollPane();
-        expandedPanel.add(collapseButton);
-        expandedPanel.add(scrollPane);
 
-        collapseButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        expandedPanel.add(topOfExpandedPanel, BorderLayout.NORTH);
+        expandedPanel.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private JPanel createTopOfExpandedPanel() {
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+
+        // Creating title label
+        JLabel title = new JLabel("Tag Viewer", SwingConstants.CENTER);
+
+        // Creating 'collapse' button
+        FontIcon icon = FontIcon.of(MaterialDesignA.ARROW_RIGHT_DROP_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        collapseButton = new JButton(icon);
+        collapseButton.setToolTipText("Hide Panel");
+
+        // Adding them to the panel
+        topPanel.add(collapseButton, BorderLayout.WEST);
+        topPanel.add(title, BorderLayout.CENTER);
+
+        // Makes the text label truly centered
+        topPanel.add(Box.createHorizontalStrut(collapseButton.getPreferredSize().width), BorderLayout.EAST);
+
+        return topPanel;
     }
 
     private void createCollapsedPanel() {
         collapsedPanel = new JPanel();
-        expandButton = new JButton("<");
+        FontIcon icon = FontIcon.of(MaterialDesignA.ARROW_LEFT_DROP_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        expandButton = new JButton(icon);
+        expandButton.setToolTipText("Show Tag Panel");
         collapsedPanel.add(expandButton);
     }
 

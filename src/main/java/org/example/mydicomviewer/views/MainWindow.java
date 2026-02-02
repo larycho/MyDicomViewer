@@ -8,13 +8,12 @@ import java.awt.*;
 
 public class MainWindow extends JFrame {
 
-    private MainMenuBar menuBar;
-    private ToolBar toolBar;
-    private DrawingOverlayPanel drawingPanel;
-    private TagPanel tagPanel;
-    private MultipleImagePanel multipleImagePanel;
-    private FileListPanel fileListPanel;
-    private Footer footer;
+    private final MainMenuBar menuBar;
+    private final ToolBar toolBar;
+    private final TagPanel tagPanel;
+    private final MultipleImagePanel multipleImagePanel;
+    private final FileListPanel fileListPanel;
+    private final Footer footer;
 
     @Inject
     public MainWindow(MainMenuBar menuBar,
@@ -49,6 +48,7 @@ public class MainWindow extends JFrame {
     private void setupFrame() {
         setTitle("My Dicom Viewer");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(800, 600);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
     }

@@ -6,21 +6,22 @@ import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
 import org.example.mydicomviewer.views.image.panel.Axis;
 import org.example.mydicomviewer.views.image.panel.ImagePanelToolbar;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar {
-
-    private JButton leftArrow;
-    private JButton rightArrow;
-    private JButton zoom;
-    private JButton windowing;
 
     private JToggleButton select;
     private JButton settings;
 
-    private ImagePanelWrapper wrapper;
+    private final ImagePanelWrapper wrapper;
     private ImagePanelSelectedEventService selectedEventService;
+
+    private final int DEFAULT_ICON_SIZE = 25;
+    private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
     public ImagePanelToolbarImpl(ImagePanelWrapper wrapper)
     {
@@ -65,8 +66,13 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     }
 
     private void addArrowsButtons() {
-        leftArrow = new JButton("Previous frame");
-        rightArrow = new JButton("Next frame");
+        FontIcon leftArrowIcon = FontIcon.of(MaterialDesignA.ARROW_LEFT_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton leftArrow = new JButton(leftArrowIcon);
+        leftArrow.setToolTipText("Previous frame");
+
+        FontIcon rightArrowIcon = FontIcon.of(MaterialDesignA.ARROW_RIGHT_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton rightArrow = new JButton(rightArrowIcon);
+        rightArrow.setToolTipText("Next frame");
 
         leftArrow.addActionListener(e -> wrapper.moveToPreviousFrame());
         rightArrow.addActionListener(e -> wrapper.moveToNextFrame());
@@ -76,13 +82,13 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     }
 
     private void addZoomAndPanButton() {
-        zoom = new JButton("Zoom & Pan");
+        JButton zoom = new JButton("Zoom & Pan");
         zoom.addActionListener(e -> wrapper.setPanZoomTool());
         add(zoom);
     }
 
     private void addWindowingButton() {
-        windowing = new JButton("Windowing");
+        JButton windowing = new JButton("Windowing");
         windowing.addActionListener(e -> wrapper.setWindowingTool());
         add(windowing);
     }
@@ -90,9 +96,7 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     private void addSettingsButton() {
         settings = new JButton("Settings");
 
-        settings.addActionListener(e -> {
-            getPopupMenu().show(settings, 0, settings.getHeight());
-        });
+        settings.addActionListener(e -> getPopupMenu().show(settings, 0, settings.getHeight()));
 
         add(settings);
     }
@@ -101,7 +105,7 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
         JPopupMenu popupMenu = new JPopupMenu();
 
         JMenuItem overlayItem = new JMenuItem("Toggle overlay (on/off)");
-        overlayItem.addActionListener(e -> {wrapper.toggleOverlay();});
+        overlayItem.addActionListener(e -> wrapper.toggleOverlay());
         popupMenu.add(overlayItem);
 
         JMenuItem centerItem = new JMenuItem("Center image");
