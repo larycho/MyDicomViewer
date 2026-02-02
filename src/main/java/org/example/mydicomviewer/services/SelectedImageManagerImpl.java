@@ -20,15 +20,16 @@ public class SelectedImageManagerImpl implements SelectedImageManager, PanelSele
     @Override
     public void setSelectedImage(ImagePanelWrapper image) {
         if (currentlySelected != null) {
-            currentlySelected.deselect();
+            currentlySelected.showDeselected();
         }
         currentlySelected = image;
-        image.select();
+        image.showSelected();
     }
+
     @Override
     public void deselectImage() {
         if (currentlySelected != null) {
-            currentlySelected.deselect();
+            currentlySelected.showDeselected();
         }
         currentlySelected = null;
     }
@@ -46,6 +47,6 @@ public class SelectedImageManagerImpl implements SelectedImageManager, PanelSele
 
     @Override
     public void panelSelected(PanelSelectedEvent event) {
-        currentlySelected = event.getPanel();
+        setSelectedImage(event.getPanel());
     }
 }

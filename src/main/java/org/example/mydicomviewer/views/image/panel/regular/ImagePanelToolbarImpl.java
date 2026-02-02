@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar {
 
-    private JToggleButton select;
+    private JButton select;
     private JButton settings;
 
     private final ImagePanelWrapper wrapper;
@@ -44,25 +44,16 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     }
 
     private void addSelectButton() {
-        select = new JToggleButton("Select");
+        select = new JButton("Select");
         select.setSelected(false);
         select.addActionListener(e -> toggleSelect());
         add(select);
     }
 
     public void toggleSelect() {
-        boolean hasJustBeenSelected = select.isSelected();
-
-        if (hasJustBeenSelected) {
-            PanelSelectedEvent event = new PanelSelectedEvent(this, wrapper);
-            selectedEventService.notifyListeners(event);
-            select.setText("Deselect");
-            wrapper.select();
-        }
-        else {
-            select.setText("Select");
-            wrapper.deselect();
-        }
+        PanelSelectedEvent event = new PanelSelectedEvent(this, wrapper);
+        selectedEventService.notifyListeners(event);
+        showSelected();
     }
 
     private void addArrowsButtons() {
@@ -130,5 +121,17 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
 
     @Override
     public void setFrameNumber(int frameIndex) {
+    }
+
+    @Override
+    public void showSelected() {
+        select.setText("Selected");
+        select.setEnabled(false);
+    }
+
+    @Override
+    public void showDeselected() {
+        select.setText("Select");
+        select.setEnabled(true);
     }
 }

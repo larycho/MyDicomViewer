@@ -5,7 +5,6 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
 import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
 import org.example.mydicomviewer.views.image.DrawingTool;
-import org.example.mydicomviewer.views.image.ImageTool;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -100,11 +99,6 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     }
 
     @Override
-    public void setImageTool(ImageTool imageTool) {
-        imagePanel.setImageTool(imageTool);
-    }
-
-    @Override
     public void setDrawingTool(DrawingTool drawingTool) {
         imagePanel.setDrawingTool(drawingTool);
     }
@@ -135,12 +129,12 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     }
 
     @Override
-    public void select() {
+    public void showSelected() {
         imagePanel.select();
     }
 
     @Override
-    public void deselect() {
+    public void showDeselected() {
         imagePanel.deselect();
     }
 

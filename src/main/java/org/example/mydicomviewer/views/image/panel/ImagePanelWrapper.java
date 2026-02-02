@@ -5,7 +5,6 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.shapes.DrawableShape;
 import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
 import org.example.mydicomviewer.views.image.DrawingTool;
-import org.example.mydicomviewer.views.image.ImageTool;
 
 import javax.swing.*;
 import java.util.List;
@@ -31,8 +30,6 @@ public interface ImagePanelWrapper {
 
     int getWindowWidth();
 
-    void setImageTool(ImageTool imageTool);
-
     void setDrawingTool(DrawingTool drawingTool);
 
     void setPanZoomTool();
@@ -45,9 +42,9 @@ public interface ImagePanelWrapper {
 
     OverlayText getOverlay();
 
-    void select();
+    void showSelected();
 
-    void deselect();
+    void showDeselected();
 
     DicomFile getDicomFile();
 

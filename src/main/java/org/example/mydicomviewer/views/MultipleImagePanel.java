@@ -19,7 +19,7 @@ import java.util.List;
 public class MultipleImagePanel extends JPanel {
 
     private SplitScreenMode mode;
-    private LinkedList<ImagePanelWrapper> wrappers = new LinkedList<>();
+    private final LinkedList<ImagePanelWrapper> wrappers = new LinkedList<>();
     private SelectedImageManager selectedImageManager;
 
     @Inject
@@ -64,10 +64,6 @@ public class MultipleImagePanel extends JPanel {
         return null;
     }
 
-    public void deselectCurrentImage() {
-        selectedImageManager.deselectImage();
-    }
-
     public boolean areAnyImagesAdded() {
         return !wrappers.isEmpty();
     }
@@ -84,11 +80,50 @@ public class MultipleImagePanel extends JPanel {
 
     public void addImage(ImagePanelWrapper wrapper) {
         int maxSlots = mode.getElements().size();
+
         if (wrappers.size() == maxSlots) {
-            this.wrappers.removeLast();
+            replaceLastPanel(wrapper);
         }
-        this.wrappers.add(wrapper);
+        else {
+            addNewPanel(wrapper);
+        }
+
+        handleInvisibleSelection();
         updateDisplay();
+    }
+
+    private void handleInvisibleSelection() {
+        ImagePanelWrapper selectedImage = selectedImageManager.getSelectedImage();
+
+        if (wrappers.size() == 1) {
+            selectedImage.showDeselected();
+        }
+        if (wrappers.size() > 1) {
+            selectedImage.showSelected();
+        }
+    }
+
+    private void replaceLastPanel(ImagePanelWrapper wrapper) {
+        updateSelectionWhenReplacingPanel(wrapper);
+
+        this.wrappers.removeLast();
+        this.wrappers.add(wrapper);
+    }
+
+    private void updateSelectionWhenReplacingPanel(ImagePanelWrapper wrapper) {
+        ImagePanelWrapper lastWrapper = wrappers.getLast();
+        if (lastWrapper.equals(selectedImageManager.getSelectedImage())) {
+            selectedImageManager.setSelectedImage(wrapper);
+        }
+    }
+
+    private void addNewPanel(ImagePanelWrapper wrapper) {
+        this.wrappers.add(wrapper);
+
+        // Auto-select the panel if it's the first one added
+        if (wrappers.size() == 1) {
+            selectedImageManager.setSelectedImage(wrappers.getFirst());
+        }
     }
 
 

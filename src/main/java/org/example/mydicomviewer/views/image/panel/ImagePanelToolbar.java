@@ -9,4 +9,8 @@ public interface ImagePanelToolbar {
     void addPanelSelectedService(ImagePanelSelectedEventService panelSelectedService);
 
     void setFrameNumber(int frameIndex);
+
+    void showSelected();
+
+    void showDeselected();
 }

@@ -54,10 +54,6 @@ public class ImagePanelImpl extends JPanel implements ImagePanel {
         nestedImagePanel.setImageTool(new PanZoomTool(nestedImagePanel));
     }
 
-    public InnerImagePanel getNestedPanel() {
-        return nestedImagePanel;
-    }
-
     @Override
     public void setImage(BufferedImage image) {
         nestedImagePanel.setImage(image);
@@ -91,6 +87,7 @@ public class ImagePanelImpl extends JPanel implements ImagePanel {
     @Override
     public void select() {
         addSelectionBorder();
+        toolbar.showSelected();
         refresh();
     }
 
@@ -114,6 +111,7 @@ public class ImagePanelImpl extends JPanel implements ImagePanel {
     @Override
     public void deselect() {
         addDefaultBorder();
+        toolbar.showDeselected();
         refresh();
     }
 

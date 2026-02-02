@@ -20,8 +20,6 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
     private final ImagePanelWrapper wrapper;
     private ImagePanelSelectedEventService selectedEventService;
 
-    private boolean isSelected = false;
-
     public ImagePanelResliceToolbarImpl(ImagePanelWrapper wrapper) {
         this.wrapper = wrapper;
         int depth = this.wrapper.getNumberOfFrames();
@@ -91,18 +89,10 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
         JMenuItem panAndZoomMode = new JMenuItem("Pan & Zoom Mode");
         panAndZoomMode.addActionListener(e -> wrapper.setPanZoomTool());
 
-        JMenuItem selectImage = new JMenuItem("Select/Deselect image");
+        JMenuItem selectImage = new JMenuItem("Select image");
         selectImage.addActionListener(e -> {
-            if (!isSelected) {
-                PanelSelectedEvent event = new PanelSelectedEvent(this, wrapper);
-                selectedEventService.notifyListeners(event);
-                isSelected = true;
-                wrapper.select();
-            }
-            else {
-                isSelected = false;
-                wrapper.deselect();
-            }
+            PanelSelectedEvent event = new PanelSelectedEvent(this, wrapper);
+            selectedEventService.notifyListeners(event);
         });
 
         JMenuItem centerImage = new JMenuItem("Center Image");
@@ -208,6 +198,16 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
         sliceLabel.setText(String.format("Slice: %d / %d", frameIndex, maxIndex));
 
         setMaxSliceLabelWidth(maxIndex);
+    }
+
+    @Override
+    public void showSelected() {
+
+    }
+
+    @Override
+    public void showDeselected() {
+
     }
 
     public void updateLabel() {

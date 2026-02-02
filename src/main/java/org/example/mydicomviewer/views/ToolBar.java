@@ -142,18 +142,64 @@ public class ToolBar extends JToolBar {
         addSeparator();
 
         JLabel toolLabel = new JLabel("Select tool:");
-        add(toolLabel);
 
+        JComboBox<DrawingToolFactory> toolsComboBox = getDrawingToolComboBox();
+
+        JButton apply = getApplyDrawingButton(toolsComboBox);
+
+        JButton settings = getSettingsButton();
+
+        add(toolLabel);
+        add(toolsComboBox);
+        add(apply);
+        add(settings);
+        addSeparator();
+    }
+
+    private JButton getSettingsButton() {
+        FontIcon settingsIcon = FontIcon.of(MaterialDesignC.COG, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton settings = new JButton(settingsIcon);
+        settings.setToolTipText("Draw settings");
+
+        JPopupMenu popupMenu = getPopupMenu();
+
+        settings.addActionListener(e -> popupMenu.show(settings, 0, settings.getHeight()));
+
+        return settings;
+    }
+
+    private static JPopupMenu getPopupMenu() {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JCheckBoxMenuItem everyFrame = new JCheckBoxMenuItem("Draw shapes separately for every frame");
+        everyFrame.setSelected(false);
+        everyFrame.addActionListener(e -> {});
+
+        popupMenu.add(everyFrame);
+        return popupMenu;
+    }
+
+    private JButton getApplyDrawingButton(JComboBox<DrawingToolFactory> toolsComboBox) {
+        FontIcon drawIcon = FontIcon.of(MaterialDesignD.DRAW, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton apply = new JButton(drawIcon);
+        apply.setToolTipText("Apply drawing tool");
+        apply.addActionListener(e -> {
+            DrawingToolFactory factory = (DrawingToolFactory) toolsComboBox.getSelectedItem();
+            if (factory != null) {
+                DrawingTool selectedTool = factory.getTool();
+                selectedImageManager.setDrawingTool(selectedTool);
+            }
+        });
+        return apply;
+    }
+
+    private JComboBox<DrawingToolFactory> getDrawingToolComboBox() {
         JComboBox<DrawingToolFactory> tools = new JComboBox<>();
 
         for (DrawingToolFactory tool : this.tools) {
             tools.addItem(tool);
         }
 
-        FontIcon drawIcon = FontIcon.of(MaterialDesignD.DRAW, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
-        JButton apply = new JButton(drawIcon);
-        apply.setToolTipText("Apply drawing tool");
-        apply.addActionListener(e -> {
+        tools.addActionListener(e -> {
             DrawingToolFactory factory = (DrawingToolFactory) tools.getSelectedItem();
             if (factory != null) {
                 DrawingTool selectedTool = factory.getTool();
@@ -161,26 +207,9 @@ public class ToolBar extends JToolBar {
             }
         });
 
-        FontIcon settingsIcon = FontIcon.of(MaterialDesignC.COG, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
-        JButton settings = new JButton(settingsIcon);
-        settings.setToolTipText("Draw settings");
-
-        JPopupMenu popupMenu = new JPopupMenu();
-        JCheckBoxMenuItem everyFrame = new JCheckBoxMenuItem("Draw shapes separately for every frame");
-        everyFrame.setSelected(false);
-        everyFrame.addActionListener(e -> {
-        });
-
-        popupMenu.add(everyFrame);
-
-        settings.addActionListener(e -> popupMenu.show(settings, 0, settings.getHeight()));
-
         tools.setMaximumSize(tools.getPreferredSize());
         tools.setMaximumRowCount(10);
-        add(tools);
-        add(apply);
-        add(settings);
-        addSeparator();
+        return tools;
     }
 
     private void addWindowingButtons() {
@@ -252,6 +281,7 @@ public class ToolBar extends JToolBar {
 
     private void addPresetSelectionListeners() {
         presetComboBox.addActionListener(e -> {
+
             if (e.getSource() instanceof JComboBox comboBox) {
                 if (comboBox.getSelectedItem() instanceof WindowPreset preset) {
 
