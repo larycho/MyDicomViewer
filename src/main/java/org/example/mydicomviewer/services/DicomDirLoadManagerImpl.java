@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.events.DicomDirLoadedEvent;
 import org.example.mydicomviewer.listeners.DicomDirLoadedListener;
-import org.example.mydicomviewer.models.DicomDirectory;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessor;
+import org.example.mydicomviewer.views.filelist.FileNodeData;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import java.util.List;
 @Singleton
 public class DicomDirLoadManagerImpl implements DicomDirLoadManager {
 
-    private DicomDirProcessor dicomDirProcessor;
-    private List<DicomDirLoadedListener> listeners = new ArrayList<>();
+    private final DicomDirProcessor dicomDirProcessor;
+    private final List<DicomDirLoadedListener> listeners = new ArrayList<>();
 
     @Inject
     public DicomDirLoadManagerImpl(DicomDirProcessor dicomDirProcessor) {
@@ -24,9 +24,11 @@ public class DicomDirLoadManagerImpl implements DicomDirLoadManager {
 
     @Override
     public void openDicomDir(File file) {
-        DicomDirectory directory = dicomDirProcessor.openDicomDirectory(file);
-        if (directory != null) {
-            fireDicomDirLoadedEvent(directory);
+
+        List<FileNodeData> extractedFiles = dicomDirProcessor.openDicomDirectory(file);
+
+        if (!extractedFiles.isEmpty()) {
+            fireDicomDirLoadedEvent(extractedFiles);
         }
     }
 
@@ -34,8 +36,8 @@ public class DicomDirLoadManagerImpl implements DicomDirLoadManager {
         listeners.add(listener);
     }
 
-    private void fireDicomDirLoadedEvent(DicomDirectory directory) {
-        DicomDirLoadedEvent event = new DicomDirLoadedEvent(this, directory);
+    private void fireDicomDirLoadedEvent(List<FileNodeData> files) {
+        DicomDirLoadedEvent event = new DicomDirLoadedEvent(this, files);
         for (DicomDirLoadedListener listener : listeners) {
             listener.dicomDirLoaded(event);
         }

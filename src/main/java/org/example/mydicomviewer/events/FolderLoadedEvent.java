@@ -1,17 +1,21 @@
 package org.example.mydicomviewer.events;
 
-import org.example.mydicomviewer.views.filelist.FileTreeNode;
+import org.example.mydicomviewer.views.filelist.FileNodeData;
 
 import java.util.EventObject;
+import java.util.List;
 
 public class FolderLoadedEvent extends EventObject {
 
-    FileTreeNode tree;
+    List<FileNodeData> data;
 
-    public FolderLoadedEvent(FileTreeNode tree, Object source) {
+    public FolderLoadedEvent(List<FileNodeData> data, Object source) {
         super(source);
-        this.tree = tree;
+        this.data = data;
     }
 
-    public FileTreeNode getTree() { return tree; }
+    public List<FileNodeData> getData() {
+        return data;
+    }
+
 }

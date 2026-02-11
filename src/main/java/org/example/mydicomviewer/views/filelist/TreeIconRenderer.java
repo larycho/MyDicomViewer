@@ -1,6 +1,5 @@
 package org.example.mydicomviewer.views.filelist;
 
-import org.example.mydicomviewer.models.DicomDirectoryRecord;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -9,10 +8,10 @@ import java.awt.*;
 
 public class TreeIconRenderer extends DefaultTreeCellRenderer {
 
-    private Icon patientIcon;
-    private Icon seriesIcon;
-    private Icon studyIcon;
-    private Icon imageIcon;
+    private final Icon patientIcon;
+    private final Icon seriesIcon;
+    private final Icon studyIcon;
+    private final Icon imageIcon;
 
     public TreeIconRenderer() {
         patientIcon = new ImageIcon("src/main/resources/org/example/mydicomviewer/icons/patient.png");
@@ -27,38 +26,84 @@ public class TreeIconRenderer extends DefaultTreeCellRenderer {
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         Object userObject = node.getUserObject();
-        FileNodeType type = null;
 
-        if (userObject instanceof FileTreeNode treeNode) {
-            type = treeNode.getNodeType();
+        if (userObject instanceof FileNode fileNode) {
+            setDisplayParams(fileNode);
+            return this;
         }
-        else if (userObject instanceof DicomDirectoryRecord record) {
-            type = record.getType();
-        }
+
+        setIcon(imageIcon);
+        return this;
+    }
+
+    private void setDisplayParams(FileNode node) {
+        FileNodeType type = node.getType();
 
         if (type != null) {
             switch (type) {
                 case PATIENT:
-                    setIcon(patientIcon);
+                    setUpPatient(node);
                     break;
                 case SERIES:
-                    setIcon(seriesIcon);
+                    setUpSeries(node);
                     break;
                 case STUDY:
-                    setIcon(studyIcon);
-                    break;
-                case IMAGE:
-                    setIcon(imageIcon);
+                    setUpStudy(node);
                     break;
                 default:
-                    setIcon(imageIcon);
+                    setUpImage(node);
                     break;
             }
         }
-        else {
-            setIcon(imageIcon);
-        }
 
-        return this;
+    }
+
+    private void setUpPatient(FileNode fileNode) {
+        setIcon(patientIcon);
+        FileNodeData data = fileNode.getData();
+        if (data.getPatientId().isPresent()) {
+            String patientId = data.getPatientId().get();
+            setText("Patient ID: " + patientId);
+        }
+        else {
+            setText("Patient");
+        }
+    }
+
+    private void setUpStudy(FileNode fileNode) {
+        setIcon(studyIcon);
+        FileNodeData data = fileNode.getData();
+        if (data.getStudyId().isPresent()) {
+            String patientId = data.getStudyId().get();
+            setText("Study: " + patientId);
+        }
+        else {
+            setText("Study");
+        }
+    }
+
+    private void setUpSeries(FileNode fileNode) {
+        setIcon(seriesIcon);
+        FileNodeData data = fileNode.getData();
+        if (data.getSeriesNumber().isPresent()) {
+            String patientId = data.getSeriesNumber().get();
+            setText("Series: " + patientId);
+        }
+        else {
+            setText("Series");
+        }
+    }
+
+    private void setUpImage(FileNode fileNode) {
+        setIcon(seriesIcon);
+        FileNodeData data = fileNode.getData();
+        if (data.getFileName().isPresent()) {
+            String fileName = data.getFileName().get();
+            setText(fileName);
+        }
+        else {
+            setText("Image");
+        }
     }
 }
+

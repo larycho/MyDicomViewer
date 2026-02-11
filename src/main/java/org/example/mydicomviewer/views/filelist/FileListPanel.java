@@ -3,14 +3,11 @@ package org.example.mydicomviewer.views.filelist;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.example.mydicomviewer.listeners.ImageDisplayer;
-import org.example.mydicomviewer.services.FragmentedFileEventService;
 import org.example.mydicomviewer.services.OpenFileManager;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -26,20 +23,14 @@ public class FileListPanel extends JPanel {
     private JButton collapseButton;
     private FileListScrollPane scrollPane;
     private final OpenFileManager openFileManager;
-    private final ImageDisplayer imageDisplayer;
-    private final FragmentedFileEventService fragmentedFileEventService;
 
     private final int DEFAULT_ICON_SIZE = 20;
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
     @Inject
-    public FileListPanel(OpenFileManager openFileManager,
-                         ImageDisplayer imageDisplayer,
-                         FragmentedFileEventService fragmentedService) {
+    public FileListPanel(OpenFileManager openFileManager) {
 
         this.openFileManager = openFileManager;
-        this.imageDisplayer = imageDisplayer;
-        this.fragmentedFileEventService = fragmentedService;
         cardLayout = new CardLayout();
         setLayout(cardLayout);
 
@@ -56,16 +47,8 @@ public class FileListPanel extends JPanel {
         repaint();
     }
 
-    public FileListState getState() {
-        return scrollPane.getState();
-    }
-
-    public void addFileToList(DefaultMutableTreeNode node) {
-        scrollPane.addNode(node);
-    }
-
-    public void addFileToList(DefaultMutableTreeNode node, DefaultMutableTreeNode parent) {
-        scrollPane.addNode(node, parent);
+    public void addFileToList(FileNodeData file) {
+        scrollPane.addFile(file);
     }
 
     private void setupActionListeners() {
@@ -102,7 +85,7 @@ public class FileListPanel extends JPanel {
 
     private void createSubPanelsOfExpandedPanel() {
         topPanel = createTopOfExpandedPanel();
-        scrollPane = new FileListScrollPane(openFileManager, imageDisplayer, fragmentedFileEventService);
+        scrollPane = new FileListScrollPane(openFileManager);
     }
 
     private void addSubPanelsToExpandedPanel() {

@@ -14,6 +14,7 @@ module org.example.mydicomviewer {
     requires org.kordamp.ikonli.materialdesign2;
     requires org.slf4j;
     requires io.scif;
+    requires com.github.benmanes.caffeine;
 
 
     exports org.example.mydicomviewer;
@@ -30,4 +31,6 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer.views.image.panel;
     exports org.example.mydicomviewer.models;
     exports org.example.mydicomviewer.events;
+    exports org.example.mydicomviewer.processing.image;
+    exports org.example.mydicomviewer.display;
 }

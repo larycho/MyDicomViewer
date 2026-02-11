@@ -4,10 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.multibindings.OptionalBinder;
-import org.example.mydicomviewer.listeners.FileListUpdater;
-import org.example.mydicomviewer.listeners.FooterUpdater;
-import org.example.mydicomviewer.listeners.TagDisplayer;
-import org.example.mydicomviewer.listeners.ToolBarUpdater;
+import org.example.mydicomviewer.listeners.*;
 import org.example.mydicomviewer.plugin.StartupAction;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirPathProcessor;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirPathProcessorImpl;
@@ -16,6 +13,8 @@ import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessorImpl;
 import org.example.mydicomviewer.processing.file.*;
 import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.*;
+import org.example.mydicomviewer.views.filelist.FileTreeNodeService;
+import org.example.mydicomviewer.views.filelist.FileTreeNodeServiceImpl;
 import org.example.mydicomviewer.views.image.DrawingToolFactory;
 
 public class MainAppModule extends AbstractModule {
@@ -42,11 +41,16 @@ public class MainAppModule extends AbstractModule {
         bind(SelectedImageManager.class).to(SelectedImageManagerImpl.class);
         bind(FileReloadEventService.class).to(FileReloadEventServiceImpl.class);
         bind(FragmentedFileEventService.class).to(FragmentedFileEventServiceImpl.class);
+        bind(FileTreeNodeService.class).to(FileTreeNodeServiceImpl.class);
+        bind(ToolBarEventService.class).to(ToolBarEventServiceImpl.class);
+        bind(ResliceEventService.class).to(ResliceEventServiceImpl.class);
 
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();
         bind(FooterUpdater.class).asEagerSingleton();
         bind(ToolBarUpdater.class).asEagerSingleton();
+        bind(ImageDisplayer.class).asEagerSingleton();
+        bind(ResliceDisplayer.class).asEagerSingleton();
 
         Multibinder.newSetBinder(binder(), StartupAction.class);
         Multibinder.newSetBinder(binder(), DrawingToolFactory.class);

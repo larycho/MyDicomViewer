@@ -68,13 +68,57 @@ public class TagProcessor {
         return Optional.empty();
     }
 
+    public Optional<String> getStudyInstanceUid() {
+
+        TagAddress address = TagNumber.STUDY_INSTANCE_UID.getAddress();
+        return getStringTagValue(address);
+    }
+
+    public Optional<String> getSopInstanceUid() {
+
+        TagAddress address = TagNumber.SOP_INSTANCE_UID.getAddress();
+        return getStringTagValue(address);
+    }
+
+    public Optional<String> getSeriesInstanceUid() {
+
+        TagAddress address = TagNumber.SERIES_INSTANCE_UID.getAddress();
+        return getStringTagValue(address);
+    }
+
+    public Optional<String> getSeriesNumber() {
+
+        TagAddress address = TagNumber.SERIES_NUMBER.getAddress();
+        return getStringTagValue(address);
+    }
+
+    public Optional<String> getStudyId() {
+
+        TagAddress address = TagNumber.STUDY_ID.getAddress();
+        return getStringTagValue(address);
+    }
+
+    public Optional<String> getPatientId() {
+
+        TagAddress address = TagNumber.PATIENT_ID.getAddress();
+        return getStringTagValue(address);
+    }
+
+    public Optional<Integer> getInstanceNumber() {
+
+        TagAddress address = TagNumber.INSTANCE_NUMBER.getAddress();
+        return getIntTagValue(address);
+    }
+
     private Optional<String> getStringTagValue(TagAddress address) {
 
         if (dicomFile.containsTag(address)) {
 
             Tag tag = dicomFile.getTag(address);
             String content = tag.getValue();
-            return Optional.of(content);
+            if (content != null) {
+                return Optional.of(content);
+            }
 
         }
         return Optional.empty();
@@ -87,6 +131,18 @@ public class TagProcessor {
             Tag tag = dicomFile.getTag(address);
             String content = tag.getValue();
             return parseDoubleValue(content);
+
+        }
+        return Optional.empty();
+    }
+
+    private Optional<Integer> getIntTagValue(TagAddress address) {
+
+        if (dicomFile.containsTag(address)) {
+
+            Tag tag = dicomFile.getTag(address);
+            String content = tag.getValue();
+            return parseIntValue(content);
 
         }
         return Optional.empty();

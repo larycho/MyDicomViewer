@@ -1,9 +1,4 @@
 package org.example.mydicomviewer.views.filelist;
-
-import org.example.mydicomviewer.listeners.ImageDisplayer;
-import org.example.mydicomviewer.models.DicomDirectoryRecord;
-import org.example.mydicomviewer.models.DicomFile;
-import org.example.mydicomviewer.services.FragmentedFileEventService;
 import org.example.mydicomviewer.services.OpenFileManager;
 
 import javax.swing.*;
@@ -11,33 +6,21 @@ import javax.swing.tree.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class FileListScrollPane extends JScrollPane {
 
+    FileTree fileTree;
     JTree tree;
-    DefaultTreeModel treeModel;
-    DefaultMutableTreeNode root;
-    OpenFileManager openFileManager;
-    ImageDisplayer imageDisplayer;
-    FragmentedFileEventService fragmentedFileEventService;
-    FileListState state = new FileListState();
 
-    public FileListScrollPane(OpenFileManager openFileManager,
-                              ImageDisplayer imageDisplayer,
-                              FragmentedFileEventService fragmentedFileEventService) {
+    OpenFileManager openFileManager;
+
+    public FileListScrollPane(OpenFileManager openFileManager) {
         super();
         this.openFileManager = openFileManager;
-        this.imageDisplayer = imageDisplayer;
-        this.fragmentedFileEventService = fragmentedFileEventService;
-        root = new DefaultMutableTreeNode("Root");
-        treeModel = new DefaultTreeModel(root);
-        tree = new JTree(treeModel);
+
+        fileTree = new FileTree();
+        tree = new JTree(fileTree.getTreeModel());
         tree.setRootVisible(false);
         tree.setCellRenderer(new TreeIconRenderer());
         addActionListeners();
@@ -45,15 +28,7 @@ public class FileListScrollPane extends JScrollPane {
     }
 
     public void clear() {
-        root = new DefaultMutableTreeNode("Root");
-        treeModel = new DefaultTreeModel(root);
-        tree = new JTree(treeModel);
-        tree.setRootVisible(false);
-        tree.setCellRenderer(new TreeIconRenderer());
-        addActionListeners();
-        setViewportView(tree);
-        revalidate();
-        repaint();
+        fileTree.cleanList();
     }
 
     public void addActionListeners() {
@@ -79,83 +54,59 @@ public class FileListScrollPane extends JScrollPane {
     }
 
     private void openFileFromNode(DefaultMutableTreeNode node) {
-        Object userObject = node.getUserObject();
-        if (userObject instanceof DicomDirectoryRecord) {
-            DicomDirectoryRecord record = (DicomDirectoryRecord) userObject;
-            String filename = record.getText();
-            File directory = record.getMainDicomDirectory().getDirectory().getParentFile();
-            Optional<Path> path = findFile(directory, filename);
-            if (path.isPresent()) {
-                File file = path.get().toFile();
-                if (!state.containsFile(file)) {
-                    state.addFile(file);
-                }
-                openFileManager.openFileUsingWorker(file);
-            }
+
+        if (!(node.getUserObject() instanceof FileNode fileNode)) {
+            return;
         }
-        else if (userObject instanceof FileTreeNode imageNode) {
-            if (imageNode.isLeaf() && imageNode.getNodeType().equals(FileNodeType.IMAGE)) {
 
-                if (imageNode.isPartialFile()) {
-                    List<File> files = imageNode.getMainFile();
-
-                    if (!state.containsFile(imageNode.getFile())) {
-                        state.addFiles(files);
-                    }
-
-                    boolean opened = imageDisplayer.isFileOpened(files);
-
-                    if (opened) {
-                        fragmentedFileEventService.notifyListeners(files, imageNode.getInstanceNumber());
-                    }
-                    else {
-                        openFileManager.openFragmentedFileUsingWorker(files);
-                    }
-                }
-                else {
-                    if (!state.containsFile(imageNode.getFile())) {
-                        state.addFile(imageNode.getFile());
-                    }
-                    openFileManager.openFileUsingWorker(imageNode.getFile());
-                }
-            }
+        if (fileNode.getType() != FileNodeType.IMAGE) {
+            return;
         }
-        else if (userObject instanceof DicomFile dicomFile) {
-            if (!state.containsFile(dicomFile.getFile())) {
-                state.addFile(dicomFile.getFile());
-            }
-            openFileManager.openFileUsingWorker(dicomFile.getFile());
+
+        if (fileNode.getData() == null) {
+            return;
+        }
+
+        if (fileNode.getData().getSeriesInstanceUid().isEmpty()) {
+            handleFileWithMissingSeriesUid(fileNode);
+        }
+        else {
+            handleFileWithPresentSeriesUid(fileNode);
+        }
+
+    }
+
+    private void handleFileWithMissingSeriesUid(FileNode fileNode) {
+
+        if (fileNode.getData().getFile().isPresent()) {
+            openFileManager.openFileUsingWorker(fileNode.getData().getFile().get());
         }
     }
 
-    private Optional<Path> findFile(File directory, String fileName) {
-        try (Stream<Path> stream = Files.walk(directory.toPath())) {
-            Optional<Path> result = stream.filter(path -> path.getFileName().toString().equals(fileName)).findFirst();
-            return result;
+    private void handleFileWithPresentSeriesUid(FileNode fileNode) {
+
+        if (fileNode.getData().getSeriesInstanceUid().isEmpty()) {
+            return;
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            return Optional.empty();
+
+        String seriesUid = fileNode.getData().getSeriesInstanceUid().get();
+
+        List<File> files = fileTree.getFilesWithSeriesUid(seriesUid);
+
+        if (files.size() > 1) {
+            openFileManager.openFragmentedFileUsingWorker(files);
+        }
+        else if (files.size() == 1) {
+            openFileManager.openFileUsingWorker(files.get(0));
         }
     }
 
-    public FileListState getState() {
-        return state;
-    }
-
-    public void addNode(DefaultMutableTreeNode node) {
-        treeModel.insertNodeInto(node, root, root.getChildCount());
-
-        TreeNode[] nodes = treeModel.getPathToRoot(node);
-        TreePath path = new TreePath(nodes);
-        tree.scrollPathToVisible(path);
-    }
-
-    public void addNode(DefaultMutableTreeNode node, DefaultMutableTreeNode parent) {
-        treeModel.insertNodeInto(node, parent, parent.getChildCount());
-
-        TreeNode[] nodes = treeModel.getPathToRoot(node);
-        TreePath path = new TreePath(nodes);
+    public void addFile(FileNodeData data) {
+        if (fileTree.duplicateIsPresent(data)) {
+            return;
+        }
+        DefaultMutableTreeNode node = fileTree.addFile(data);
+        TreePath path = fileTree.getPathToRoot(node);
         tree.scrollPathToVisible(path);
     }
 }

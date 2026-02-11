@@ -1,18 +1,20 @@
 package org.example.mydicomviewer.events;
 
-import org.example.mydicomviewer.models.DicomDirectory;
+import org.example.mydicomviewer.views.filelist.FileNodeData;
 
 import java.util.EventObject;
+import java.util.List;
 
 public class DicomDirLoadedEvent extends EventObject {
 
-    private DicomDirectory dicomDirectory;
-    public DicomDirLoadedEvent(Object source, DicomDirectory directory) {
+    private final List<FileNodeData> extractedFiles;
+
+    public DicomDirLoadedEvent(Object source, List<FileNodeData> extractedFiles) {
         super(source);
-        this.dicomDirectory = directory;
+        this.extractedFiles = extractedFiles;
     }
 
-    public DicomDirectory getDicomDirectory() {
-        return dicomDirectory;
+    public List<FileNodeData> getExtractedFiles() {
+        return extractedFiles;
     }
 }

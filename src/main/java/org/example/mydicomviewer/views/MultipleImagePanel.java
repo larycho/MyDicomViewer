@@ -34,18 +34,6 @@ public class MultipleImagePanel extends JPanel {
         updateDisplay();
     }
 
-    public MultipleImagePanel(SplitScreenMode mode) {
-        this.mode = mode;
-        setBackground(Color.BLACK);
-        setLayout(new GridBagLayout());
-        setVisible(true);
-        updateDisplay();
-    }
-
-    public void setMode(SplitScreenMode mode) {
-        this.mode = mode;
-    }
-
     public void setSelectedImage(ImagePanelWrapper selectedImage) {
         selectedImageManager.setSelectedImage(selectedImage);
     }
@@ -69,14 +57,13 @@ public class MultipleImagePanel extends JPanel {
     }
 
     public void setAndApplyMode(SplitScreenMode mode) {
-        setMode(mode);
+        this.mode = mode;
         updateDisplay();
     }
 
     public List<ImagePanelWrapper> getAllImages() {
         return wrappers;
     }
-
 
     public void addImage(ImagePanelWrapper wrapper) {
         int maxSlots = mode.getElements().size();
@@ -168,7 +155,7 @@ public class MultipleImagePanel extends JPanel {
     }
 
 
-    private void addImagePanel(JPanel imagePanel, SplitScreenElement element) {
+    private void addImagePanel(JComponent imagePanel, SplitScreenElement element) {
         GridBagConstraints constraints = new GridBagConstraints();
         setConstraintsParameters(constraints, element);
 
@@ -210,15 +197,6 @@ public class MultipleImagePanel extends JPanel {
         constraints.weighty = 1.0;
         constraints.gridwidth = element.getWidth();
         constraints.gridheight = element.getHeight();
-    }
-
-    public void rotate() {
-        ImagePanelWrapper wrapper = wrappers.getFirst();
-        wrappers.removeFirst();
-        wrappers.add(wrapper);
-
-        removeAll();
-        updateDisplay();
     }
 
     private void refresh() {

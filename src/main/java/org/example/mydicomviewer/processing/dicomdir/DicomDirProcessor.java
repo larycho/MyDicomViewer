@@ -1,9 +1,10 @@
 package org.example.mydicomviewer.processing.dicomdir;
 
-import org.example.mydicomviewer.models.DicomDirectory;
+import org.example.mydicomviewer.views.filelist.FileNodeData;
 
 import java.io.File;
+import java.util.List;
 
 public interface DicomDirProcessor {
-    public DicomDirectory openDicomDirectory(File file);
+    List<FileNodeData> openDicomDirectory(File file);
 }

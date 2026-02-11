@@ -1,9 +1,7 @@
 package org.example.mydicomviewer.workers;
 
-import com.google.inject.Inject;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.processing.file.FileProcessor;
-import org.example.mydicomviewer.processing.file.FileProcessorImpl;
 import org.example.mydicomviewer.services.FileLoadEventService;
 
 import javax.swing.*;
