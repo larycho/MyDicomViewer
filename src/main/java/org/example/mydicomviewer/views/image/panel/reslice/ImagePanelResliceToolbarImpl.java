@@ -5,6 +5,8 @@ import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
 import org.example.mydicomviewer.views.image.panel.Axis;
 import org.example.mydicomviewer.views.image.panel.ImagePanelToolbar;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +21,9 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
 
     private final ImagePanelWrapper wrapper;
     private ImagePanelSelectedEventService selectedEventService;
+
+    private final int DEFAULT_ICON_SIZE = 25;
+    private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
     public ImagePanelResliceToolbarImpl(ImagePanelWrapper wrapper) {
         this.wrapper = wrapper;
@@ -70,7 +75,9 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
     }
 
     private void addSettingsButtonAndMenu() {
-        settings = new JButton("Settings");
+        FontIcon cog = FontIcon.of(MaterialDesignC.COG, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        settings = new JButton(cog);
+        settings.setToolTipText("Settings");
 
         settings.addActionListener(e -> getPopupMenu().show(settings, 0, settings.getHeight()));
 

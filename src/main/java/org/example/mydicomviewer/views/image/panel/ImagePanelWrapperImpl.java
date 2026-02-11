@@ -47,8 +47,8 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     }
 
     @Override
-    public JPanel getPanel() {
-        return (JPanel) imagePanel;
+    public JComponent getPanel() {
+        return (JComponent) imagePanel;
     }
 
     @Override

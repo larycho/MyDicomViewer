@@ -27,13 +27,18 @@ public class Footer extends JPanel {
     }
 
     public void startProgress() {
-        progressBar = new JProgressBar();
-        progressBar.setIndeterminate(true);
-        add(progressBar);
+        if (progressBar == null) {
+            progressBar = new JProgressBar();
+            progressBar.setIndeterminate(true);
+            add(progressBar);
+        }
     }
 
     public void stopProgress() {
-        progressBar.setIndeterminate(false);
-        remove(progressBar);
+        if (progressBar != null) {
+            progressBar.setIndeterminate(false);
+            remove(progressBar);
+            progressBar = null;
+        }
     }
 }

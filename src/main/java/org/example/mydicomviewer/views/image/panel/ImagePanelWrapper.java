@@ -16,7 +16,7 @@ public interface ImagePanelWrapper {
 
     int getCurrentFrameNumber();
 
-    JPanel getPanel();
+    JComponent getPanel();
 
     void moveToNextFrame();
 

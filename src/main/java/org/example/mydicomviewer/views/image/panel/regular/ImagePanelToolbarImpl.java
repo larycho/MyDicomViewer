@@ -7,6 +7,8 @@ import org.example.mydicomviewer.views.image.panel.Axis;
 import org.example.mydicomviewer.views.image.panel.ImagePanelToolbar;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
 import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
@@ -14,7 +16,7 @@ import java.awt.*;
 
 public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar {
 
-    private JButton select;
+    private JButton selectButton;
     private JButton settings;
 
     private final ImagePanelWrapper wrapper;
@@ -22,6 +24,7 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
 
     private final int DEFAULT_ICON_SIZE = 25;
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
+    private final Color DISABLED_ICON_COLOR = UIManager.getColor("Button.disabledText");
 
     public ImagePanelToolbarImpl(ImagePanelWrapper wrapper)
     {
@@ -44,10 +47,12 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     }
 
     private void addSelectButton() {
-        select = new JButton("Select");
-        select.setSelected(false);
-        select.addActionListener(e -> toggleSelect());
-        add(select);
+        FontIcon selectIcon = FontIcon.of(MaterialDesignS.SELECT_ALL, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        selectButton = new JButton(selectIcon);
+        selectButton.setToolTipText("Select this image");
+        selectButton.setSelected(false);
+        selectButton.addActionListener(e -> toggleSelect());
+        add(selectButton);
     }
 
     public void toggleSelect() {
@@ -85,7 +90,9 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     }
 
     private void addSettingsButton() {
-        settings = new JButton("Settings");
+        FontIcon cog = FontIcon.of(MaterialDesignC.COG, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        settings = new JButton(cog);
+        settings.setToolTipText("Settings");
 
         settings.addActionListener(e -> getPopupMenu().show(settings, 0, settings.getHeight()));
 
@@ -125,13 +132,17 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
 
     @Override
     public void showSelected() {
-        select.setText("Selected");
-        select.setEnabled(false);
+        FontIcon select = FontIcon.of(MaterialDesignS.SELECT_ALL, DEFAULT_ICON_SIZE, DISABLED_ICON_COLOR);
+        selectButton.setIcon(select);
+        selectButton.setEnabled(false);
+        selectButton.setToolTipText("This image is selected");
     }
 
     @Override
     public void showDeselected() {
-        select.setText("Select");
-        select.setEnabled(true);
+        FontIcon select = FontIcon.of(MaterialDesignS.SELECT_ALL, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        selectButton.setIcon(select);
+        selectButton.setEnabled(true);
+        selectButton.setToolTipText("Select this image");
     }
 }
