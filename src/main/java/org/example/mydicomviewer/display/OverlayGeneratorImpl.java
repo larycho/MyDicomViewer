@@ -21,53 +21,69 @@ public class OverlayGeneratorImpl implements OverlayGenerator {
 
     @Override
     public OverlayText createOverlayText(DicomFile dicomFile) {
+
         TagGroup group = dicomFile.getTags();
         OverlayText overlayText = new OverlayText();
         List<Tag> tags = group.allTags();
 
         for (Tag tag : tags) {
-            String address = tag.getAddress().toString();
-            switch (address) {
-                case PATIENT_NAME:
-                    overlayText.addTopLeft("Name: " + tag.getValue());
-                    break;
-                case PATIENT_SEX:
-                    overlayText.addTopLeft(tag.getValue());
-                    break;
-                case SERIES_DESCRIPTION:
-                    overlayText.addTopLeft("Series description: " + tag.getValue());
-                    break;
-                case CONTENT_DATE:
-                    String date = tag.getValue();
-                    String year = date.substring(0, 4);
-                    String month = date.substring(4, 6);
-                    String day = date.substring(6, 8);
-                    overlayText.addTopRight(day + "-" + month + "-" + year);
-                    break;
-                case CONTENT_TIME:
-                    String time = tag.getValue();
-                    String hour = time.substring(0, 2);
-                    String minute = time.substring(2, 4);
-                    String second = time.substring(4, 6);
-                    overlayText.addTopRight(hour + ":" + minute + ":" + second);
-                    break;
-                case NUMBER_OF_FRAMES:
-                    overlayText.addBottomLeft("Number of frames: " + tag.getValue());
-                    break;
-                case SERIES_NUMBER:
-                    overlayText.addBottomLeft("Series number: " + tag.getValue());
-                    break;
-                case PATIENT_ID:
-                    overlayText.addTopLeft("Patient ID: " + tag.getValue());
-                    break;
-                case MODALITY:
-                    overlayText.addBottomLeft("Modality: " + tag.getValue());
-                    break;
-                default:
-                    break;
-            }
+
+            addTextBasedOnAddress(tag, overlayText);
         }
 
         return overlayText;
+    }
+
+    private void addTextBasedOnAddress(Tag tag, OverlayText overlayText) {
+
+        String value = getTagValue(tag);
+        String address = tag.getAddress().toString();
+
+        switch (address) {
+            case PATIENT_NAME:
+                overlayText.addTopLeft("Name: " + value);
+                break;
+            case PATIENT_SEX:
+                overlayText.addTopLeft(value);
+                break;
+            case SERIES_DESCRIPTION:
+                overlayText.addTopLeft("Series description: " + value);
+                break;
+            case CONTENT_DATE:
+                String year = value.substring(0, 4);
+                String month = value.substring(4, 6);
+                String day = value.substring(6, 8);
+                overlayText.addTopRight(day + "-" + month + "-" + year);
+                break;
+            case CONTENT_TIME:
+                String hour = value.substring(0, 2);
+                String minute = value.substring(2, 4);
+                String second = value.substring(4, 6);
+                overlayText.addTopRight(hour + ":" + minute + ":" + second);
+                break;
+            case NUMBER_OF_FRAMES:
+                overlayText.addBottomLeft("Number of frames: " + value);
+                break;
+            case SERIES_NUMBER:
+                overlayText.addBottomLeft("Series number: " + value);
+                break;
+            case PATIENT_ID:
+                overlayText.addTopLeft("Patient ID: " + value);
+                break;
+            case MODALITY:
+                overlayText.addBottomLeft("Modality: " + value);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private static String getTagValue(Tag tag) {
+        String value = tag.getValue();
+
+        if (value == null || value.isEmpty()) {
+            value = "Unknown";
+        }
+        return value;
     }
 }

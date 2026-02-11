@@ -70,4 +70,35 @@ public class FileTreeNodeServiceImpl implements FileTreeNodeService {
 
         return fileNodeData;
     }
+
+    @Override
+    public List<FileNodeData> getFileNodesWithSeriesUid(FileNodeData mainFile, List<FileNodeData> data) {
+
+        List<FileNodeData> result = new ArrayList<>();
+
+        if (mainFile.getSeriesInstanceUid().isEmpty()) {
+            return result;
+        }
+
+        for (FileNodeData file : data) {
+
+            if (file.getSeriesInstanceUid().isPresent()) {
+                if (file.getSeriesInstanceUid().get().equals(mainFile.getSeriesInstanceUid().get())) {
+                    result.add(file);
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<File> convertFileNodesToList(List<FileNodeData> data) {
+        List<File> result = new ArrayList<>();
+        for (FileNodeData file : data) {
+            if (file.getFile().isPresent()) {
+                result.add(file.getFile().get());
+            }
+        }
+        return result;
+    }
 }

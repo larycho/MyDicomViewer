@@ -6,6 +6,7 @@ import org.example.mydicomviewer.events.DicomDirLoadedEvent;
 import org.example.mydicomviewer.listeners.DicomDirLoadedListener;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessor;
 import org.example.mydicomviewer.views.filelist.FileNodeData;
+import org.example.mydicomviewer.views.filelist.FileTreeNodeService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,11 +16,18 @@ import java.util.List;
 public class DicomDirLoadManagerImpl implements DicomDirLoadManager {
 
     private final DicomDirProcessor dicomDirProcessor;
+    private final OpenFileManager openFileManager;
+    private final FileTreeNodeService fileTreeNodeService;
     private final List<DicomDirLoadedListener> listeners = new ArrayList<>();
 
     @Inject
-    public DicomDirLoadManagerImpl(DicomDirProcessor dicomDirProcessor) {
+    public DicomDirLoadManagerImpl(DicomDirProcessor dicomDirProcessor,
+                                   OpenFileManager openFileManager,
+                                   FileTreeNodeService fileTreeNodeService) {
+
         this.dicomDirProcessor = dicomDirProcessor;
+        this.openFileManager = openFileManager;
+        this.fileTreeNodeService = fileTreeNodeService;
     }
 
     @Override
@@ -29,6 +37,7 @@ public class DicomDirLoadManagerImpl implements DicomDirLoadManager {
 
         if (!extractedFiles.isEmpty()) {
             fireDicomDirLoadedEvent(extractedFiles);
+            triggerFileOpen(extractedFiles);
         }
     }
 
@@ -41,5 +50,30 @@ public class DicomDirLoadManagerImpl implements DicomDirLoadManager {
         for (DicomDirLoadedListener listener : listeners) {
             listener.dicomDirLoaded(event);
         }
+    }
+
+    private void triggerFileOpen(List<FileNodeData> data) {
+        if (data.isEmpty()) {
+            return;
+        }
+        FileNodeData firstFile = data.get(0);
+        if (firstFile.getFile().isEmpty()) {
+            return;
+        }
+
+        List<File> otherFiles = findFilesFromTheSameSeries(firstFile, data);
+
+        if (otherFiles.isEmpty()) {
+            openFileManager.openFileUsingWorker(firstFile.getFile().get());
+        }
+        else {
+            otherFiles.add(firstFile.getFile().get());
+            openFileManager.openFragmentedFileUsingWorker(otherFiles);
+        }
+    }
+
+    private List<File> findFilesFromTheSameSeries(FileNodeData mainFile, List<FileNodeData> data) {
+        List<FileNodeData> nodes = fileTreeNodeService.getFileNodesWithSeriesUid(mainFile, data);
+        return fileTreeNodeService.convertFileNodesToList(nodes);
     }
 }

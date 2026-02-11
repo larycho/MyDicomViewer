@@ -48,6 +48,7 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
     @Override
     public void dicomDirLoaded(DicomDirLoadedEvent dicomDirLoadedEvent) {
         fileListPanel.clear();
+        fileListPanel.setExpanded();
         List<FileNodeData> foundFiles = dicomDirLoadedEvent.getExtractedFiles();
 
         for (FileNodeData file : foundFiles) {
@@ -59,11 +60,13 @@ public class FileListUpdater implements FileLoadedListener, DicomDirLoadedListen
     public void folderLoaded(FolderLoadedEvent event) {
 
         fileListPanel.clear();
+        fileListPanel.setExpanded();
         List<FileNodeData> files = event.getData();
 
         for (FileNodeData file : files) {
             fileListPanel.addFileToList(file);
         }
+
     }
 
 }

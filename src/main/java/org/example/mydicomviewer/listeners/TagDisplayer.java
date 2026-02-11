@@ -19,8 +19,7 @@ import java.util.ArrayList;
 
 public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, DicomDirLoadedListener, FragmentedFileSelectedListener {
 
-    private TagPanel tagPanel;
-    private FileLoadEventService fileLoadEventService;
+    private final TagPanel tagPanel;
 
     @Inject
     public TagDisplayer(TagPanel tagPanel,
@@ -29,7 +28,6 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
                         DicomDirLoadManager dicomDirLoadManager,
                         FragmentedFileEventService fragmentedFileEventService) {
         this.tagPanel = tagPanel;
-        this.fileLoadEventService = fileLoadEventService;
         fileLoadEventService.addListener(this);
         folderLoadedEventService.addListener(this);
         dicomDirLoadManager.addListener(this);
@@ -59,8 +57,7 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
 
     private JTable createTagTable(String[][] data) {
         String[] columnNames = { "Tag", "Description", "Value" };
-        JTable table = new JTable(data, columnNames);
-        return table;
+        return new JTable(data, columnNames);
     }
 
     private ArrayList<Tag> getTagsFromFile(DicomFile dicomFile) {
@@ -71,16 +68,26 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
         return new ArrayList<>();
     }
 
-    private static String[][] createTagListArray(ArrayList<Tag> tags, int rows, int cols) {
+    private String[][] createTagListArray(ArrayList<Tag> tags, int rows, int cols) {
         String[][] dataArray = new String[rows][cols];
         for (int i = 0; i < rows; i++) {
             Tag tag = tags.get(i);
 
             dataArray[i][0] = tag.getAddress().toString();
             dataArray[i][1] = tag.getDescription();
-            dataArray[i][2] = tag.getValue();
+            dataArray[i][2] = getTagValue(tag);
         }
         return dataArray;
+    }
+
+    private String getTagValue(Tag tag) {
+        String missingMessage = "Not specified";
+        if (tag.getValue() == null || tag.getValue().isEmpty()) {
+            return missingMessage;
+        }
+        else {
+            return tag.getValue();
+        }
     }
 
     @Override

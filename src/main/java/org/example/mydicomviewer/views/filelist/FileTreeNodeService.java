@@ -13,4 +13,7 @@ public interface FileTreeNodeService {
 
     List<FileNodeData> getFileNodeDataList(List<File> files);
 
+    List<FileNodeData> getFileNodesWithSeriesUid(FileNodeData mainFile, List<FileNodeData> data);
+
+    List<File> convertFileNodesToList(List<FileNodeData> data);
 }

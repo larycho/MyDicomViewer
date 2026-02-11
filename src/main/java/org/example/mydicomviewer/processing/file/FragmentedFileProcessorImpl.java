@@ -8,7 +8,6 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomImage;
 import org.example.mydicomviewer.models.DicomSeries;
 import org.example.mydicomviewer.models.TagGroup;
-import org.example.mydicomviewer.services.PartialFileServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,11 +37,9 @@ public class FragmentedFileProcessorImpl implements FragmentedFileProcessor {
 
         DicomSeries series = new DicomSeries(dicomImages);
 
-        TagGroup tags = new TagGroup();
-
         if (!sortedFiles.isEmpty()) {
             File file = sortedFiles.get(0);
-            tags = fileTagsProcessor.getTagsFromFile(file);
+            TagGroup tags = fileTagsProcessor.getTagsFromFile(file);
             return new DicomFile(sortedFiles.get(0), tags, series);
         }
 
@@ -76,8 +73,8 @@ public class FragmentedFileProcessorImpl implements FragmentedFileProcessor {
     }
 
     private class ListElement {
-        private int index;
-        private File file;
+        private final int index;
+        private final File file;
         public ListElement(int index, File file) {
             this.index = index;
             this.file = file;

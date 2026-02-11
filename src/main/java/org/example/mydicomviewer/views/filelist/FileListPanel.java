@@ -132,4 +132,8 @@ public class FileListPanel extends JPanel {
         }
         return super.getPreferredSize();
     }
+
+    public void setExpanded() {
+        cardLayout.show(this, "Expanded");
+    }
 }
