@@ -9,8 +9,8 @@ import java.io.File;
 
 public class FileProcessorImpl implements FileProcessor {
 
-    private FileImagesProcessor imagesProcessor;
-    private FileTagsProcessor tagsProcessor;
+    private final FileImagesProcessor imagesProcessor;
+    private final FileTagsProcessor tagsProcessor;
 
     @Inject
     public FileProcessorImpl(FileImagesProcessor imagesProcessor, FileTagsProcessor tagsProcessor) {

@@ -24,9 +24,7 @@ public class FileImagesProcessorImpl implements FileImagesProcessor {
     private DicomSeries imageReadCorrectly(SourceImage sourceImage) {
         ArrayList<DicomImage> frames = extractFrames(sourceImage);
 
-        DicomSeries series = new DicomSeries(frames);
-        series.addSourceImage(sourceImage);
-        return series;
+        return new DicomSeries(frames);
     }
 
     private Optional<SourceImage> openFile(File file) {

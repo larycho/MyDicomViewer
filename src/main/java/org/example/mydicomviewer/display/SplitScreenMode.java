@@ -4,21 +4,18 @@ import java.util.ArrayList;
 
 public class SplitScreenMode {
 
-    private ArrayList<SplitScreenElement> elements;
+    private final ArrayList<SplitScreenElement> elements;
 
     public SplitScreenMode() {
         elements = new ArrayList<>();
     }
+
     public SplitScreenMode(ArrayList<SplitScreenElement> elements) {
-        this.elements = elements;
+        this.elements = new ArrayList<>(elements);
     }
 
     public ArrayList<SplitScreenElement> getElements() {
         return elements;
-    }
-
-    public void setElements(ArrayList<SplitScreenElement> elements) {
-        this.elements = elements;
     }
 
     public void add(SplitScreenElement element) {

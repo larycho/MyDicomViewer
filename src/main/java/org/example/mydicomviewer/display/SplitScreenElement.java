@@ -2,10 +2,10 @@ package org.example.mydicomviewer.display;
 
 public class SplitScreenElement {
 
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+    private final int x;
+    private final int y;
+    private final int width;
+    private final int height;
     private final int DEFAULT_WIDTH = 1;
     private final int DEFAULT_HEIGHT = 1;
 

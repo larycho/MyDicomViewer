@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 
 public class Oval implements DrawableShape {
 
@@ -12,9 +11,6 @@ public class Oval implements DrawableShape {
     private Point2D.Double origin;
     private Color color;
     private float thickness;
-
-    private boolean isBeingDrawn = false;
-    private boolean endingDrawing = false;
 
     private String label;
 
@@ -31,7 +27,6 @@ public class Oval implements DrawableShape {
     public void start(double x, double y) {
         origin = new Point2D.Double(x, y);
         oval.setFrame(x, y, 1, 1);
-        isBeingDrawn = true;
     }
 
     public void setBottomRightPoint(double x, double y) {
@@ -55,8 +50,6 @@ public class Oval implements DrawableShape {
 
     public void end(double x, double y) {
         setBottomRightPoint(x, y);
-        isBeingDrawn = false;
-        endingDrawing = true;
     }
 
     public double getWidth() {
@@ -69,13 +62,6 @@ public class Oval implements DrawableShape {
 
     public Point2D.Double getOrigin() {
         return new Point2D.Double(origin.getX(), origin.getY());
-    }
-
-    @Override
-    public void draw(Graphics2D g) {
-        g.setColor(color);
-        g.setStroke(new BasicStroke(thickness));
-        g.draw(oval);
     }
 
     @Override

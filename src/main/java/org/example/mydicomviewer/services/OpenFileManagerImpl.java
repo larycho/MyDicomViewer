@@ -16,20 +16,17 @@ public class OpenFileManagerImpl implements OpenFileManager {
     private final FileProcessor fileProcessor;
     private final FragmentedFileProcessor fragmentedFileProcessor;
     private final FileLoadEventService fileLoadEventService;
-    private final FileReloadEventService fileReloadEventService;
     private final FileLoadStartedEventService fileLoadStartedEventService;
 
     @Inject
     public OpenFileManagerImpl (
             FileLoadEventService fileLoadEventService,
-            FileReloadEventService fileReloadEventService,
             FileProcessor fileProcessor,
             FragmentedFileProcessor fragmentedFileProcessor,
             FileLoadStartedEventService fileLoadStartedEventService
     ) {
         this.fileProcessor = fileProcessor;
         this.fileLoadEventService = fileLoadEventService;
-        this.fileReloadEventService = fileReloadEventService;
         this.fragmentedFileProcessor = fragmentedFileProcessor;
         this.fileLoadStartedEventService = fileLoadStartedEventService;
     }
@@ -52,10 +49,4 @@ public class OpenFileManagerImpl implements OpenFileManager {
         }
     }
 
-    @Override
-    public void reopenFile(File file) {
-        if (file != null) {
-            fileReloadEventService.notifyReloaded(file);
-        }
-    }
 }

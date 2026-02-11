@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class DicomImage {
 
-    private BufferedImage image;
+    private final BufferedImage image;
 
     public DicomImage(BufferedImage image) {
         this.image = image;

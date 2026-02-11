@@ -1,7 +1,5 @@
 package org.example.mydicomviewer.events;
 
-import org.example.mydicomviewer.models.DicomFile;
-
 import java.io.File;
 import java.util.EventObject;
 

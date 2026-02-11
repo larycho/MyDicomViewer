@@ -48,7 +48,7 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
                         String fileName = p.toFile().getName();
                         return fileName.endsWith(".dcm") || !fileName.contains(".");
                     })
-                    .forEach(p -> {files.add(p.toFile());});
+                    .forEach(p -> files.add(p.toFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }

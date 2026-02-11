@@ -7,7 +7,6 @@ import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.events.FileLoadedEvent;
 import org.example.mydicomviewer.events.RequestedResliceEvent;
 import org.example.mydicomviewer.models.DicomFile;
-import org.example.mydicomviewer.models.DicomImage;
 import org.example.mydicomviewer.services.FileLoadEventService;
 import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
 import org.example.mydicomviewer.services.ResliceEventService;
@@ -17,7 +16,6 @@ import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
 import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +24,8 @@ import java.util.List;
 public class ResliceDisplayer implements FileLoadedListener, ResliceEventListener {
 
     DicomFile dicomFile;
-    private MultipleImagePanel multipleImagePanel;
-    private ImagePanelSelectedEventService panelSelectedService;
+    private final MultipleImagePanel multipleImagePanel;
+    private final ImagePanelSelectedEventService panelSelectedService;
 
     @Inject
     public ResliceDisplayer(FileLoadEventService fileLoadEventService,
@@ -40,8 +38,6 @@ public class ResliceDisplayer implements FileLoadedListener, ResliceEventListene
         resliceEventService.addListener(this);
     }
 
-    public ResliceDisplayer() {}
-
     @Override
     public void fileLoaded(FileLoadedEvent event) {
         dicomFile = event.getFile();
@@ -49,40 +45,23 @@ public class ResliceDisplayer implements FileLoadedListener, ResliceEventListene
 
     @Override
     public void resliceRequested(RequestedResliceEvent event) {
-        display();
-    }
-
-    private void display() {
         if (dicomFile == null) {
             return;
         }
-        String path = dicomFile.getFilePath();
-        List<DicomImage> images = dicomFile.getImages();
-
-        int max = images.size();
-        BufferedImage[] frames = new BufferedImage[max];
-
-        for (int i = 0; i < max; i++) {
-            DicomImage image = images.get(i);
-            BufferedImage frame = image.getImage();
-            frames[i] = frame;
-        }
-        ImagePanelWrapper reslicePanelX = ImagePanelFactory.createResliceImagePanel(dicomFile);
-        ImagePanelWrapper reslicePanelY = ImagePanelFactory.createResliceImagePanel(dicomFile);
-        ImagePanelWrapper reslicePanelZ = ImagePanelFactory.createResliceImagePanel(dicomFile);
 
         multipleImagePanel.clearDisplay();
         multipleImagePanel.setAndApplyMode(createScreenMode(Arrays.asList(new Point(0,0), new Point(1,0), new Point(2,0))));
-        multipleImagePanel.addImage(reslicePanelZ);
-        multipleImagePanel.addImage(reslicePanelY);
-        multipleImagePanel.addImage(reslicePanelX);
-// TODO
-        reslicePanelX.addPanelSelectedService(panelSelectedService);
-        reslicePanelY.addPanelSelectedService(panelSelectedService);
-        reslicePanelZ.addPanelSelectedService(panelSelectedService);
-        reslicePanelX.setAxis(Axis.X);
-        reslicePanelY.setAxis(Axis.Y);
-        reslicePanelZ.setAxis(Axis.Z);
+
+        addNewReslicePanel(Axis.Z);
+        addNewReslicePanel(Axis.Y);
+        addNewReslicePanel(Axis.X);
+    }
+
+    private void addNewReslicePanel(Axis axis) {
+        ImagePanelWrapper reslicePanel = ImagePanelFactory.createResliceImagePanel(dicomFile);
+        multipleImagePanel.addImage(reslicePanel);
+        reslicePanel.addPanelSelectedService(panelSelectedService);
+        reslicePanel.setAxis(axis);
     }
 
     private SplitScreenMode createScreenMode(List<Point> points) {

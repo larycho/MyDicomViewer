@@ -19,7 +19,6 @@ public class FileTagsProcessorImpl implements FileTagsProcessor {
             return getTagsFromDicomInputStream(dicomInputStream);
         }
         catch (IOException e) {
-            // TODO
             return new TagGroup();
         }
     }

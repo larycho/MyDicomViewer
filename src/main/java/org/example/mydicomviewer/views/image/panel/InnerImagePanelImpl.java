@@ -45,7 +45,6 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
 
         setVisualParameters();
         setOverlay();
-        //addCentering();
     }
 
     private void setVisualParameters() {

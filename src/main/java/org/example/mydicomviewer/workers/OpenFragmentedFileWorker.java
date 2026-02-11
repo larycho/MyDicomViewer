@@ -1,7 +1,6 @@
 package org.example.mydicomviewer.workers;
 
 import org.example.mydicomviewer.models.DicomFile;
-import org.example.mydicomviewer.processing.file.FileProcessor;
 import org.example.mydicomviewer.processing.file.FragmentedFileProcessor;
 import org.example.mydicomviewer.services.FileLoadEventService;
 
@@ -14,8 +13,8 @@ import java.util.concurrent.ExecutionException;
 public class OpenFragmentedFileWorker extends SwingWorker<DicomFile, Void>  {
 
     private List<File> files;
-    private FragmentedFileProcessor fileProcessor;
-    private FileLoadEventService fileLoadEventService;
+    private final FragmentedFileProcessor fileProcessor;
+    private final FileLoadEventService fileLoadEventService;
 
     public OpenFragmentedFileWorker(FileLoadEventService fileLoadEventService, FragmentedFileProcessor fileProcessor) {
         this.fileProcessor = fileProcessor;
@@ -23,20 +22,12 @@ public class OpenFragmentedFileWorker extends SwingWorker<DicomFile, Void>  {
         files = new ArrayList<>();
     }
 
-    public void addFile(File file) {
-        files.add(file);
-    }
-
-    public void addFiles(List<File> files) {
-        this.files.addAll(files);
-    }
-
     public void setFiles(List<File> files) {
         this.files = new ArrayList<>(files);
     }
 
     @Override
-    protected DicomFile doInBackground() throws Exception {
+    protected DicomFile doInBackground() {
         return fileProcessor.readFragmentedFile(files);
     }
 

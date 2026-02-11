@@ -18,11 +18,6 @@ public class FileLoadStartedEventServiceImpl implements FileLoadStartedEventServ
     }
 
     @Override
-    public void removeListener(FileLoadStartedListener listener) {
-        listeners.remove(listener);
-    }
-
-    @Override
     public void notifyStarted(File file) {
         FileLoadStartedEvent event = new FileLoadStartedEvent(this, file);
         for (FileLoadStartedListener listener : listeners) {

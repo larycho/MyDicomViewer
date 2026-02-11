@@ -280,7 +280,7 @@ public class ToolBar extends JToolBar {
     private void addPresetSelectionListeners() {
         presetComboBox.addActionListener(e -> {
 
-            if (e.getSource() instanceof JComboBox comboBox) {
+            if (e.getSource() instanceof JComboBox<?> comboBox) {
                 if (comboBox.getSelectedItem() instanceof WindowPreset preset) {
 
                     if (preset.getName().equals("Default")) {

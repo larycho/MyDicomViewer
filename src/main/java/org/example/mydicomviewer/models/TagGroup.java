@@ -1,12 +1,10 @@
 package org.example.mydicomviewer.models;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TagGroup {
 
-    private ArrayList<Tag> tags = new ArrayList<Tag>();
+    private final ArrayList<Tag> tags = new ArrayList<>();
 
     public void addTag(Tag tag) {
         tags.add(tag);

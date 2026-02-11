@@ -11,7 +11,7 @@ import java.util.prefs.Preferences;
 
 public class OpenFileCommand {
 
-    private OpenFileManager openFileManager;
+    private final OpenFileManager openFileManager;
     Preferences preferences = Preferences.userRoot().node("com/example/mydicomviewer/commands");
     private static final String LAST_OPEN_DIR = "last_open_dir";
 

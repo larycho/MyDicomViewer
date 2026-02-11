@@ -7,8 +7,6 @@ public interface SelectedImageManager {
 
     void setSelectedImage(ImagePanelWrapper image);
 
-    void deselectImage();
-
     ImagePanelWrapper getSelectedImage();
 
     void setDrawingTool(DrawingTool tool);

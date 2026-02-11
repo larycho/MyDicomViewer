@@ -34,10 +34,6 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
         fragmentedFileEventService.addListener(this);
     }
 
-    public TagDisplayer(TagPanel tagPanel) {
-        this.tagPanel = tagPanel;
-    }
-
     @Override
     public void fileLoaded(FileLoadedEvent event) {
         DicomFile dicomFile = event.getFile();

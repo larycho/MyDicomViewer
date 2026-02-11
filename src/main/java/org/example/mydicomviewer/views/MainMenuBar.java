@@ -4,20 +4,15 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.example.mydicomviewer.commands.ExportImagesCommand;
 import org.example.mydicomviewer.commands.OpenFileCommand;
-import org.example.mydicomviewer.listeners.FileLoadedListener;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 @Singleton
 public class MainMenuBar extends JMenuBar {
 
     private JMenu fileMenu;
-    private OpenFileCommand command;
-    private ExportImagesCommand exportCommand;
+    private final OpenFileCommand command;
+    private final ExportImagesCommand exportCommand;
 
     @Inject
     public MainMenuBar(OpenFileCommand command,

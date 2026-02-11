@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ScreenModeProviderImpl implements ScreenModeProvider {
 
-    private ArrayList<SplitScreenMode> modes;
+    private final ArrayList<SplitScreenMode> modes;
 
     public ScreenModeProviderImpl() {
         modes = searchForScreenModes();
@@ -27,16 +27,6 @@ public class ScreenModeProviderImpl implements ScreenModeProvider {
         SplitScreenMode mode = new SplitScreenMode();
         mode.add(element);
         return mode;
-    }
-
-    @Override
-    public void addScreenMode(SplitScreenMode mode) {
-        modes.add(mode);
-    }
-
-    @Override
-    public void removeScreenMode(SplitScreenMode mode) {
-        modes.remove(mode);
     }
 
     // This is a temporary method - the end goal is to read this data from file

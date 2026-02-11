@@ -14,16 +14,6 @@ public class WindowingProcessorImpl implements WindowingProcessor {
     private PhotometricInterpretation photometricInterpretation;
 
     @Override
-    public BufferedImage applyWindowing(BufferedImage image, int windowLevel, int windowWidth,
-                                        double rescaleIntercept, double rescaleSlope) {
-        this.windowLevel = windowLevel;
-        this.windowWidth = windowWidth;
-        this.rescaleSlope = rescaleSlope;
-        this.rescaleIntercept = rescaleIntercept;
-        return applyWindowing(image);
-    }
-
-    @Override
     public BufferedImage applyWindowing(BufferedImage image, WindowingParameters parameters) {
         this.windowLevel = parameters.getWindowLevel();
         this.windowWidth = parameters.getWindowWidth();

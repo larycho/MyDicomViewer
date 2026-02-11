@@ -22,11 +22,6 @@ public class FileLoadEventServiceImpl implements FileLoadEventService {
     }
 
     @Override
-    public void removeListener(FileLoadedListener listener) {
-        listeners.remove(listener);
-    }
-
-    @Override
     public void notifyFinished(DicomFile file) {
         FileLoadedEvent event = new FileLoadedEvent(this, file);
         for (FileLoadedListener listener : listeners) {

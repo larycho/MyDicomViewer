@@ -56,16 +56,13 @@ public class TagProcessor {
 
         String value = getStringTagValue(address).orElse("");
 
-        switch (value) {
-            case "MONOCHROME1":
-                return Optional.of(PhotometricInterpretation.MONOCHROME1);
-            case "MONOCHROME2":
-                return Optional.of(PhotometricInterpretation.MONOCHROME2);
-            case "RGB":
-                return Optional.of(PhotometricInterpretation.RGB);
-        }
+        return switch (value) {
+            case "MONOCHROME1" -> Optional.of(PhotometricInterpretation.MONOCHROME1);
+            case "MONOCHROME2" -> Optional.of(PhotometricInterpretation.MONOCHROME2);
+            case "RGB" -> Optional.of(PhotometricInterpretation.RGB);
+            default -> Optional.empty();
+        };
 
-        return Optional.empty();
     }
 
     public Optional<String> getStudyInstanceUid() {
@@ -186,17 +183,6 @@ public class TagProcessor {
             }
         }
         return Optional.empty();
-    }
-
-    private Optional<Boolean> parseBooleanValue(String text) {
-
-        try {
-            Boolean center = Boolean.parseBoolean(text);
-            return Optional.of(center);
-        }
-        catch (NumberFormatException e) {
-            return Optional.empty();
-        }
     }
 
     private Optional<Integer> parseIntValue(String text) {

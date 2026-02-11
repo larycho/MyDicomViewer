@@ -27,13 +27,6 @@ public class SelectedImageManagerImpl implements SelectedImageManager, PanelSele
     }
 
     @Override
-    public void deselectImage() {
-        if (currentlySelected != null) {
-            currentlySelected.showDeselected();
-        }
-        currentlySelected = null;
-    }
-    @Override
     public ImagePanelWrapper getSelectedImage() {
         return currentlySelected;
     }

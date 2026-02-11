@@ -12,7 +12,7 @@ import java.awt.event.MouseWheelEvent;
 public class WindowingTool implements ImageTool {
 
     private Point click = new Point(0, 0);
-    private ImagePanelWrapper wrapper;
+    private final ImagePanelWrapper wrapper;
 
     public WindowingTool(ImagePanelWrapper wrapper) {
         this.wrapper = wrapper;

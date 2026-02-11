@@ -1,16 +1,13 @@
 package org.example.mydicomviewer.models;
 
-import com.pixelmed.display.SourceImage;
-
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
 public class DicomFile {
 
-    private File file;
-    private TagGroup tags;
-    private DicomSeries series;
+    private final File file;
+    private final TagGroup tags;
+    private final DicomSeries series;
 
     public DicomFile(File file, TagGroup tags, DicomSeries series) {
         this.file = file;
@@ -29,8 +26,6 @@ public class DicomFile {
     public List<DicomImage> getImages() {
         return series.getImages();
     }
-
-    public SourceImage getSourceImage() { return series.getSourceImage(); }
 
     public File getFile() {
         return file;

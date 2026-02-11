@@ -11,8 +11,8 @@ import java.util.concurrent.ExecutionException;
 public class OpenFileWorker extends SwingWorker<DicomFile, Void> {
 
     private File file;
-    private FileProcessor fileProcessor;
-    private FileLoadEventService fileLoadEventService;
+    private final FileProcessor fileProcessor;
+    private final FileLoadEventService fileLoadEventService;
 
     public OpenFileWorker(FileLoadEventService fileLoadEventService, FileProcessor fileProcessor) {
         this.fileProcessor = fileProcessor;
@@ -24,7 +24,7 @@ public class OpenFileWorker extends SwingWorker<DicomFile, Void> {
     }
 
     @Override
-    protected DicomFile doInBackground() throws Exception {
+    protected DicomFile doInBackground() {
         return fileProcessor.readFile(file);
     }
 

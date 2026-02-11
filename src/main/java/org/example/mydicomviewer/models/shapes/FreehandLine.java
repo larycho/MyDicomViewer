@@ -6,11 +6,9 @@ import java.awt.geom.Path2D;
 
 public class FreehandLine implements DrawableShape {
 
-    private Path2D.Double path;
+    private final Path2D.Double path;
     private Color color;
     private float width;
-    private boolean isBeingModified = true;
-    private boolean finishingDrawing = false;
 
     public FreehandLine(Color color, float width) {
         this.path = new Path2D.Double();
@@ -20,7 +18,6 @@ public class FreehandLine implements DrawableShape {
 
     public void start(double x, double y) {
         path.moveTo(x, y);
-        isBeingModified = true;
     }
 
     public void lineTo(double x, double y) {
@@ -29,14 +26,6 @@ public class FreehandLine implements DrawableShape {
 
     public void end(double x, double y) {
         path.lineTo(x, y);
-        isBeingModified = false;
-        finishingDrawing = true;
-    }
-
-    public void draw(Graphics2D g) {
-        g.setColor(color);
-        g.setStroke(new BasicStroke(width));
-        g.draw(path);
     }
 
     @Override

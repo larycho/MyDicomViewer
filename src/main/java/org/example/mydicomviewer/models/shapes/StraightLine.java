@@ -44,13 +44,6 @@ public class StraightLine implements DrawableShape {
     }
 
     @Override
-    public void draw(Graphics2D g) {
-        g.setColor(color);
-        g.setStroke(new BasicStroke(width));
-        g.draw(line);
-    }
-
-    @Override
     public void draw(Graphics2D g, AffineTransform affineTransform) {
         g.setColor(color);
         g.setStroke(new BasicStroke(width));

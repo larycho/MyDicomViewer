@@ -33,4 +33,5 @@ module org.example.mydicomviewer {
     exports org.example.mydicomviewer.events;
     exports org.example.mydicomviewer.processing.image;
     exports org.example.mydicomviewer.display;
+    exports org.example.mydicomviewer.display.overlay;
 }

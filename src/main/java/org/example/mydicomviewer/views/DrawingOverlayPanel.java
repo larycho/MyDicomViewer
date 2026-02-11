@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class DrawingOverlayPanel extends JPanel {
 
     private boolean drawMode = false;
-    private List<List<Point>> drawingPaths = new ArrayList<>();
+    private final List<List<Point>> drawingPaths = new ArrayList<>();
     private List<Point> currentPath = new ArrayList<>();
     private Color drawColor = Color.GREEN;
     private int brushSize = 5;

@@ -20,7 +20,7 @@ public class MultipleImagePanel extends JPanel {
 
     private SplitScreenMode mode;
     private final LinkedList<ImagePanelWrapper> wrappers = new LinkedList<>();
-    private SelectedImageManager selectedImageManager;
+    private final SelectedImageManager selectedImageManager;
 
     @Inject
     public MultipleImagePanel(ScreenModeProvider provider,

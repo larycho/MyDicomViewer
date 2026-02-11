@@ -2,9 +2,9 @@ package org.example.mydicomviewer.models;
 
 public class Tag {
 
-    private TagAddress address;
-    private String description;
-    private String value;
+    private final TagAddress address;
+    private final String description;
+    private final String value;
 
     public Tag(TagAddress address, String description, String value) {
         this.address = address;
@@ -22,10 +22,6 @@ public class Tag {
 
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
 }

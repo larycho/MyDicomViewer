@@ -9,7 +9,6 @@ import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Map;
 
 public class ExportImagesCommand {
 
-    private SelectedImageManager selectedImageManager;
+    private final SelectedImageManager selectedImageManager;
     private boolean allFramesExported = false;
     private boolean shapesExported = false;
     private JLabel chosenLocationLabel;
@@ -94,14 +93,14 @@ public class ExportImagesCommand {
     private JCheckBox getShapesExportCheckBox() {
         JCheckBox shapesExport = new JCheckBox("Export drawn shapes");
         shapesExport.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
-        shapesExport.addActionListener(e -> {shapesExported = shapesExport.isSelected();});
+        shapesExport.addActionListener(e -> shapesExported = shapesExport.isSelected());
         return shapesExport;
     }
 
     private JCheckBox getFrameCheckBox() {
         JCheckBox allFrames = new JCheckBox("Export all frames");
         allFrames.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        allFrames.addActionListener(e -> {allFramesExported = allFrames.isSelected();});
+        allFrames.addActionListener(e -> allFramesExported = allFrames.isSelected());
         return allFrames;
     }
 
@@ -112,7 +111,7 @@ public class ExportImagesCommand {
 
     private JButton getSelectLocationButton() {
         JButton selectLocationButton = new JButton("Select location");
-        selectLocationButton.addActionListener(e -> {selectFolder();});
+        selectLocationButton.addActionListener(e -> selectFolder());
         return selectLocationButton;
     }
 
@@ -120,20 +119,6 @@ public class ExportImagesCommand {
         JLabel choosePrompt = new JLabel("Choose location to save files to: ");
         choosePrompt.setBorder(BorderFactory.createEmptyBorder(0, 5, 10, 5));
         return choosePrompt;
-    }
-
-    public static BufferedImage cloneImage(BufferedImage source) {
-        BufferedImage clone = new BufferedImage(
-                source.getWidth(),
-                source.getHeight(),
-                source.getType()
-        );
-
-        Graphics2D g2d = clone.createGraphics();
-        g2d.drawImage(source, 0, 0, null);
-        g2d.dispose();
-
-        return clone;
     }
 
     private void exportImage() {
