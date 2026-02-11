@@ -18,6 +18,8 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
 
     private JButton selectButton;
     private JButton settings;
+    private JSlider slider;
+    private JLabel frameInfo;
 
     private final ImagePanelWrapper wrapper;
     private ImagePanelSelectedEventService selectedEventService;
@@ -26,20 +28,70 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
     private final Color DISABLED_ICON_COLOR = UIManager.getColor("Button.disabledText");
 
+    private int numberOfFrames;
+
     public ImagePanelToolbarImpl(ImagePanelWrapper wrapper)
     {
         super();
         setFloatable(false);
         this.wrapper = wrapper;
+        numberOfFrames = wrapper.getNumberOfFrames();
 
         addArrowsButtons();
         addZoomAndPanButton();
         addWindowingButton();
 
-        addSpacer();
+        if (numberOfFrames > 1) {
+            addFrameInfoLabel();
+            addSlider();
+        }
+        else {
+            addSpacer();
+        }
 
         addSelectButton();
         addSettingsButton();
+    }
+
+    private void addFrameInfoLabel() {
+        frameInfo = new JLabel("Frame: 0/" + (numberOfFrames - 1));
+        setPreferredLabelWidth();
+        add(frameInfo);
+    }
+
+    private void setPreferredLabelWidth() {
+        String maxString = String.format("Slice: %d / %d", numberOfFrames, numberOfFrames);
+
+        FontMetrics fontMetrics = frameInfo.getFontMetrics(frameInfo.getFont());
+        int maxWidth = fontMetrics.stringWidth(maxString);
+
+        frameInfo.setPreferredSize(new Dimension(maxWidth + 5, frameInfo.getPreferredSize().height));
+        frameInfo.setMinimumSize(new Dimension(maxWidth + 5, frameInfo.getPreferredSize().height));
+    }
+
+    private void addSlider() {
+        createSlider();
+        slider.addChangeListener(e -> {
+            wrapper.moveToFrame(slider.getValue());
+        });
+        add(slider);
+    }
+
+    private void createSlider() {
+        slider = new JSlider(0, numberOfFrames - 1);
+        slider.setValue(0);
+        adjustTickSpacing();
+    }
+
+    private void adjustTickSpacing() {
+        if (numberOfFrames < 10) {
+            slider.setMajorTickSpacing(1);
+        }
+        else {
+            slider.setMajorTickSpacing(numberOfFrames / 10);
+        }
+
+        slider.setPaintTicks(true);
     }
 
     private void addSpacer() {
@@ -62,16 +114,28 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     }
 
     private void addArrowsButtons() {
-        FontIcon leftArrowIcon = FontIcon.of(MaterialDesignA.ARROW_LEFT_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        Color buttonColor = DEFAULT_ICON_COLOR;
+        if (numberOfFrames <= 1) {
+            buttonColor = DISABLED_ICON_COLOR;
+        }
+
+        FontIcon leftArrowIcon = FontIcon.of(MaterialDesignA.ARROW_LEFT_CIRCLE, DEFAULT_ICON_SIZE, buttonColor);
         JButton leftArrow = new JButton(leftArrowIcon);
         leftArrow.setToolTipText("Previous frame");
 
-        FontIcon rightArrowIcon = FontIcon.of(MaterialDesignA.ARROW_RIGHT_CIRCLE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        FontIcon rightArrowIcon = FontIcon.of(MaterialDesignA.ARROW_RIGHT_CIRCLE, DEFAULT_ICON_SIZE, buttonColor);
         JButton rightArrow = new JButton(rightArrowIcon);
         rightArrow.setToolTipText("Next frame");
 
-        leftArrow.addActionListener(e -> wrapper.moveToPreviousFrame());
-        rightArrow.addActionListener(e -> wrapper.moveToNextFrame());
+        if (numberOfFrames > 1) {
+            leftArrow.addActionListener(e -> wrapper.moveToPreviousFrame());
+            rightArrow.addActionListener(e -> wrapper.moveToNextFrame());
+        }
+        else {
+            leftArrow.setEnabled(false);
+            rightArrow.setEnabled(false);
+        }
+
 
         add(leftArrow);
         add(rightArrow);
@@ -128,6 +192,20 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
 
     @Override
     public void setFrameNumber(int frameIndex) {
+        if (numberOfFrames <= 1) { return; }
+        updateFrameLabel(frameIndex);
+        updateSlider(frameIndex);
+        repaint();
+    }
+
+    private void updateFrameLabel(int frameIndex) {
+        if (frameInfo == null) { return; }
+        frameInfo.setText("Frame: " + frameIndex + "/" + (numberOfFrames - 1));
+    }
+
+    private void updateSlider(int frameIndex) {
+        if (slider == null) { return;}
+        slider.setValue(frameIndex);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.example.mydicomviewer.models;
 
+import org.example.mydicomviewer.processing.file.TagNumber;
+
 import java.io.File;
 import java.util.List;
 
@@ -42,5 +44,13 @@ public class DicomFile {
 
     public Tag getTag(TagAddress address) {
         return tags.getTag(address);
+    }
+
+    public boolean isDicomdir() {
+        if (containsTag(TagNumber.MEDIA_STORAGE_SOP_CLASS_UID.getAddress())) {
+            Tag tag = getTag(TagNumber.MEDIA_STORAGE_SOP_CLASS_UID.getAddress());
+            return tag.getValue().contains("1.2.840.10008.1.3.10");
+        }
+        return false;
     }
 }
