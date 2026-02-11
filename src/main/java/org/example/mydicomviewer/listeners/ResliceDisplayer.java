@@ -1,13 +1,16 @@
 package org.example.mydicomviewer.listeners;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.example.mydicomviewer.display.SplitScreenElement;
 import org.example.mydicomviewer.display.SplitScreenMode;
 import org.example.mydicomviewer.events.FileLoadedEvent;
+import org.example.mydicomviewer.events.RequestedResliceEvent;
 import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomImage;
 import org.example.mydicomviewer.services.FileLoadEventService;
 import org.example.mydicomviewer.services.ImagePanelSelectedEventService;
+import org.example.mydicomviewer.services.ResliceEventService;
 import org.example.mydicomviewer.views.MultipleImagePanel;
 import org.example.mydicomviewer.views.image.panel.Axis;
 import org.example.mydicomviewer.views.image.panel.ImagePanelFactory;
@@ -19,21 +22,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ResliceDisplayer implements FileLoadedListener {
+@Singleton
+public class ResliceDisplayer implements FileLoadedListener, ResliceEventListener {
 
     DicomFile dicomFile;
-    private FileLoadEventService fileLoadEventService;
     private MultipleImagePanel multipleImagePanel;
     private ImagePanelSelectedEventService panelSelectedService;
 
     @Inject
     public ResliceDisplayer(FileLoadEventService fileLoadEventService,
+                            ResliceEventService resliceEventService,
                             MultipleImagePanel multipleImagePanel,
                             ImagePanelSelectedEventService panelSelectedService) {
-        this.fileLoadEventService = fileLoadEventService;
         this.multipleImagePanel = multipleImagePanel;
         this.panelSelectedService = panelSelectedService;
         fileLoadEventService.addListener(this);
+        resliceEventService.addListener(this);
     }
 
     public ResliceDisplayer() {}
@@ -43,7 +47,12 @@ public class ResliceDisplayer implements FileLoadedListener {
         dicomFile = event.getFile();
     }
 
-    public void display() {
+    @Override
+    public void resliceRequested(RequestedResliceEvent event) {
+        display();
+    }
+
+    private void display() {
         if (dicomFile == null) {
             return;
         }
@@ -74,9 +83,6 @@ public class ResliceDisplayer implements FileLoadedListener {
         reslicePanelX.setAxis(Axis.X);
         reslicePanelY.setAxis(Axis.Y);
         reslicePanelZ.setAxis(Axis.Z);
-//        reslicePanelX.setMultipleImagePanel(multipleImagePanel);
-//        reslicePanelY.setMultipleImagePanel(multipleImagePanel);
-//        reslicePanelZ.setMultipleImagePanel(multipleImagePanel);
     }
 
     private SplitScreenMode createScreenMode(List<Point> points) {

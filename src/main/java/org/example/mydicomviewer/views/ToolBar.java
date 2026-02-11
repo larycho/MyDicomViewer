@@ -6,8 +6,6 @@ import org.example.mydicomviewer.commands.OpenDicomDirCommand;
 import org.example.mydicomviewer.commands.OpenFileCommand;
 import org.example.mydicomviewer.commands.OpenFolderCommand;
 import org.example.mydicomviewer.display.SplitScreenMode;
-import org.example.mydicomviewer.listeners.ImageDisplayer;
-import org.example.mydicomviewer.listeners.ResliceDisplayer;
 import org.example.mydicomviewer.processing.image.WindowPreset;
 import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.image.*;
@@ -35,9 +33,9 @@ public class ToolBar extends JToolBar {
     private Set<DrawingToolFactory> tools;
     private List<WindowPreset> presets;
 
-    private final ImageDisplayer imageDisplayer;
-    private final ResliceDisplayer resliceDisplayer;
     private final SelectedImageManager selectedImageManager;
+    private final ToolBarEventService toolBarEventService;
+    private final ResliceEventService resliceEventService;
 
     private final OpenFileCommand openFileCommand;
     private final OpenDicomDirCommand commandDir;
@@ -47,13 +45,13 @@ public class ToolBar extends JToolBar {
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
     @Inject
-    public ToolBar(ImageDisplayer imageDisplayer,
-                   ResliceDisplayer resliceDisplayer,
-                   Set<DrawingToolFactory> pluginTools,
+    public ToolBar(Set<DrawingToolFactory> pluginTools,
                    SelectedImageManager selectedImageManager,
                    OpenFileCommand openFileCommand,
                    OpenDicomDirCommand commandDir,
-                   OpenFolderCommand openFolderCommand) {
+                   OpenFolderCommand openFolderCommand,
+                   ToolBarEventService toolBarEventService,
+                   ResliceEventService resliceEventService) {
         super();
 
         this.openFileCommand = openFileCommand;
@@ -64,6 +62,8 @@ public class ToolBar extends JToolBar {
         createPresetList();
 
         this.selectedImageManager = selectedImageManager;
+        this.toolBarEventService = toolBarEventService;
+        this.resliceEventService = resliceEventService;
 
         addFilesButton();
         addResliceButton();
@@ -72,8 +72,6 @@ public class ToolBar extends JToolBar {
         addWindowPresetSelection();
         addDrawingTools();
 
-        this.imageDisplayer = imageDisplayer;
-        this.resliceDisplayer = resliceDisplayer;
         setupListeners();
     }
 
@@ -99,9 +97,9 @@ public class ToolBar extends JToolBar {
     }
 
     private void setupListeners() {
-        addScreenModeListeners(imageDisplayer);
-        addWindowingListeners(imageDisplayer);
-        addResliceListeners(resliceDisplayer);
+        addScreenModeListeners();
+        addWindowingListeners();
+        addResliceListeners();
         addPresetSelectionListeners();
     }
 
@@ -112,14 +110,14 @@ public class ToolBar extends JToolBar {
         add(modes);
     }
 
-    public void addScreenModeListeners(ImageDisplayer imageDisplayer) {
+    public void addScreenModeListeners() {
         ScreenModeProvider screenModeProvider = new ScreenModeProviderImpl();
         List<SplitScreenMode> modes = screenModeProvider.getAvailableScreenModes();
 
         JPopupMenu popupMenu = new JPopupMenu();
         for (SplitScreenMode mode : modes) {
             JMenuItem item = new JMenuItem(mode.toString());
-            item.addActionListener(e -> imageDisplayer.changeScreenMode(mode));
+            item.addActionListener(e -> toolBarEventService.notifyScreenModeChanged(mode));
             popupMenu.add(item);
         }
 
@@ -134,8 +132,8 @@ public class ToolBar extends JToolBar {
         addSeparator();
     }
 
-    public void addResliceListeners(ResliceDisplayer resliceDisplayer) {
-        reslice.addActionListener(e -> resliceDisplayer.display());
+    public void addResliceListeners() {
+        reslice.addActionListener(e -> resliceEventService.notifyResliceRequested());
     }
 
     private void addDrawingTools() {
@@ -220,22 +218,22 @@ public class ToolBar extends JToolBar {
         add(manualWindowing);
     }
 
-    public void addWindowingListeners(ImageDisplayer imageDisplayer) {
+    public void addWindowingListeners() {
         manualWindowing.addActionListener(e -> {
             WindowingPopup popup = new WindowingPopup();
             int result = JOptionPane.showConfirmDialog(null, popup, "Manual Windowing", JOptionPane.OK_CANCEL_OPTION);
 
             if (result == JOptionPane.OK_OPTION) {
-                changeWindowParameters(imageDisplayer, popup);
+                changeWindowParameters(popup);
             }
 
         });
     }
 
-    private void changeWindowParameters(ImageDisplayer imageDisplayer, WindowingPopup popup) {
-        double center = popup.getWindowCenter();
-        double width = popup.getWindowWidth();
-        imageDisplayer.setWindowing(center, width);
+    private void changeWindowParameters(WindowingPopup popup) {
+        int center = popup.getWindowCenter();
+        int width = popup.getWindowWidth();
+        toolBarEventService.notifyWindowingChanged(center, width);
     }
 
     private void addFilesButton() {
@@ -286,10 +284,10 @@ public class ToolBar extends JToolBar {
                 if (comboBox.getSelectedItem() instanceof WindowPreset preset) {
 
                     if (preset.getName().equals("Default")) {
-                        imageDisplayer.setDefaultWindowing();
+                        toolBarEventService.notifyWindowingReset();
                     }
                     else {
-                        imageDisplayer.setPreset(preset);
+                        toolBarEventService.notifyPresetsChanged(preset);
                     }
                 }
             }

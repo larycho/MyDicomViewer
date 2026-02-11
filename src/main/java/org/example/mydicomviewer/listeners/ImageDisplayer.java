@@ -16,12 +16,8 @@ import org.example.mydicomviewer.views.image.panel.ImagePanelWrapper;
 import java.io.File;
 import java.util.List;
 
-import static java.lang.Math.round;
-
-
-
 @Singleton
-public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener, FragmentedFileSelectedListener {
+public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener, FragmentedFileSelectedListener, ToolBarEventListener {
 
     private final MultipleImagePanel multipleImagePanel;
     private final ImagePanelSelectedEventService imagePanelSelectedEventService;
@@ -32,7 +28,8 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
                           ImagePanelSelectedEventService panelSelectedService,
                           DicomDirLoadManager dicomDirLoadManager,
                           FolderLoadedEventService folderLoadedEventService,
-                          FragmentedFileEventService fragmentedFileEventService
+                          FragmentedFileEventService fragmentedFileEventService,
+                          ToolBarEventService toolBarEventService
     ) {
         this.multipleImagePanel = multipleImagePanel;
         this.imagePanelSelectedEventService = panelSelectedService;
@@ -41,6 +38,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         dicomDirLoadManager.addListener(this);
         folderLoadedEventService.addListener(this);
         fragmentedFileEventService.addListener(this);
+        toolBarEventService.addListener(this);
     }
 
     @Override
@@ -61,30 +59,6 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         ImagePanelWrapper wrapper = ImagePanelFactory.createRegularImagePanel(dicomFile);
         this.multipleImagePanel.addImage(wrapper);
         wrapper.addPanelSelectedService(imagePanelSelectedEventService);
-    }
-
-    public void changeScreenMode(SplitScreenMode mode) {
-        if (multipleImagePanel != null) {
-            multipleImagePanel.setAndApplyMode(mode);
-        }
-    }
-
-    public void nextFrame() {
-        if (multipleImagePanel.areAnyImagesAdded()) {
-            ImagePanelWrapper wrapper = multipleImagePanel.getSelectedImage();
-            if (wrapper != null) {
-                wrapper.moveToNextFrame();
-            }
-        }
-    }
-
-    public void previousFrame() {
-        if (multipleImagePanel.areAnyImagesAdded()) {
-            ImagePanelWrapper wrapper = multipleImagePanel.getSelectedImage();
-            if (wrapper != null) {
-                wrapper.moveToPreviousFrame();
-            }
-        }
     }
 
     @Override
@@ -120,7 +94,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         return fileOpened && (axis == Axis.Z);
     }
 
-    public boolean isFileOpened(List<File> files) {
+    private boolean isFileOpened(List<File> files) {
         List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
 
         for (ImagePanelWrapper wrapper : wrappers) {
@@ -145,8 +119,36 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         return false;
     }
 
+    @Override
+    public void panelSelected(PanelSelectedEvent event) {
+        multipleImagePanel.setSelectedImage(event.getPanel());
+    }
 
-    public void setWindowing(int center, int width) {
+    @Override
+    public void presetSelected(PresetSelectedEvent event) {
+
+        WindowPreset preset = event.getPreset();
+        List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
+
+        for (ImagePanelWrapper wrapper : wrappers) {
+            wrapper.setWindowing(preset.getLevel(), preset.getWidth());
+        }
+    }
+
+    @Override
+    public void screenModeSelected(ScreenModeSelectedEvent event) {
+        SplitScreenMode mode = event.getMode();
+
+        if (multipleImagePanel != null) {
+            multipleImagePanel.setAndApplyMode(mode);
+        }
+    }
+
+    @Override
+    public void windowingChanged(WindowingChangedEvent event) {
+        int center = event.getWindowCenter();
+        int width = event.getWindowWidth();
+
         if (multipleImagePanel.areAnyImagesAdded()) {
             ImagePanelWrapper imagePanel = multipleImagePanel.getSelectedImage();
             if (imagePanel != null) {
@@ -155,33 +157,12 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         }
     }
 
-    public void setWindowing(double center, double width) {
-        if (multipleImagePanel.areAnyImagesAdded()) {
-            ImagePanelWrapper imagePanel = multipleImagePanel.getSelectedImage();
-            if (imagePanel != null) {
-                imagePanel.setWindowing((int) round(center), (int) round(width));
-            }
-        }
-    }
-
-    public void setPreset(WindowPreset preset) {
-        List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
-
-        for (ImagePanelWrapper wrapper : wrappers) {
-            wrapper.setWindowing(preset.getLevel(), preset.getWidth());
-        }
-    }
-
-    public void setDefaultWindowing() {
+    @Override
+    public void windowingReset(WindowingResetEvent event) {
         List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
 
         for (ImagePanelWrapper wrapper : wrappers) {
             wrapper.resetWindowing();
         }
-    }
-
-    @Override
-    public void panelSelected(PanelSelectedEvent event) {
-        multipleImagePanel.setSelectedImage(event.getPanel());
     }
 }

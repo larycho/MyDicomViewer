@@ -20,11 +20,11 @@ public class WindowingPopup extends JPanel {
         add(width);
     }
 
-    public double getWindowCenter() {
-        return Double.parseDouble(center.getText());
+    public int getWindowCenter() {
+        return Integer.parseInt(center.getText());
     }
 
-    public double getWindowWidth() {
-        return Double.parseDouble(width.getText());
+    public int getWindowWidth() {
+        return Integer.parseInt(width.getText());
     }
 }
