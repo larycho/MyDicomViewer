@@ -4,7 +4,6 @@ import org.example.mydicomviewer.models.DicomFile;
 import org.example.mydicomviewer.models.DicomImage;
 import org.example.mydicomviewer.views.image.panel.Axis;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -75,8 +74,6 @@ public class Reslicer {
 
     public BufferedImage getSlice(int index) {
 
-        int imageType = BufferedImage.TYPE_BYTE_GRAY;
-
         if (dimension == this.Z) {
             return stack[index];
 
@@ -99,12 +96,13 @@ public class Reslicer {
 
     private BufferedImage getXAxisSlice(int index) {
         BufferedImage slice = createBufferedImage(depth, height);
-
+        Object column = null;
         for (int z = 0; z < depth; z++) {
-            for (int y = 0; y < height; y++) {
-                int rgb = stack[z].getRGB(index, y);
-                slice.setRGB(z, y, rgb);
-            }
+            WritableRaster raster = stack[z].getRaster();
+            WritableRaster sliceRaster = slice.getRaster();
+
+            column = raster.getDataElements(index, 0, 1, height, column);
+            sliceRaster.setDataElements(z, 0, 1, height, column);
         }
 
         return slice;
@@ -112,12 +110,13 @@ public class Reslicer {
 
     private BufferedImage getYAxisSlice(int index) {
         BufferedImage slice = createBufferedImage(width, depth);
-
+        Object row = null;
         for (int z = 0; z < depth; z++) {
-            for (int x = 0; x < width; x++) {
-                int rgb = stack[z].getRGB(x, index);
-                slice.setRGB(x, z, rgb);
-            }
+            WritableRaster raster = stack[z].getRaster();
+            WritableRaster sliceRaster = slice.getRaster();
+
+            row = raster.getDataElements(0, index, width, 1, row);
+            sliceRaster.setDataElements(0, z, width, 1, row);
         }
 
         return slice;

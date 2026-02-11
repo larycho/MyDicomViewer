@@ -164,6 +164,7 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
     public void setImage(BufferedImage image) {
         this.image = image;
         updateBottomRight();
+        revalidate();
         repaint();
     }
 
@@ -226,6 +227,7 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
 
     @Override
     public void setZoom(double zoom) {
+        if (zoom == 0.0) { return; }
         this.zoom = zoom;
         updateBottomRight();
     }
@@ -275,6 +277,7 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
         int panelWidth = this.getWidth();
         int imageWidth = (int) (image.getWidth() * zoom);
 
+        if (panelWidth == 0 || imageWidth == 0) { return 0; }
         return (panelWidth - imageWidth) / 2;
     }
 
@@ -285,6 +288,7 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
         double ratio = imageManager.getAspectRatioShift();
         double imageHeight = image.getHeight() * zoom * ratio;
 
+        if (panelHeight == 0 || imageHeight == 0 || ratio == 0) { return 0; }
         return (int) ((panelHeight - imageHeight) / 2);
     }
 
@@ -301,6 +305,7 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
         int panelWidth = this.getWidth();
         int imageWidth = image.getWidth();
 
+        if (panelWidth == 0 || imageWidth == 0) { return 1.0; }
         return (double) panelWidth / imageWidth;
     }
 
@@ -310,6 +315,7 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
         int imageHeight = image.getHeight();
         double ratio = imageManager.getAspectRatioShift();
 
+        if (panelHeight == 0 || imageHeight == 0 || ratio == 0) { return 1.0; }
         return (double) panelHeight / (ratio * imageHeight);
     }
 

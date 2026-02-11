@@ -21,6 +21,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
 
     private final MultipleImagePanel multipleImagePanel;
     private final ImagePanelSelectedEventService imagePanelSelectedEventService;
+    private final OpenFileManager openFileManager;
 
     @Inject
     public ImageDisplayer(MultipleImagePanel multipleImagePanel,
@@ -29,10 +30,12 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
                           DicomDirLoadManager dicomDirLoadManager,
                           FolderLoadedEventService folderLoadedEventService,
                           FragmentedFileEventService fragmentedFileEventService,
-                          ToolBarEventService toolBarEventService
+                          ToolBarEventService toolBarEventService,
+                          OpenFileManager openFileManager
     ) {
         this.multipleImagePanel = multipleImagePanel;
         this.imagePanelSelectedEventService = panelSelectedService;
+        this.openFileManager = openFileManager;
         fileLoadEventService.addListener(this);
         panelSelectedService.addListener(this);
         dicomDirLoadManager.addListener(this);
@@ -55,6 +58,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
     public void fileLoaded(FileLoadedEvent event) {
         DicomFile dicomFile = event.getFile();
 
+        if (dicomFile.isDicomdir()) { return; }
 
         ImagePanelWrapper wrapper = ImagePanelFactory.createRegularImagePanel(dicomFile);
         this.multipleImagePanel.addImage(wrapper);
@@ -64,7 +68,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
     @Override
     public void fragmentedFileSelected(FragmentedFileSelectedEvent event) {
 
-        if (!isFileOpened(event.getSourceFiles())) { return; }
+        if (!isFileOpened(event.getSourceFiles())) { openFileManager.openFragmentedFileUsingWorker(event.getSourceFiles()); }
 
         List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
 

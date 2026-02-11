@@ -117,7 +117,7 @@ public class ImageManagerImpl implements ImageManager {
     @Override
     public void setCurrentFrameNumber(int frameNumber) {
         int maxIndex = dicomFile.getImages().size() - 1;
-        if (frameNumber < maxIndex && frameNumber >= 0) {
+        if (frameNumber <= maxIndex && frameNumber >= 0) {
             currentFrame = frameNumber;
         }
     }

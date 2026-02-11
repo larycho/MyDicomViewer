@@ -10,6 +10,7 @@ import org.example.mydicomviewer.models.TagGroup;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class FileTagsProcessorImpl implements FileTagsProcessor {
 
@@ -24,9 +25,33 @@ public class FileTagsProcessorImpl implements FileTagsProcessor {
     }
 
     private TagGroup getTagsFromDicomInputStream(DicomInputStream dicomInputStream) throws IOException {
+        TagGroup metaInfoTags = getMetaInfoTags(dicomInputStream);
+        TagGroup datasetTags = getDatasetTags(dicomInputStream);
+        return mergeGroups(metaInfoTags, datasetTags);
+    }
 
-        Attributes attributes = dicomInputStream.readDataset();
+    private TagGroup getMetaInfoTags(DicomInputStream dicomInputStream) throws IOException {
+        Attributes attributes = dicomInputStream.readFileMetaInformation();
         return createTagGroup(attributes);
+    }
+
+    private TagGroup getDatasetTags(DicomInputStream dicomInputStream) throws IOException {
+        Attributes attributes = dicomInputStream.readDatasetUntilPixelData();
+        return createTagGroup(attributes);
+    }
+
+    private TagGroup mergeGroups(TagGroup group1, TagGroup group2) {
+        List<Tag> list1 = group1.allTags();
+        List<Tag> list2 = group2.allTags();
+
+        TagGroup mergedGroup = new TagGroup();
+        for (Tag tag : list1) {
+            mergedGroup.addTag(tag);
+        }
+        for (Tag tag : list2) {
+            mergedGroup.addTag(tag);
+        }
+        return mergedGroup;
     }
 
     private TagGroup createTagGroup(Attributes attributes) {

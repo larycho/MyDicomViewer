@@ -44,12 +44,15 @@ public class DistanceCalculatorImpl implements DistanceCalculator {
 
         switch (axis) {
             case X -> {
+                if (verticalSpacing == 0 || sliceSpacingValue == 0) return 1.0;
                 return verticalSpacing / sliceSpacingValue;
             }
             case Y -> {
+                if (horizontalSpacing == 0 || sliceSpacingValue == 0) return 1.0;
                 return sliceSpacingValue / horizontalSpacing;
             }
             case Z -> {
+                if (verticalSpacing == 0 || horizontalSpacing == 0) return 1.0;
                 return verticalSpacing / horizontalSpacing;
             }
             default -> {

@@ -56,7 +56,9 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
         BufferedImage image = imageManager.moveToNextFrame();
         List<DrawableShape> shapes = imageManager.getShapesForCurrentFrame();
 
+
         if (image != null) {
+            imagePanel.setFrameNumber(imageManager.getCurrentFrameNumber());
             imagePanel.setImage(image);
             imagePanel.setShapes(shapes);
         }
@@ -68,6 +70,7 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
         List<DrawableShape> shapes = imageManager.getShapesForCurrentFrame();
 
         if (image != null) {
+            imagePanel.setFrameNumber(imageManager.getCurrentFrameNumber());
             imagePanel.setImage(image);
             imagePanel.setShapes(shapes);
         }

@@ -1,4 +1,5 @@
 package org.example.mydicomviewer.views.filelist;
+import org.example.mydicomviewer.services.FragmentedFileEventService;
 import org.example.mydicomviewer.services.OpenFileManager;
 
 import javax.swing.*;
@@ -14,10 +15,13 @@ public class FileListScrollPane extends JScrollPane {
     JTree tree;
 
     OpenFileManager openFileManager;
+    FragmentedFileEventService fragmentedFileEventService;
 
-    public FileListScrollPane(OpenFileManager openFileManager) {
+    public FileListScrollPane(OpenFileManager openFileManager,
+                              FragmentedFileEventService fragmentedFileEventService) {
         super();
         this.openFileManager = openFileManager;
+        this.fragmentedFileEventService = fragmentedFileEventService;
 
         fileTree = new FileTree();
         tree = new JTree(fileTree.getTreeModel());
@@ -92,9 +96,10 @@ public class FileListScrollPane extends JScrollPane {
         String seriesUid = fileNode.getData().getSeriesInstanceUid().get();
 
         List<File> files = fileTree.getFilesWithSeriesUid(seriesUid);
+        Integer index = fileNode.getData().getInstanceNumber().orElse(null);
 
-        if (files.size() > 1) {
-            openFileManager.openFragmentedFileUsingWorker(files);
+        if (files.size() > 1 && index != null) {
+            fragmentedFileEventService.notifyListeners(files, index - 1);
         }
         else if (files.size() == 1) {
             openFileManager.openFileUsingWorker(files.get(0));
