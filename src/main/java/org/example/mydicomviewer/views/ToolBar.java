@@ -2,6 +2,7 @@ package org.example.mydicomviewer.views;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.example.mydicomviewer.commands.ExportImagesCommand;
 import org.example.mydicomviewer.commands.OpenDicomDirCommand;
 import org.example.mydicomviewer.commands.OpenFileCommand;
 import org.example.mydicomviewer.commands.OpenFolderCommand;
@@ -40,6 +41,7 @@ public class ToolBar extends JToolBar {
     private final OpenFileCommand openFileCommand;
     private final OpenDicomDirCommand commandDir;
     private final OpenFolderCommand openFolderCommand;
+    private final ExportImagesCommand exportImagesCommand;
 
     private final int DEFAULT_ICON_SIZE = 40;
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
@@ -51,12 +53,14 @@ public class ToolBar extends JToolBar {
                    OpenDicomDirCommand commandDir,
                    OpenFolderCommand openFolderCommand,
                    ToolBarEventService toolBarEventService,
-                   ResliceEventService resliceEventService) {
+                   ResliceEventService resliceEventService,
+                   ExportImagesCommand exportImagesCommand) {
         super();
 
         this.openFileCommand = openFileCommand;
         this.openFolderCommand = openFolderCommand;
         this.commandDir = commandDir;
+        this.exportImagesCommand = exportImagesCommand;
 
         createToolList(pluginTools);
         createPresetList();
@@ -66,6 +70,7 @@ public class ToolBar extends JToolBar {
         this.resliceEventService = resliceEventService;
 
         addFilesButton();
+        addExportButton();
         addResliceButton();
         addScreenModeButton();
         addWindowingButtons();
@@ -73,6 +78,15 @@ public class ToolBar extends JToolBar {
         addDrawingTools();
 
         setupListeners();
+    }
+
+    private void addExportButton() {
+        FontIcon exportIcon = FontIcon.of(MaterialDesignC.CONTENT_SAVE, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton export = new JButton(exportIcon);
+        export.setToolTipText("Export images");
+        export.addActionListener(e -> exportImagesCommand.execute());
+        add(export);
+        addSeparator();
     }
 
     private void createToolList(Set<DrawingToolFactory> pluginTools) {

@@ -4,11 +4,15 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.multibindings.OptionalBinder;
+import org.example.mydicomviewer.export.SaveManager;
+import org.example.mydicomviewer.export.SaveManagerImpl;
 import org.example.mydicomviewer.listeners.*;
 import org.example.mydicomviewer.plugin.StartupAction;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessor;
 import org.example.mydicomviewer.processing.dicomdir.DicomDirProcessorImpl;
 import org.example.mydicomviewer.processing.file.*;
+import org.example.mydicomviewer.processing.image.WindowingProcessor;
+import org.example.mydicomviewer.processing.image.WindowingProcessorImpl;
 import org.example.mydicomviewer.services.*;
 import org.example.mydicomviewer.views.*;
 import org.example.mydicomviewer.views.filelist.FileTreeNodeService;
@@ -40,6 +44,9 @@ public class MainAppModule extends AbstractModule {
         bind(FileTreeNodeService.class).to(FileTreeNodeServiceImpl.class);
         bind(ToolBarEventService.class).to(ToolBarEventServiceImpl.class);
         bind(ResliceEventService.class).to(ResliceEventServiceImpl.class);
+        bind(NotificationService.class).to(NotificationServiceImpl.class);
+        bind(SaveManager.class).to(SaveManagerImpl.class);
+        bind(WindowingProcessor.class).to(WindowingProcessorImpl.class);
 
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();
