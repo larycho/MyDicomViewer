@@ -2,7 +2,7 @@
 package org.example;
 
 
-import org.example.mydicomviewer.models.shapes.DrawableShape;
+import org.mydicomviewer.tools.shapes.DrawableShape;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -68,13 +68,6 @@ public class Rectangle implements DrawableShape {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    @Override
-    public void draw(Graphics2D g) {
-        g.setColor(color);
-        g.setStroke(new BasicStroke(thickness));
-        g.draw(rectangle);
     }
 
     private void drawLabel(Graphics2D g, AffineTransform affineTransform) {

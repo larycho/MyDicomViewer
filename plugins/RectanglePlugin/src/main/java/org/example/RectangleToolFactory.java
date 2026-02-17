@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.mydicomviewer.views.image.DrawingTool;
-import org.example.mydicomviewer.views.image.DrawingToolFactory;
+import org.mydicomviewer.tools.DrawingTool;
+import org.mydicomviewer.tools.factories.DrawingToolFactory;
 
 public class RectangleToolFactory implements DrawingToolFactory {
 

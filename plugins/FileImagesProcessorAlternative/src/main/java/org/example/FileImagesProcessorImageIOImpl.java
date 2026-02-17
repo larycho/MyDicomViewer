@@ -1,8 +1,8 @@
 package org.example;
 
-import org.example.mydicomviewer.models.DicomImage;
-import org.example.mydicomviewer.models.DicomSeries;
-import org.example.mydicomviewer.processing.file.FileImagesProcessor;
+import org.mydicomviewer.models.DicomImage;
+import org.mydicomviewer.models.DicomSeries;
+import org.mydicomviewer.processing.io.file.FileImagesProcessor;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

@@ -1,5 +1,4 @@
-module org.example.mydicomviewer {
-    uses org.example.mydicomviewer.plugin.Plugin;
+module org.mydicomviewer {
     requires dcm4che.core;
     requires pixelmed;
     requires com.formdev.flatlaf;
@@ -17,23 +16,32 @@ module org.example.mydicomviewer {
     requires com.github.benmanes.caffeine;
 
 
-    exports org.example.mydicomviewer;
-    exports org.example.mydicomviewer.views;
-    exports org.example.mydicomviewer.views.filelist;
-    exports org.example.mydicomviewer.services;
-    exports org.example.mydicomviewer.processing.file;
-    exports org.example.mydicomviewer.commands;
-    exports org.example.mydicomviewer.listeners;
-    exports org.example.mydicomviewer.processing.dicomdir;
-    exports org.example.mydicomviewer.plugin;
-    exports org.example.mydicomviewer.views.image;
-    exports org.example.mydicomviewer.models.shapes;
-    exports org.example.mydicomviewer.views.image.panel;
-    exports org.example.mydicomviewer.models;
-    exports org.example.mydicomviewer.events;
-    exports org.example.mydicomviewer.processing.image;
-    exports org.example.mydicomviewer.display;
-    exports org.example.mydicomviewer.display.overlay;
-    exports org.example.mydicomviewer.export;
-    exports org.example.mydicomviewer.workers;
+    exports org.mydicomviewer;
+    exports org.mydicomviewer.ui;
+    exports org.mydicomviewer.ui.filelist;
+    exports org.mydicomviewer.services;
+    exports org.mydicomviewer.processing.io.file;
+    exports org.mydicomviewer.commands;
+    exports org.mydicomviewer.events.listeners;
+    exports org.mydicomviewer.processing.io.dicomdir;
+    exports org.mydicomviewer.plugin;
+    exports org.mydicomviewer.tools.shapes;
+    exports org.mydicomviewer.ui.image;
+    exports org.mydicomviewer.models;
+    exports org.mydicomviewer.events;
+    exports org.mydicomviewer.processing.windowing;
+    exports org.mydicomviewer.ui.display;
+    exports org.mydicomviewer.processing.overlay;
+    exports org.mydicomviewer.tools;
+    exports org.mydicomviewer.tools.factories;
+    exports org.mydicomviewer.events.services;
+    exports org.mydicomviewer.events.services.implementations;
+    exports org.mydicomviewer.services.implementations;
+    exports org.mydicomviewer.processing.tags;
+    exports org.mydicomviewer.processing.spatial;
+    exports org.mydicomviewer.ui.updaters;
+    exports org.mydicomviewer.processing.io.export;
+    exports org.mydicomviewer.ui.notifications;
+    exports org.mydicomviewer.ui.image.shapes;
+    exports org.mydicomviewer.workers;
 }

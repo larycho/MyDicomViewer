@@ -1,9 +1,9 @@
 package org.example;
 
 import com.google.inject.Inject;
-import org.example.mydicomviewer.models.DicomSeries;
-import org.example.mydicomviewer.processing.file.FileImagesProcessor;
-import org.example.mydicomviewer.processing.file.FileImagesProcessorImpl;
+import org.mydicomviewer.models.DicomSeries;
+import org.mydicomviewer.processing.io.file.FileImagesProcessor;
+import org.mydicomviewer.processing.io.file.FileImagesProcessorImpl;
 
 import java.io.File;
 

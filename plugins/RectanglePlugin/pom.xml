@@ -10,7 +10,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>org.mydicomviewer</groupId>
             <artifactId>MyDicomViewer</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

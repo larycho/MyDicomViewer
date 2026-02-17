@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.mydicomviewer.plugin.Plugin;
+import org.mydicomviewer.plugin.Plugin;
 
 public class RectanglePlugin implements Plugin {
     @Override

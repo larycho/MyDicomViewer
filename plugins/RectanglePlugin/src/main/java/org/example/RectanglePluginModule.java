@@ -2,7 +2,7 @@ package org.example;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
-import org.example.mydicomviewer.views.image.DrawingToolFactory;
+import org.mydicomviewer.tools.factories.DrawingToolFactory;
 
 public class RectanglePluginModule extends AbstractModule {
     @Override

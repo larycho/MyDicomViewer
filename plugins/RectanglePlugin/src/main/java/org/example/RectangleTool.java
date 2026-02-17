@@ -1,9 +1,9 @@
 package org.example;
 
-import org.example.mydicomviewer.views.image.DrawingTool;
+import org.mydicomviewer.tools.DrawingTool;
 
 
-import org.example.mydicomviewer.views.image.panel.InnerImagePanel;
+import org.mydicomviewer.ui.image.InnerImagePanel;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;

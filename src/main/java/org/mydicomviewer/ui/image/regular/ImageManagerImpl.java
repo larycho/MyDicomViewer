@@ -1,0 +1,265 @@
+package org.mydicomviewer.ui.image.regular;
+
+import org.mydicomviewer.processing.overlay.OverlayGenerator;
+import org.mydicomviewer.processing.overlay.OverlayGeneratorImpl;
+import org.mydicomviewer.processing.overlay.OverlayText;
+import org.mydicomviewer.models.DicomFile;
+import org.mydicomviewer.models.DicomImage;
+import org.mydicomviewer.tools.shapes.DrawableShape;
+import org.mydicomviewer.tools.shapes.Point3D;
+import org.mydicomviewer.processing.tags.TagProcessor;
+import org.mydicomviewer.processing.windowing.WindowingParameters;
+import org.mydicomviewer.processing.windowing.WindowingProcessor;
+import org.mydicomviewer.processing.windowing.WindowingProcessorImpl;
+import org.mydicomviewer.processing.spatial.DistanceCalculator;
+import org.mydicomviewer.processing.spatial.DistanceCalculatorImpl;
+import org.mydicomviewer.processing.spatial.Axis;
+import org.mydicomviewer.ui.image.ImageManager;
+
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.*;
+
+public class ImageManagerImpl implements ImageManager {
+
+    private final DicomFile dicomFile;
+
+    private WindowingParameters windowingParameters;
+
+    private int currentFrame = 0;
+
+    private boolean persistShapes = true;
+
+    private final List<DrawableShape> currentShapes = new ArrayList<>();
+    private final Map<Integer, List<DrawableShape>> shapesForEachFrame = new HashMap<>();
+
+    public ImageManagerImpl(DicomFile dicomFile) {
+        this.dicomFile = dicomFile;
+        initializeWindowingParams();
+    }
+
+    @Override
+    public DicomFile getDicomFile() {
+        return dicomFile;
+    }
+
+    @Override
+    public BufferedImage getImageWithWindowing(int level, int width) {
+        List<DicomImage> images = this.dicomFile.getImages();
+        DicomImage currentImage = images.get(currentFrame);
+
+        WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
+        return windowingProcessor.applyWindowing(currentImage.getImage(), windowingParameters);
+    }
+
+    @Override
+    public int getWindowWidth() {
+        return windowingParameters.getWindowWidth();
+    }
+
+    @Override
+    public void setWindowWidth(int width) {
+        windowingParameters.setWindowWidth(width);
+    }
+
+    @Override
+    public int getWindowLevel() {
+        return windowingParameters.getWindowLevel();
+    }
+
+    @Override
+    public void setWindowLevel(int windowLevel) {
+        windowingParameters.setWindowLevel(windowLevel);
+    }
+
+    @Override
+    public void changeWindowLevelBy(int delta) {
+        int newLevel = windowingParameters.getWindowLevel() + delta;
+        windowingParameters.setWindowLevel(newLevel);
+    }
+
+    @Override
+    public void changeWindowWidthBy(int delta) {
+        int newWidth = windowingParameters.getWindowWidth() + delta;
+        windowingParameters.setWindowWidth(newWidth);
+    }
+
+    @Override
+    public void resetWindowing() {
+        TagProcessor tagProcessor = new TagProcessor(dicomFile);
+        windowingParameters = tagProcessor.getWindowingParameters();
+    }
+
+    @Override
+    public BufferedImage moveToNextFrame() {
+        int maxIndex = dicomFile.getImages().size() - 1;
+        if (currentFrame == maxIndex) {
+            currentFrame = 0;
+        }
+        else {
+            currentFrame++;
+        }
+        return getCurrentFrame();
+    }
+
+    @Override
+    public BufferedImage moveToPreviousFrame() {
+        int maxIndex = dicomFile.getImages().size() - 1;
+        if (currentFrame == 0) {
+            currentFrame = maxIndex;
+        }
+        else {
+            currentFrame--;
+        }
+        return getCurrentFrame();
+    }
+
+    @Override
+    public void setCurrentFrameNumber(int frameNumber) {
+        int maxIndex = dicomFile.getImages().size() - 1;
+        if (frameNumber <= maxIndex && frameNumber >= 0) {
+            currentFrame = frameNumber;
+        }
+    }
+
+    @Override
+    public int getCurrentFrameNumber() {
+        return currentFrame;
+    }
+
+    @Override
+    public BufferedImage getCurrentFrame() {
+        List<DicomImage> images = this.dicomFile.getImages();
+        DicomImage currentImage = images.get(currentFrame);
+
+        WindowingProcessor windowingProcessor = new WindowingProcessorImpl();
+        return windowingProcessor.applyWindowing(currentImage.getImage(), windowingParameters);
+    }
+
+    @Override
+    public void setPersistShapes(boolean persistShapes) {
+        List<DrawableShape> shapes = new ArrayList<>(getShapesForCurrentFrame());
+        clearShapes();
+
+        this.persistShapes = persistShapes;
+        addShapes(shapes);
+    }
+
+    @Override
+    public boolean areShapesPersisted() {
+        return persistShapes;
+    }
+
+    @Override
+    public void addShape(DrawableShape shape) {
+        if (persistShapes) {
+            currentShapes.add(shape);
+        }
+        else {
+            List<DrawableShape> shapes = shapesForEachFrame.computeIfAbsent(currentFrame, k -> new ArrayList<>());
+            shapes.add(shape);
+        }
+    }
+
+    @Override
+    public void addShapes(List<DrawableShape> shapes) {
+        for (DrawableShape shape : shapes) {
+            addShape(shape);
+        }
+    }
+
+    @Override
+    public void removeShape(DrawableShape shape) {
+        if (persistShapes) {
+            currentShapes.remove(shape);
+        }
+        else {
+            List<DrawableShape> shapes = shapesForEachFrame.get(currentFrame);
+            if (shapes != null) {
+                shapes.remove(shape);
+            }
+        }
+    }
+
+    @Override
+    public void clearShapes() {
+        if (persistShapes) {
+            currentShapes.clear();
+        }
+        else {
+            shapesForEachFrame.clear();
+        }
+    }
+
+    @Override
+    public List<DrawableShape> getShapesForCurrentFrame() {
+        if (persistShapes) {
+            return new ArrayList<>(currentShapes);
+        }
+        else {
+            List<DrawableShape> shapes = shapesForEachFrame.get(currentFrame);
+            if (shapes == null) {
+                return new ArrayList<>();
+            }
+            return new ArrayList<>(shapes);
+        }
+    }
+
+    @Override
+    public Map<Integer, List<DrawableShape>> getAllShapes() {
+        if (persistShapes) {
+            Map<Integer, List<DrawableShape>> shapes = new HashMap<>();
+            shapes.put(currentFrame, new ArrayList<>(currentShapes));
+            return shapes;
+        }
+        else {
+            return new HashMap<>(shapesForEachFrame);
+        }
+    }
+
+    @Override
+    public OverlayText getOverlay() {
+        OverlayGenerator overlayGenerator = new OverlayGeneratorImpl();
+        return overlayGenerator.createOverlayText(dicomFile);
+    }
+
+    @Override
+    public int getNumberOfFrames() {
+        return dicomFile.getImages().size();
+    }
+
+    @Override
+    public void setAxis(Axis axis) {
+    }
+
+    @Override
+    public Axis getAxis() {
+        return Axis.Z;
+    }
+
+    @Override
+    public double getDistance(Point2D.Double p1, Point2D.Double p2) {
+        Point3D startPoint = get3DPoint(p1);
+        Point3D endPoint = get3DPoint(p2);
+
+        DistanceCalculator distanceCalculator = new DistanceCalculatorImpl();
+        distanceCalculator.setFile(dicomFile);
+        return distanceCalculator.calculateDistance(startPoint, endPoint);
+    }
+
+    @Override
+    public double getAspectRatioShift() {
+        DistanceCalculator distanceCalculator = new DistanceCalculatorImpl();
+        distanceCalculator.setFile(dicomFile);
+        return distanceCalculator.calculateAspectRatio(Axis.Z);
+    }
+
+    private Point3D get3DPoint(Point2D.Double p1) {
+        return new Point3D(p1.getX(), p1.getY(), 0.0);
+    }
+
+    private void initializeWindowingParams() {
+        TagProcessor tagProcessor = new TagProcessor(dicomFile);
+        windowingParameters = tagProcessor.getWindowingParameters();
+    }
+}
