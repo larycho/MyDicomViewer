@@ -1,10 +1,10 @@
-package org.example.mydicomviewer;
+package org.mydicomviewer;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import org.example.mydicomviewer.modules.MainAppModule;
-import org.example.mydicomviewer.plugin.PluginManager;
+import org.mydicomviewer.modules.MainAppModule;
+import org.mydicomviewer.plugin.PluginManager;
 import com.google.inject.Module;
 import java.io.File;
 import java.util.ArrayList;

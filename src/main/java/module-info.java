@@ -15,6 +15,7 @@ module org.mydicomviewer {
     requires io.scif;
     requires com.github.benmanes.caffeine;
 
+    uses org.mydicomviewer.plugin.Plugin;
 
     exports org.mydicomviewer;
     exports org.mydicomviewer.ui;
