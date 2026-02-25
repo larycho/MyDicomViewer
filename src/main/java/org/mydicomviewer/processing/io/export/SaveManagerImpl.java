@@ -26,6 +26,30 @@ public class SaveManagerImpl implements SaveManager {
     public void save(SaveParams params) {
         params.validate();
 
+        if (params.isSingleFrame()) {
+            saveSingleFrame(params);
+        }
+        else {
+            saveSeries(params);
+        }
+    }
+
+    private void saveSingleFrame(SaveParams params) {
+        int count = 0;
+
+        for (DicomFile file : params.getFiles()) {
+            for (int i = 0; i < file.getImages().size(); i++) {
+
+                if (count == params.getFrameNumber()) {
+                    saveImage(file, count, params);
+                    return;
+                }
+                count++;
+            }
+        }
+    }
+
+    private void saveSeries(SaveParams params) {
         List<DicomFile> files = params.getFiles();
         for (DicomFile file : files) {
             saveFile(file, params);

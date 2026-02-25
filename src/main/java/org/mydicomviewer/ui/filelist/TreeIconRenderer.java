@@ -14,10 +14,10 @@ public class TreeIconRenderer extends DefaultTreeCellRenderer {
     private final Icon imageIcon;
 
     public TreeIconRenderer() {
-        patientIcon = new ImageIcon("src/main/resources/org/example/mydicomviewer/icons/patient.png");
-        seriesIcon = new ImageIcon("src/main/resources/org/example/mydicomviewer/icons/series.png");
-        studyIcon = new ImageIcon("src/main/resources/org/example/mydicomviewer/icons/study.png");
-        imageIcon = new ImageIcon("src/main/resources/org/example/mydicomviewer/icons/image.png");
+        patientIcon = new ImageIcon("src/main/resources/org/mydicomviewer/icons/patient.png");
+        seriesIcon = new ImageIcon("src/main/resources/org/mydicomviewer/icons/series.png");
+        studyIcon = new ImageIcon("src/main/resources/org/mydicomviewer/icons/study.png");
+        imageIcon = new ImageIcon("src/main/resources/org/mydicomviewer/icons/image.png");
     }
 
     @Override

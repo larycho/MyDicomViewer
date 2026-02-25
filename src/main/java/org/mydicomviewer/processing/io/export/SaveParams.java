@@ -12,6 +12,8 @@ public class SaveParams {
     private List<DicomFile> files;
     private File targetDirectory;
     private List<DrawableShape> shapes;
+    private boolean singleFrame = false;
+    private int frameNumber = 0;
 
     public void setFormat(SaveFormat format) {
         this.format = format;
@@ -37,6 +39,18 @@ public class SaveParams {
     public List<DrawableShape> getShapes() {
         return shapes;
     }
+    public boolean isSingleFrame() {
+        return singleFrame;
+    }
+    public void setSingleFrame(boolean singleFrame) {
+        this.singleFrame = singleFrame;
+    }
+    public int getFrameNumber() {
+        return frameNumber;
+    }
+    public void setFrameNumber(int frameNumber) {
+        this.frameNumber = frameNumber;
+    }
 
     public void validate() {
         if (format == null) {
@@ -52,4 +66,5 @@ public class SaveParams {
             throw new IllegalArgumentException("Target directory must be a directory");
         }
     }
+
 }

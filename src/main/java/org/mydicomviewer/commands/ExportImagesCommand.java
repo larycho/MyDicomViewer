@@ -20,6 +20,7 @@ public class ExportImagesCommand {
 
     private final SelectedImageManager selectedImageManager;
     private boolean allFramesExported = false;
+    private int currentFrame = 0;
     private boolean shapesExported = false;
     private SaveFormat saveFormat = SaveFormat.PNG;
     private File directory;
@@ -44,9 +45,15 @@ public class ExportImagesCommand {
     }
 
     public void execute() {
-        JFrame frame = createPopupWindow();
-        frame.setVisible(true);
+        ImagePanelWrapper imagePanel = selectedImageManager.getSelectedImage();
 
+        if (imagePanel == null) {
+            notificationService.showInfoMessage("No loaded file", "Please load a file first");
+        }
+        else {
+            JFrame frame = createPopupWindow();
+            frame.setVisible(true);
+        }
     }
 
     private JFrame createPopupWindow() {
@@ -88,6 +95,10 @@ public class ExportImagesCommand {
         JPanel formatPanel = getFileFormatPanel();
         formatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(formatPanel);
+
+        JCheckBox allFrames = getFrameCheckBox();
+        allFrames.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(allFrames);
 
         JButton exportButton = getExportButton(frame);
         exportButton.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -132,6 +143,7 @@ public class ExportImagesCommand {
     private JButton getExportButton(JFrame frame) {
         JButton exportButton = new JButton("Export");
         exportButton.addActionListener(e -> {
+
             export();
             frame.dispose();
             });
@@ -179,6 +191,7 @@ public class ExportImagesCommand {
             notificationService.showInfoMessage("No loaded file", "Please load a file first");
         }
         else {
+            currentFrame = imagePanel.getCurrentFrameNumber();
             DicomFile file = imagePanel.getDicomFile();
             saveFileUsingWorker(file);
         }
@@ -199,6 +212,8 @@ public class ExportImagesCommand {
         params.setFiles(files);
         params.setTargetDirectory(directory);
         params.setFormat(saveFormat);
+        params.setSingleFrame(!allFramesExported);
+        params.setFrameNumber(currentFrame);
         return params;
     }
 

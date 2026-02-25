@@ -156,7 +156,7 @@ public class ImageManagerResliceImpl implements ImageManager {
     @Override
     public void setPersistShapes(boolean persistShapes) {
         ShapeManager manager = getShapeManager();
-        manager.setPersisted(persistShapes);
+        manager.setPersisted(persistShapes, currentFrame);
     }
 
     @Override

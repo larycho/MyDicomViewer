@@ -8,7 +8,7 @@ import java.util.Map;
 public interface ShapeManager {
 
     boolean areShapesPersisted();
-    void setPersisted(boolean persisted);
+    void setPersisted(boolean persisted, int frame);
 
     List<DrawableShape> getShapesForFrame(int frame);
     Map<Integer, List<DrawableShape>> getAllShapes();

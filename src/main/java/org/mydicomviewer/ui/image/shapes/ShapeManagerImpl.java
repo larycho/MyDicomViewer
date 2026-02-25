@@ -13,6 +13,7 @@ public class ShapeManagerImpl implements ShapeManager {
 
     private final List<DrawableShape> currentShapes = new ArrayList<>();
     private final Map<Integer, List<DrawableShape>> shapesForEachFrame = new HashMap<>();
+    private int currentFrame = 0;
 
     @Override
     public boolean areShapesPersisted() {
@@ -20,8 +21,13 @@ public class ShapeManagerImpl implements ShapeManager {
     }
 
     @Override
-    public void setPersisted(boolean persisted) {
+    public void setPersisted(boolean persisted, int referenceFrame) {
+        currentFrame = referenceFrame;
+        List<DrawableShape> shapes = new ArrayList<>(getShapesForFrame(currentFrame));
+        clearShapes();
         this.persistShapes = persisted;
+        clearShapes();
+        addShapes(shapes);
     }
 
     @Override
@@ -61,6 +67,21 @@ public class ShapeManagerImpl implements ShapeManager {
         }
     }
 
+    public void addShape(DrawableShape shape) {
+        if (persistShapes) {
+            currentShapes.add(shape);
+        }
+        else {
+            List<DrawableShape> shapes = shapesForEachFrame.computeIfAbsent(currentFrame, k -> new ArrayList<>());
+            shapes.add(shape);
+        }
+    }
+
+    public void addShapes(List<DrawableShape> shapes) {
+        for (DrawableShape shape : shapes) {
+            addShape(shape);
+        }
+    }
     @Override
     public void addShapes(int frame, List<DrawableShape> shapes) {
         for (DrawableShape shape : shapes) {

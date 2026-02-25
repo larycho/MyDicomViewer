@@ -51,7 +51,9 @@ public interface ImagePanelWrapper {
 
     Map<Integer, List<DrawableShape>> getAllShapes();
 
-    void setPersistShapes(boolean persistFrames);
+    void switchPersistShapes();
+
+    void setPersistShapes(boolean persistShapes);
 
     boolean areShapesPersisted();
 

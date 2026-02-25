@@ -79,7 +79,7 @@ public class OvalTool implements DrawingTool {
         double perimeter = calculatePerimeter();
 
         String areaLabel = String.format("Area: %.2f mm2 ", area);
-        String perimeterLabel = String.format("Perimeter: %.2f mm2", perimeter);
+        String perimeterLabel = String.format("Perimeter: %.2f mm", perimeter);
 
         String label = areaLabel + "\n" + perimeterLabel;
         oval.setLabel(label);

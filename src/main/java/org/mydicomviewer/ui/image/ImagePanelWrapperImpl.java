@@ -153,8 +153,13 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     }
 
     @Override
-    public void setPersistShapes(boolean persistFrames) {
-        imageManager.setPersistShapes(persistFrames);
+    public void switchPersistShapes() {
+        imageManager.setPersistShapes(!imageManager.areShapesPersisted());
+    }
+
+    @Override
+    public void setPersistShapes(boolean persistShapes) {
+        imageManager.setPersistShapes(persistShapes);
     }
 
     @Override
@@ -170,10 +175,12 @@ public class ImagePanelWrapperImpl implements ImagePanelWrapper {
     @Override
     public void moveToFrame(int frameIndex) {
         imageManager.setCurrentFrameNumber(frameIndex);
+        List<DrawableShape> shapes = imageManager.getShapesForCurrentFrame();
 
         BufferedImage image = imageManager.getCurrentFrame();
         imagePanel.setImage(image);
         imagePanel.setFrameNumber(frameIndex);
+        imagePanel.setShapes(shapes);
     }
 
     @Override

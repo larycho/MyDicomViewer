@@ -6,6 +6,7 @@ import org.mydicomviewer.commands.ExportImagesCommand;
 import org.mydicomviewer.commands.OpenDicomDirCommand;
 import org.mydicomviewer.commands.OpenFileCommand;
 import org.mydicomviewer.commands.OpenFolderCommand;
+import org.mydicomviewer.ui.image.ImagePanelWrapper;
 import org.mydicomviewer.ui.image.SelectedImageManager;
 import org.mydicomviewer.ui.display.SplitScreenMode;
 import org.mydicomviewer.events.services.ResliceEventService;
@@ -18,9 +19,6 @@ import org.mydicomviewer.tools.*;
 import org.kordamp.ikonli.materialdesign2.*;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.mydicomviewer.tools.factories.DrawingToolFactory;
-import org.mydicomviewer.tools.factories.LineToolFactory;
-import org.mydicomviewer.tools.factories.OvalToolFactory;
-import org.mydicomviewer.tools.factories.PencilToolFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -100,11 +98,6 @@ public class ToolBar extends JToolBar {
 
     private void createToolList(Set<DrawingToolFactory> pluginTools) {
         tools = new HashSet<>();
-
-        //tools.add(new OvalToolFactory());
-        //tools.add(new PencilToolFactory());
-        //tools.add(new LineToolFactory());
-
         tools.addAll(pluginTools);
     }
 
@@ -189,11 +182,15 @@ public class ToolBar extends JToolBar {
         return settings;
     }
 
-    private static JPopupMenu getPopupMenu() {
+    private JPopupMenu getPopupMenu() {
         JPopupMenu popupMenu = new JPopupMenu();
-        JCheckBoxMenuItem everyFrame = new JCheckBoxMenuItem("Draw shapes separately for every frame");
-        everyFrame.setSelected(false);
-        everyFrame.addActionListener(e -> {});
+        JMenuItem everyFrame = new JMenuItem("Draw shapes separately for every frame (toggle on/off)");
+        everyFrame.addActionListener(e -> {
+            ImagePanelWrapper wrapper = selectedImageManager.getSelectedImage();
+            if (wrapper != null) {
+                wrapper.switchPersistShapes();
+            }
+        });
 
         popupMenu.add(everyFrame);
         return popupMenu;

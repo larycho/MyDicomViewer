@@ -61,6 +61,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         DicomFile dicomFile = event.getFile();
 
         if (dicomFile.isDicomdir()) { return; }
+        if (dicomFile.getImages().isEmpty()) { return; }
 
         ImagePanelWrapper wrapper = ImagePanelFactory.createRegularImagePanel(dicomFile);
         this.multipleImagePanel.addImage(wrapper);

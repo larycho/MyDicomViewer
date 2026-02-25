@@ -13,7 +13,7 @@ import java.util.List;
 public class Reslicer {
 
     Cache<Integer, BufferedImage> cache = Caffeine.newBuilder()
-            .maximumWeight(100_000_000)
+            .maximumWeight(300_000_000)
             .weigher(((key, value) -> estimateWeight((BufferedImage) value)))
             .build();
 

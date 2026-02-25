@@ -41,6 +41,7 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
     @Override
     public void fileLoaded(FileLoadedEvent event) {
         DicomFile dicomFile = event.getFile();
+        if (dicomFile.getTags().allTags().isEmpty()) { return; }
         ArrayList<Tag> tags = getTagsFromFile(dicomFile);
 
         if (!tags.isEmpty()) {

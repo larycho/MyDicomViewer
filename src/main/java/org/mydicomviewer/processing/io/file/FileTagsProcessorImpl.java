@@ -56,6 +56,9 @@ public class FileTagsProcessorImpl implements FileTagsProcessor {
 
     private TagGroup createTagGroup(Attributes attributes) {
 
+        if (attributes == null) {
+            return new TagGroup();
+        }
         int[] tags = attributes.tags();
         TagGroup tagGroup = new TagGroup();
 

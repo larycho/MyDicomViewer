@@ -3,7 +3,6 @@ module org.mydicomviewer {
     requires pixelmed;
     requires com.formdev.flatlaf;
     requires ij;
-    requires sc.fiji.ij3d;
     requires org.scijava.parsington;
     requires com.google.guice;
     requires net.imagej;
@@ -12,7 +11,6 @@ module org.mydicomviewer {
     requires org.kordamp.ikonli.swing;
     requires org.kordamp.ikonli.materialdesign2;
     requires org.slf4j;
-    requires io.scif;
     requires com.github.benmanes.caffeine;
 
     uses org.mydicomviewer.plugin.Plugin;

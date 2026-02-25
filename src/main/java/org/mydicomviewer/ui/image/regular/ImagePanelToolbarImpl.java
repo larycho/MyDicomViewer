@@ -1,5 +1,6 @@
 package org.mydicomviewer.ui.image.regular;
 
+import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 import org.mydicomviewer.events.PanelSelectedEvent;
 import org.mydicomviewer.events.services.ImagePanelSelectedEventService;
 
@@ -142,13 +143,17 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     }
 
     private void addZoomAndPanButton() {
-        JButton zoom = new JButton("Zoom & Pan");
+        FontIcon zoomIcon = FontIcon.of(MaterialDesignM.MAGNIFY_EXPAND, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton zoom = new JButton(zoomIcon);
+        zoom.setToolTipText("Zoom & Pan");
         zoom.addActionListener(e -> wrapper.setPanZoomTool());
         add(zoom);
     }
 
     private void addWindowingButton() {
-        JButton windowing = new JButton("Windowing");
+        FontIcon windowIcon = FontIcon.of(MaterialDesignC.CONTRAST_BOX, DEFAULT_ICON_SIZE, DEFAULT_ICON_COLOR);
+        JButton windowing = new JButton(windowIcon);
+        windowing.setToolTipText("Windowing");
         windowing.addActionListener(e -> wrapper.setWindowingTool());
         add(windowing);
     }
