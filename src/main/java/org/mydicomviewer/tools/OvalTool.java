@@ -74,7 +74,10 @@ public class OvalTool implements DrawingTool {
     }
 
     private void updateLabel() {
-
+        if (!imagePanel.isDistanceValid()) {
+            oval.setLabel(null);
+            return;
+        }
         double area = calculateArea();
         double perimeter = calculatePerimeter();
 

@@ -9,4 +9,6 @@ public interface SelectedImageManager {
     ImagePanelWrapper getSelectedImage();
 
     void setDrawingTool(DrawingTool tool);
+
+    boolean isAnyImageSelected();
 }

@@ -15,10 +15,7 @@ import org.mydicomviewer.processing.io.file.*;
 import org.mydicomviewer.processing.windowing.WindowingProcessor;
 import org.mydicomviewer.processing.windowing.WindowingProcessorImpl;
 import org.mydicomviewer.services.*;
-import org.mydicomviewer.services.implementations.DicomDirLoadManagerImpl;
-import org.mydicomviewer.services.implementations.FolderLoadManagerImpl;
-import org.mydicomviewer.services.implementations.OpenFileManagerImpl;
-import org.mydicomviewer.services.implementations.ScreenModeProviderImpl;
+import org.mydicomviewer.services.implementations.*;
 import org.mydicomviewer.tools.DrawingTool;
 import org.mydicomviewer.tools.LineTool;
 import org.mydicomviewer.tools.OvalTool;
@@ -64,6 +61,8 @@ public class MainAppModule extends AbstractModule {
         bind(NotificationService.class).to(NotificationServiceImpl.class);
         bind(SaveManager.class).to(SaveManagerImpl.class);
         bind(WindowingProcessor.class).to(WindowingProcessorImpl.class);
+        bind(FrameSkipEventService.class).to(FrameSkipEventServiceImpl.class);
+        bind(FrameSkipManager.class).to(FrameSkipManagerImpl.class);
 
         bind(FileListUpdater.class).asEagerSingleton();
         bind(TagDisplayer.class).asEagerSingleton();

@@ -10,4 +10,6 @@ public interface DistanceCalculator {
     double calculateDistance(Point3D p1, Point3D p2);
 
     double calculateAspectRatio(Axis axis);
+
+    boolean isDistanceValid();
 }

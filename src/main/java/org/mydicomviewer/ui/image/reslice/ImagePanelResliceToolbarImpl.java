@@ -1,6 +1,7 @@
 package org.mydicomviewer.ui.image.reslice;
 
 import org.mydicomviewer.events.PanelSelectedEvent;
+import org.mydicomviewer.events.services.FrameSkipEventService;
 import org.mydicomviewer.events.services.ImagePanelSelectedEventService;
 import org.mydicomviewer.processing.spatial.Axis;
 import org.mydicomviewer.ui.image.ImagePanelToolbar;
@@ -21,6 +22,7 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
 
     private final ImagePanelWrapper wrapper;
     private ImagePanelSelectedEventService selectedEventService;
+    private FrameSkipEventService frameSkipEventService;
 
     private final int DEFAULT_ICON_SIZE = 25;
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
@@ -173,7 +175,11 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
 
         sliceLabel.setText(String.format("Slice: %d / %d", sliceIndex, maxIndex));
 
-        wrapper.moveToFrame(sliceIndex);
+        //wrapper.moveToFrame(sliceIndex);
+        if (axisSelector.getSelectedIndex() == 0) { frameSkipEventService.notifyListeners(this, wrapper.getDicomFile(), sliceIndex);}
+        else {
+            wrapper.moveToFrame(sliceIndex);
+        }
     }
 
     private void adjustTickSpacing() {
@@ -192,6 +198,11 @@ public class ImagePanelResliceToolbarImpl extends JToolBar implements ImagePanel
     @Override
     public void addPanelSelectedService(ImagePanelSelectedEventService panelSelectedService) {
         this.selectedEventService = panelSelectedService;
+    }
+
+    @Override
+    public void addFrameSkipService(FrameSkipEventService frameSkipEventService) {
+        this.frameSkipEventService = frameSkipEventService;
     }
 
     @Override

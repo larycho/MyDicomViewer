@@ -2,6 +2,7 @@ package org.mydicomviewer.ui.image.regular;
 
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM;
 import org.mydicomviewer.events.PanelSelectedEvent;
+import org.mydicomviewer.events.services.FrameSkipEventService;
 import org.mydicomviewer.events.services.ImagePanelSelectedEventService;
 
 import org.mydicomviewer.processing.spatial.Axis;
@@ -24,6 +25,7 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
 
     private final ImagePanelWrapper wrapper;
     private ImagePanelSelectedEventService selectedEventService;
+    private FrameSkipEventService frameSkipEventService;
 
     private final int DEFAULT_ICON_SIZE = 25;
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
@@ -73,7 +75,7 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     private void addSlider() {
         createSlider();
         slider.addChangeListener(e -> {
-            wrapper.moveToFrame(slider.getValue());
+            frameSkipEventService.notifyListeners(this, wrapper.getDicomFile(), slider.getValue());
         });
         add(slider);
     }
@@ -193,6 +195,11 @@ public class ImagePanelToolbarImpl extends JToolBar implements ImagePanelToolbar
     @Override
     public void addPanelSelectedService(ImagePanelSelectedEventService selectedEventService) {
         this.selectedEventService = selectedEventService;
+    }
+
+    @Override
+    public void addFrameSkipService(FrameSkipEventService frameSkipEventService) {
+        this.frameSkipEventService = frameSkipEventService;
     }
 
     @Override

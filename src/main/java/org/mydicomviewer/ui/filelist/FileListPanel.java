@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.mydicomviewer.events.services.FragmentedFileEventService;
+import org.mydicomviewer.events.services.FrameSkipEventService;
+import org.mydicomviewer.services.FrameSkipManager;
 import org.mydicomviewer.services.OpenFileManager;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -25,16 +27,19 @@ public class FileListPanel extends JPanel {
     private FileListScrollPane scrollPane;
     private final OpenFileManager openFileManager;
     private final FragmentedFileEventService fragmentedFileEventService;
+    private final FrameSkipManager frameSkipManager;
 
     private final int DEFAULT_ICON_SIZE = 20;
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
     @Inject
     public FileListPanel(OpenFileManager openFileManager,
-                         FragmentedFileEventService fragmentedFileEventService) {
+                         FragmentedFileEventService fragmentedFileEventService,
+                         FrameSkipManager frameSkipManager) {
 
         this.openFileManager = openFileManager;
         this.fragmentedFileEventService = fragmentedFileEventService;
+        this.frameSkipManager = frameSkipManager;
         cardLayout = new CardLayout();
         setLayout(cardLayout);
 
@@ -89,7 +94,7 @@ public class FileListPanel extends JPanel {
 
     private void createSubPanelsOfExpandedPanel() {
         topPanel = createTopOfExpandedPanel();
-        scrollPane = new FileListScrollPane(openFileManager, fragmentedFileEventService);
+        scrollPane = new FileListScrollPane(openFileManager, fragmentedFileEventService, frameSkipManager);
     }
 
     private void addSubPanelsToExpandedPanel() {

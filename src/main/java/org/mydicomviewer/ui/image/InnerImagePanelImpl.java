@@ -251,6 +251,10 @@ public class InnerImagePanelImpl extends JPanel implements InnerImagePanel {
     public double getDistance(Point2D.Double p1, Point2D.Double p2) {
         return imageManager.getDistance(p1, p2);
     }
+    @Override
+    public boolean isDistanceValid() {
+        return imageManager.isDistanceValid();
+    }
 
     @Override
     public void centerImage() {

@@ -19,6 +19,7 @@ import org.mydicomviewer.tools.*;
 import org.kordamp.ikonli.materialdesign2.*;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.mydicomviewer.tools.factories.DrawingToolFactory;
+import org.mydicomviewer.ui.notifications.NotificationService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,6 +51,8 @@ public class ToolBar extends JToolBar {
     private final OpenFolderCommand openFolderCommand;
     private final ExportImagesCommand exportImagesCommand;
 
+    private final NotificationService notificationService;
+
     private final int DEFAULT_ICON_SIZE = 40;
     private final Color DEFAULT_ICON_COLOR = UIManager.getColor("Component.accentColor");
 
@@ -61,7 +64,8 @@ public class ToolBar extends JToolBar {
                    OpenFolderCommand openFolderCommand,
                    ToolBarEventService toolBarEventService,
                    ResliceEventService resliceEventService,
-                   ExportImagesCommand exportImagesCommand) {
+                   ExportImagesCommand exportImagesCommand,
+                   NotificationService notificationService) {
         super();
 
         this.openFileCommand = openFileCommand;
@@ -75,6 +79,7 @@ public class ToolBar extends JToolBar {
         this.selectedImageManager = selectedImageManager;
         this.toolBarEventService = toolBarEventService;
         this.resliceEventService = resliceEventService;
+        this.notificationService = notificationService;
 
         addFilesButton();
         addExportButton();
@@ -240,17 +245,30 @@ public class ToolBar extends JToolBar {
 
     public void addWindowingListeners() {
         manualWindowing.addActionListener(e -> {
-            WindowingPopup popup = new WindowingPopup();
-            int result = JOptionPane.showConfirmDialog(null, popup, "Manual Windowing", JOptionPane.OK_CANCEL_OPTION);
+            boolean isLoaded = selectedImageManager.isAnyImageSelected();
+            if (isLoaded) {
+                WindowingPopup popup = new WindowingPopup();
+                int result = JOptionPane.showConfirmDialog(null, popup, "Manual Windowing", JOptionPane.OK_CANCEL_OPTION);
 
-            if (result == JOptionPane.OK_OPTION) {
-                changeWindowParameters(popup);
+                if (result == JOptionPane.OK_OPTION) {
+                    changeWindowParameters(popup);
+                }
             }
-
+            else {
+                notificationService.showErrorMessage("Cannot Apply Windowing", "Please load a file first.");
+            }
         });
     }
 
     private void changeWindowParameters(WindowingPopup popup) {
+        try {
+            popup.validateInput();
+        }
+        catch (IllegalArgumentException ex) {
+            notificationService.showErrorMessage("Invalid Input", ex.getMessage());
+            return;
+        }
+
         int center = popup.getWindowCenter();
         int width = popup.getWindowWidth();
         toolBarEventService.notifyWindowingChanged(center, width);

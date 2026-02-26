@@ -25,9 +25,9 @@ public class DistanceCalculatorImpl implements DistanceCalculator {
         double horizontalSpacing = getHorizontalSpacing(pixelSpacing);
         double sliceSpacingValue = getSliceSpacingValue(sliceSpacing);
 
-        double deltaX = ( p1.getX() - p2.getX() ) * horizontalSpacing;
-        double deltaY = ( p1.getY() - p2.getY() ) * verticalSpacing;
-        double deltaZ = ( p1.getZ() - p2.getZ() ) * sliceSpacingValue;
+        double deltaX = (p1.getX() - p2.getX()) * horizontalSpacing;
+        double deltaY = (p1.getY() - p2.getY()) * verticalSpacing;
+        double deltaZ = (p1.getZ() - p2.getZ()) * sliceSpacingValue;
 
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
     }
@@ -62,7 +62,7 @@ public class DistanceCalculatorImpl implements DistanceCalculator {
 
     private double getSliceSpacingValue(String sliceSpacing) {
 
-        double defaultValue = 0.0;
+        double defaultValue = 0;
 
         if (!sliceSpacing.isBlank()) {
             try {
@@ -83,13 +83,17 @@ public class DistanceCalculatorImpl implements DistanceCalculator {
 
             String[] result = pixelSpacing.split("\\\\");
 
-            if (result.length == 2) {
-                try {
+            try {
+                if (result.length == 2) {
                     return Double.parseDouble(result[1]);
-                } catch (NumberFormatException nfe) {
-                    return defaultValue;
                 }
+                if (result.length == 1) {
+                    return Double.parseDouble(result[0]);
+                }
+            } catch (NumberFormatException nfe) {
+                return defaultValue;
             }
+
         }
 
         return defaultValue;
@@ -103,7 +107,7 @@ public class DistanceCalculatorImpl implements DistanceCalculator {
 
             String[] result = pixelSpacing.split("\\\\");
 
-            if (result.length == 2) {
+            if (result.length == 2 || result.length == 1) {
                 try {
                     return Double.parseDouble(result[0]);
                 } catch (NumberFormatException nfe) {
@@ -148,6 +152,11 @@ public class DistanceCalculatorImpl implements DistanceCalculator {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean isDistanceValid() {
+        return !(getSliceSpacing().isEmpty() || getPixelSpacing().isEmpty());
     }
 
 }

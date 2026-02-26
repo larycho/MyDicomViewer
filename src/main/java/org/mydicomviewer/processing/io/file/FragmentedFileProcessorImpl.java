@@ -4,14 +4,12 @@ import com.google.inject.Inject;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.util.TagUtils;
-import org.mydicomviewer.models.DicomFile;
-import org.mydicomviewer.models.DicomImage;
-import org.mydicomviewer.models.DicomSeries;
-import org.mydicomviewer.models.TagGroup;
+import org.mydicomviewer.models.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class FragmentedFileProcessorImpl implements FragmentedFileProcessor {
@@ -29,18 +27,21 @@ public class FragmentedFileProcessorImpl implements FragmentedFileProcessor {
     public DicomFile readFragmentedFile(List<File> partialFiles) {
         ArrayList<File> sortedFiles = sortFiles(partialFiles);
         ArrayList<DicomImage> dicomImages = new ArrayList<>();
+        ArrayList<TagGroup> tagGroups = new ArrayList<>();
 
         for (File file : sortedFiles) {
             DicomSeries series = fileImagesProcessor.getImageSeriesFromFile(file);
+            TagGroup tags = fileTagsProcessor.getTagsFromFile(file);
             dicomImages.addAll(series.getImages());
+            tagGroups.add(tags);
         }
 
-        DicomSeries series = new DicomSeries(dicomImages);
+        DicomSeries imageSeries = new DicomSeries(dicomImages);
+        TagSeries tagSeries = new TagSeries(tagGroups);
 
         if (!sortedFiles.isEmpty()) {
             File file = sortedFiles.get(0);
-            TagGroup tags = fileTagsProcessor.getTagsFromFile(file);
-            return new DicomFile(sortedFiles.get(0), tags, series);
+            return new DicomFile(file, tagSeries, imageSeries);
         }
 
         return null;
@@ -64,7 +65,7 @@ public class FragmentedFileProcessorImpl implements FragmentedFileProcessor {
                 e.printStackTrace();
             }
         }
-        elements.sort((o1, o2) -> o2.getIndex() - o1.getIndex());
+        elements.sort(Comparator.comparingInt(ListElement::getIndex));
         ArrayList<File> sortedFiles = new ArrayList<>();
         for (ListElement element : elements) {
             sortedFiles.add(element.getFile());

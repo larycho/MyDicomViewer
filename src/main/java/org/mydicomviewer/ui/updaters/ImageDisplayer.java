@@ -19,11 +19,12 @@ import java.io.File;
 import java.util.List;
 
 @Singleton
-public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener, FragmentedFileSelectedListener, ToolBarEventListener {
+public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener, DicomDirLoadedListener, FolderLoadedListener, FragmentedFileSelectedListener, ToolBarEventListener, FrameSkipEventListener {
 
     private final MultipleImagePanel multipleImagePanel;
     private final ImagePanelSelectedEventService imagePanelSelectedEventService;
     private final OpenFileManager openFileManager;
+    private final ImagePanelFactory imagePanelFactory;
 
     @Inject
     public ImageDisplayer(MultipleImagePanel multipleImagePanel,
@@ -33,17 +34,21 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
                           FolderLoadedEventService folderLoadedEventService,
                           FragmentedFileEventService fragmentedFileEventService,
                           ToolBarEventService toolBarEventService,
-                          OpenFileManager openFileManager
+                          OpenFileManager openFileManager,
+                          FrameSkipEventService frameSkipEventService,
+                          ImagePanelFactory imagePanelFactory
     ) {
         this.multipleImagePanel = multipleImagePanel;
         this.imagePanelSelectedEventService = panelSelectedService;
         this.openFileManager = openFileManager;
+        this.imagePanelFactory = imagePanelFactory;
         fileLoadEventService.addListener(this);
         panelSelectedService.addListener(this);
         dicomDirLoadManager.addListener(this);
         folderLoadedEventService.addListener(this);
         fragmentedFileEventService.addListener(this);
         toolBarEventService.addListener(this);
+        frameSkipEventService.addListener(this);
     }
 
     @Override
@@ -63,9 +68,9 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         if (dicomFile.isDicomdir()) { return; }
         if (dicomFile.getImages().isEmpty()) { return; }
 
-        ImagePanelWrapper wrapper = ImagePanelFactory.createRegularImagePanel(dicomFile);
+        ImagePanelWrapper wrapper = imagePanelFactory.createRegularImagePanel(dicomFile);
         this.multipleImagePanel.addImage(wrapper);
-        wrapper.addPanelSelectedService(imagePanelSelectedEventService);
+        //wrapper.addPanelSelectedService(imagePanelSelectedEventService);
     }
 
     @Override
@@ -84,7 +89,7 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
 
     private void changeFrameIfCorrectFile(FragmentedFileSelectedEvent event, ImagePanelWrapper wrapper) {
 
-        if (isCorrectFileForFrameChange(event, wrapper)) {
+        if (isCorrectFileForFrameChange(event.getSourceFiles(), wrapper)) {
 
             int index = event.getInstanceNumber();
             wrapper.moveToFrame(index);
@@ -92,9 +97,10 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
         }
     }
 
-    private boolean isCorrectFileForFrameChange(FragmentedFileSelectedEvent event, ImagePanelWrapper wrapper) {
+
+    private boolean isCorrectFileForFrameChange(List<File> sourceFiles, ImagePanelWrapper wrapper) {
         File openedFile = wrapper.getDicomFile().getFile();
-        boolean fileOpened = isFileOnList(event.getSourceFiles(), openedFile);
+        boolean fileOpened = isFileOnList(sourceFiles, openedFile);
 
         Axis axis = wrapper.getAxis();
 
@@ -170,6 +176,21 @@ public class ImageDisplayer implements FileLoadedListener, PanelSelectedListener
 
         for (ImagePanelWrapper wrapper : wrappers) {
             wrapper.resetWindowing();
+        }
+    }
+
+    @Override
+    public void frameSkipped(FrameSkipEvent event) {
+        if (! (event.getSource() instanceof FrameSkipManager)) { return; }
+        List<ImagePanelWrapper> wrappers = multipleImagePanel.getAllImages();
+        DicomFile file = event.getSourceFile();
+
+        for (ImagePanelWrapper wrapper : wrappers) {
+
+            if (wrapper.getDicomFile() == file && wrapper.getAxis() == Axis.Z) {
+                wrapper.moveToFrame(event.getFrameNumber());
+            }
+
         }
     }
 }

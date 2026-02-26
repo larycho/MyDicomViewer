@@ -18,7 +18,6 @@ public class PluginManager {
             return collectPluginModules(classLoader);
 
         } catch (Exception e) {
-            e.printStackTrace();
             return new ArrayList<>();
         }
     }
@@ -34,16 +33,12 @@ public class PluginManager {
             return null;
         }
 
-        for (File jar : jars) {
-            System.out.println("Searching for plugins in " + jar);
-        }
-
         URL[] urls = convertFilesToURLs(jars);
 
         return new URLClassLoader(urls, PluginManager.class.getClassLoader());
     }
 
-    private static URL[] convertFilesToURLs(File[] jars) throws MalformedURLException {
+    private URL[] convertFilesToURLs(File[] jars) throws MalformedURLException {
         URL[] urls = new URL[jars.length];
 
         for (int i = 0; i < jars.length; i++) {

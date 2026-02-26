@@ -32,6 +32,7 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
 
     @Override
     public void openFolder(File folder) {
+        long startTime = System.nanoTime();
         ArrayList<File> files = getFileList(folder);
 
         List<FileNodeData> data = fileTreeNodeService.getFileNodeDataList(files);
@@ -39,6 +40,10 @@ public class FolderLoadManagerImpl implements FolderLoadManager {
         fireFolderLoadedEvent(data);
 
         triggerFileOpen(data);
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1_000_000;
+        System.out.println((endTime - startTime) / 10000);
+        System.out.println(duration + " ms");
     }
 
     private ArrayList<File> getFileList(File folder) {

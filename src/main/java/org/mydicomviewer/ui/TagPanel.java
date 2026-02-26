@@ -35,7 +35,7 @@ public class TagPanel extends JPanel {
         setupActionListeners();
     }
 
-    public void addTabletoScrollPane(JTable table) {
+    public void addTableToScrollPane(JTable table) {
         scrollPane.setViewportView(table);
     }
 
@@ -50,6 +50,8 @@ public class TagPanel extends JPanel {
 
         JPanel topOfExpandedPanel = createTopOfExpandedPanel();
         scrollPane = new JScrollPane();
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         expandedPanel.add(topOfExpandedPanel, BorderLayout.NORTH);
         expandedPanel.add(scrollPane, BorderLayout.CENTER);

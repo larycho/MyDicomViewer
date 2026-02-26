@@ -248,11 +248,16 @@ public class ExportImagesCommand {
     }
 
     private String getLastDirectory() {
-        return preferences.get(LAST_OPEN_DIR, System.getProperty("user.home"));
+        String dir = preferences.get(LAST_OPEN_DIR, System.getProperty("user.home"));
+        File checkFile = new File(dir);
+        if (!checkFile.exists()) {
+            dir = System.getProperty("user.home");
+        }
+        return dir;
     }
 
     private void updateLastDirectory(File file) {
-        String newDir = file.getParent();
+        String newDir = file.getAbsolutePath();
         preferences.put(LAST_OPEN_DIR, newDir);
     }
 }

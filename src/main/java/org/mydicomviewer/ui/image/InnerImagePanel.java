@@ -33,6 +33,8 @@ public interface InnerImagePanel {
 
     double getDistance(Point2D.Double p1, Point2D.Double p2);
 
+    boolean isDistanceValid();
+
     void centerImage();
 
     AffineTransform getTransform();

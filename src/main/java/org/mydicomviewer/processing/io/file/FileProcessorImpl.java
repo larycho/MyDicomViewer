@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import org.mydicomviewer.models.DicomFile;
 import org.mydicomviewer.models.DicomSeries;
 import org.mydicomviewer.models.TagGroup;
+import org.mydicomviewer.models.TagSeries;
+
 import java.io.File;
 
 

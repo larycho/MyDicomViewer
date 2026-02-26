@@ -68,7 +68,12 @@ public class OpenFileCommand {
     }
 
     private String getLastDirectory() {
-        return preferences.get(LAST_OPEN_DIR, System.getProperty("user.home"));
+        String dir = preferences.get(LAST_OPEN_DIR, System.getProperty("user.home"));
+        File checkFile = new File(dir);
+        if (!checkFile.exists()) {
+            dir = System.getProperty("user.home");
+        }
+        return dir;
     }
 
     private void updateLastDirectory(File file) {

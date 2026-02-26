@@ -7,6 +7,7 @@ import org.dcm4che3.util.TagUtils;
 import org.mydicomviewer.models.Tag;
 import org.mydicomviewer.models.TagAddress;
 import org.mydicomviewer.models.TagGroup;
+import org.mydicomviewer.models.TagSeries;
 
 import java.io.File;
 import java.io.IOException;

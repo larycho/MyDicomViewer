@@ -37,7 +37,6 @@ public class MyDicomViewer {
     }
 
     private static void setupLookAndFeel() {
-        //FlatDarkLaf.setup();
         FlatIntelliJLaf.setup();
     }
 

@@ -39,6 +39,11 @@ public class SelectedImageManagerImpl implements SelectedImageManager, PanelSele
     }
 
     @Override
+    public boolean isAnyImageSelected() {
+        return currentlySelected != null;
+    }
+
+    @Override
     public void panelSelected(PanelSelectedEvent event) {
         setSelectedImage(event.getPanel());
     }

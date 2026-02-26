@@ -1,27 +1,20 @@
 package org.mydicomviewer.ui.updaters;
 
 import com.google.inject.Inject;
-import org.mydicomviewer.events.DicomDirLoadedEvent;
-import org.mydicomviewer.events.FileLoadedEvent;
-import org.mydicomviewer.events.FolderLoadedEvent;
-import org.mydicomviewer.events.FragmentedFileSelectedEvent;
-import org.mydicomviewer.events.listeners.DicomDirLoadedListener;
-import org.mydicomviewer.events.listeners.FileLoadedListener;
-import org.mydicomviewer.events.listeners.FolderLoadedListener;
-import org.mydicomviewer.events.listeners.FragmentedFileSelectedListener;
+import org.mydicomviewer.events.*;
+import org.mydicomviewer.events.listeners.*;
+import org.mydicomviewer.events.services.*;
 import org.mydicomviewer.models.DicomFile;
 import org.mydicomviewer.models.Tag;
 import org.mydicomviewer.models.TagGroup;
 import org.mydicomviewer.services.DicomDirLoadManager;
-import org.mydicomviewer.events.services.FileLoadEventService;
-import org.mydicomviewer.events.services.FolderLoadedEventService;
-import org.mydicomviewer.events.services.FragmentedFileEventService;
 import org.mydicomviewer.ui.TagPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
-public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, DicomDirLoadedListener, FragmentedFileSelectedListener {
+public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, DicomDirLoadedListener, FragmentedFileSelectedListener, FrameSkipEventListener, PanelSelectedListener {
 
     private final TagPanel tagPanel;
 
@@ -30,12 +23,16 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
                         FileLoadEventService fileLoadEventService,
                         FolderLoadedEventService folderLoadedEventService,
                         DicomDirLoadManager dicomDirLoadManager,
-                        FragmentedFileEventService fragmentedFileEventService) {
+                        FragmentedFileEventService fragmentedFileEventService,
+                        FrameSkipEventService frameSkipEventService,
+                        ImagePanelSelectedEventService imagePanelSelectedEventService) {
         this.tagPanel = tagPanel;
         fileLoadEventService.addListener(this);
         folderLoadedEventService.addListener(this);
         dicomDirLoadManager.addListener(this);
         fragmentedFileEventService.addListener(this);
+        frameSkipEventService.addListener(this);
+        imagePanelSelectedEventService.addListener(this);
     }
 
     @Override
@@ -46,15 +43,20 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
 
         if (!tags.isEmpty()) {
 
-            int rows = tags.size();
-            int cols = 3;
-
-            String[][] dataArray = createTagListArray(tags, rows, cols);
-            JTable table = createTagTable(dataArray);
-            tagPanel.addTabletoScrollPane(table);
+            updateScrollPane(tags);
 
         }
     }
+
+    private void updateScrollPane(List<Tag> tags) {
+        int rows = tags.size();
+        int cols = 3;
+
+        String[][] dataArray = createTagListArray(tags, rows, cols);
+        JTable table = createTagTable(dataArray);
+        tagPanel.addTableToScrollPane(table);
+    }
+
 
     private JTable createTagTable(String[][] data) {
         String[] columnNames = { "Tag", "Description", "Value" };
@@ -69,7 +71,7 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
         return new ArrayList<>();
     }
 
-    private String[][] createTagListArray(ArrayList<Tag> tags, int rows, int cols) {
+    private String[][] createTagListArray(List<Tag> tags, int rows, int cols) {
         String[][] dataArray = new String[rows][cols];
         for (int i = 0; i < rows; i++) {
             Tag tag = tags.get(i);
@@ -103,5 +105,28 @@ public class TagDisplayer implements FileLoadedListener, FolderLoadedListener, D
 
     @Override
     public void fragmentedFileSelected(FragmentedFileSelectedEvent event) {
+    }
+
+    @Override
+    public void frameSkipped(FrameSkipEvent event) {
+        DicomFile file = event.getSourceFile();
+        int frameNumber = event.getFrameNumber();
+        TagGroup tagGroup = file.getTags(frameNumber);
+
+        List<Tag> tags = (tagGroup != null) ? tagGroup.allTags() : new ArrayList<>();
+        if (tags.isEmpty()) { return; }
+
+        updateScrollPane(tags);
+    }
+
+    @Override
+    public void panelSelected(PanelSelectedEvent event) {
+        DicomFile file = event.getPanel().getDicomFile();
+        int frameNumber = event.getPanel().getCurrentFrameNumber();
+        TagGroup tagGroup = file.getTags(frameNumber);
+
+        List<Tag> tags = (tagGroup != null) ? tagGroup.allTags() : new ArrayList<>();
+        if (tags.isEmpty()) { return; }
+        updateScrollPane(tags);
     }
 }

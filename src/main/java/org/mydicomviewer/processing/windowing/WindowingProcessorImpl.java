@@ -24,7 +24,7 @@ public class WindowingProcessorImpl implements WindowingProcessor {
 
     public BufferedImage applyWindowing(BufferedImage sourceImage) {
         if (photometricInterpretation == PhotometricInterpretation.RGB) {
-            return sourceImage;
+            return handleRGB(sourceImage);
         }
 
         int lutSize = getLutSize(sourceImage);
@@ -34,7 +34,7 @@ public class WindowingProcessorImpl implements WindowingProcessor {
         return applyLookUpTable(sourceImage, lookupTable);
     }
 
-    private static int getLutSize(BufferedImage sourceImage) {
+    private int getLutSize(BufferedImage sourceImage) {
         int depth = sourceImage.getColorModel().getPixelSize();
         return 1 << depth;
     }
@@ -69,7 +69,7 @@ public class WindowingProcessorImpl implements WindowingProcessor {
     }
 
     private ByteLookupTable generateLookUpTable(int size) {
-        byte[] lut = new byte[size + 1];
+        byte[] lut = new byte[size];
 
         int min = windowLevel - (windowWidth / 2);
         int max = windowLevel + (windowWidth / 2);
@@ -82,6 +82,10 @@ public class WindowingProcessorImpl implements WindowingProcessor {
             }
 
             int value = generateLookUpTableValue(trueValue, min, max);
+
+            if (photometricInterpretation == PhotometricInterpretation.MONOCHROME1) {
+                value = 255 - value;
+            }
             lut[i] = (byte) value;
         }
         return new ByteLookupTable(0, lut);
@@ -89,19 +93,26 @@ public class WindowingProcessorImpl implements WindowingProcessor {
 
     private int generateLookUpTableValue(int i, int min, int max) {
 
-        double valueHu = (i * rescaleSlope) + rescaleIntercept;
+        double hounsfieldUnits = (i * rescaleSlope) + rescaleIntercept;
 
         int value;
 
-        if (valueHu <= min) {
+        if (hounsfieldUnits <= min) {
             value = 0;
         }
-        else if (valueHu >= max) {
+        else if (hounsfieldUnits >= max) {
             value = 255;
         }
         else {
-            value = (int) (255.0 * (valueHu - min) / windowWidth);
+            value = (int) (255.0 * (hounsfieldUnits - min) / (windowWidth == 0 ? 1 : windowWidth));
         }
         return value;
+    }
+
+    private BufferedImage handleRGB(BufferedImage sourceImage) {
+        float alpha = (float) (windowWidth <= 0 ? 1.0 : 255.0 / windowWidth);
+        float beta = - (alpha * (windowLevel - ((float) windowWidth / 2)));
+        RescaleOp op = new RescaleOp(alpha, beta,null);
+        return op.filter(sourceImage, null);
     }
 }

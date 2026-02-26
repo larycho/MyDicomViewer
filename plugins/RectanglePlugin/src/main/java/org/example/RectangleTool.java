@@ -82,7 +82,7 @@ public class RectangleTool implements DrawingTool {
     }
 
     private void updateLabel() {
-
+        if (!imagePanel.isDistanceValid()) rectangle.setLabel(null);
         Point2D.Double startPoint = rectangle.getStartPoint();
         Point2D.Double endPoint = rectangle.getEndPoint();
 

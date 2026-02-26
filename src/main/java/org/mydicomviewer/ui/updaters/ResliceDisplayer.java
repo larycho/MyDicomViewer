@@ -28,14 +28,17 @@ public class ResliceDisplayer implements FileLoadedListener, ResliceEventListene
     DicomFile dicomFile;
     private final MultipleImagePanel multipleImagePanel;
     private final ImagePanelSelectedEventService panelSelectedService;
+    private final ImagePanelFactory imagePanelFactory;
 
     @Inject
     public ResliceDisplayer(FileLoadEventService fileLoadEventService,
                             ResliceEventService resliceEventService,
                             MultipleImagePanel multipleImagePanel,
-                            ImagePanelSelectedEventService panelSelectedService) {
+                            ImagePanelSelectedEventService panelSelectedService,
+                            ImagePanelFactory imagePanelFactory) {
         this.multipleImagePanel = multipleImagePanel;
         this.panelSelectedService = panelSelectedService;
+        this.imagePanelFactory = imagePanelFactory;
         fileLoadEventService.addListener(this);
         resliceEventService.addListener(this);
     }
@@ -60,9 +63,9 @@ public class ResliceDisplayer implements FileLoadedListener, ResliceEventListene
     }
 
     private void addNewReslicePanel(Axis axis) {
-        ImagePanelWrapper reslicePanel = ImagePanelFactory.createResliceImagePanel(dicomFile);
+        ImagePanelWrapper reslicePanel = imagePanelFactory.createResliceImagePanel(dicomFile);
         multipleImagePanel.addImage(reslicePanel);
-        reslicePanel.addPanelSelectedService(panelSelectedService);
+        //reslicePanel.addPanelSelectedService(panelSelectedService);
         reslicePanel.setAxis(axis);
     }
 

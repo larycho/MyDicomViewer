@@ -67,4 +67,6 @@ public interface ImageManager {
     double getDistance(Point2D.Double p1, Point2D.Double p2);
 
     double getAspectRatioShift();
+
+    boolean isDistanceValid();
 }

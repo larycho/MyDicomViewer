@@ -73,13 +73,14 @@ public class LineTool implements DrawingTool {
     }
 
     private void updateLabel() {
-
-        Point2D.Double startPoint = line.getStartPoint();
-        Point2D.Double endPoint = line.getEndPoint();
-        double distance = innerImagePanel.getDistance(startPoint, endPoint);
-        String label = String.format("%.2f mm", distance);
-        line.setLabel(label);
-
+        if (!innerImagePanel.isDistanceValid()) line.setLabel(null);
+        else {
+            Point2D.Double startPoint = line.getStartPoint();
+            Point2D.Double endPoint = line.getEndPoint();
+            double distance = innerImagePanel.getDistance(startPoint, endPoint);
+            String label = String.format("%.2f mm", distance);
+            line.setLabel(label);
+        }
     }
 
     @Override

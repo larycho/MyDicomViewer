@@ -1,5 +1,7 @@
 package org.mydicomviewer.ui.filelist;
 import org.mydicomviewer.events.services.FragmentedFileEventService;
+import org.mydicomviewer.events.services.FrameSkipEventService;
+import org.mydicomviewer.services.FrameSkipManager;
 import org.mydicomviewer.services.OpenFileManager;
 
 import javax.swing.*;
@@ -16,12 +18,15 @@ public class FileListScrollPane extends JScrollPane {
 
     OpenFileManager openFileManager;
     FragmentedFileEventService fragmentedFileEventService;
+    FrameSkipManager frameSkipManager;
 
     public FileListScrollPane(OpenFileManager openFileManager,
-                              FragmentedFileEventService fragmentedFileEventService) {
+                              FragmentedFileEventService fragmentedFileEventService,
+                              FrameSkipManager frameSkipManager) {
         super();
         this.openFileManager = openFileManager;
         this.fragmentedFileEventService = fragmentedFileEventService;
+        this.frameSkipManager = frameSkipManager;
 
         fileTree = new FileTree();
         tree = new JTree(fileTree.getTreeModel());
@@ -99,7 +104,7 @@ public class FileListScrollPane extends JScrollPane {
         Integer index = fileNode.getData().getInstanceNumber().orElse(null);
 
         if (files.size() > 1 && index != null) {
-            fragmentedFileEventService.notifyListeners(files, index - 1);
+            frameSkipManager.manageFileSkip(files, index);
         }
         else if (files.size() == 1) {
             openFileManager.openFileUsingWorker(files.get(0));

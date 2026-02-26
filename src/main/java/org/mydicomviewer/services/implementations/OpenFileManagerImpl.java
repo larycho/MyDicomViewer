@@ -36,20 +36,29 @@ public class OpenFileManagerImpl implements OpenFileManager {
 
     @Override
     public void openFileUsingWorker(File file) {
+        //long startTime = System.nanoTime();
         fileLoadStartedEventService.notifyStarted(file);
         OpenFileWorker worker = new OpenFileWorker(fileLoadEventService, fileProcessor);
         worker.setFile(file);
         worker.execute();
+        //long endTime = System.nanoTime();
+        //long duration = (endTime - startTime) / 1_000_000;
+        //System.out.println((endTime - startTime) / 10000);
+        //System.out.println(duration + " ms");
     }
 
     @Override
     public void openFragmentedFileUsingWorker(List<File> files) {
+        //long startTime = System.nanoTime();
         if (!files.isEmpty()) {
             fileLoadStartedEventService.notifyStarted(files.get(0));
             OpenFragmentedFileWorker worker = new OpenFragmentedFileWorker(fileLoadEventService, fragmentedFileProcessor);
             worker.setFiles(files);
             worker.execute();
         }
+        //long endTime = System.nanoTime();
+        //long duration = (endTime - startTime) / 1_000_000;
+        //System.out.println(duration + " ms");
     }
 
 }

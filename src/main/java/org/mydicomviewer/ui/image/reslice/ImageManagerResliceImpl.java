@@ -244,6 +244,13 @@ public class ImageManagerResliceImpl implements ImageManager {
         return distanceCalculator.calculateAspectRatio(currentAxis);
     }
 
+    @Override
+    public boolean isDistanceValid() {
+        DistanceCalculator distanceCalculator = new DistanceCalculatorImpl();
+        distanceCalculator.setFile(dicomFile);
+        return distanceCalculator.isDistanceValid();
+    }
+
     private Point3D get3DPoint(Point2D.Double p1) {
         Point3D startPoint3D;
         if (currentAxis == Axis.X) {
@@ -253,9 +260,9 @@ public class ImageManagerResliceImpl implements ImageManager {
             startPoint3D = new Point3D(x, y, z);
         }
         else if (currentAxis == Axis.Y) {
-            double x = p1.getX();
+            double x = p1.getY();
             double y = 0.0;
-            double z = p1.getY();
+            double z = p1.getX();
             startPoint3D = new Point3D(x, y, z);
         }
         else {

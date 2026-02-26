@@ -254,6 +254,13 @@ public class ImageManagerImpl implements ImageManager {
         return distanceCalculator.calculateAspectRatio(Axis.Z);
     }
 
+    @Override
+    public boolean isDistanceValid() {
+        DistanceCalculator distanceCalculator = new DistanceCalculatorImpl();
+        distanceCalculator.setFile(dicomFile);
+        return distanceCalculator.isDistanceValid();
+    }
+
     private Point3D get3DPoint(Point2D.Double p1) {
         return new Point3D(p1.getX(), p1.getY(), 0.0);
     }
